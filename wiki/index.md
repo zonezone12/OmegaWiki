@@ -112,3 +112,31 @@ Summary:
     title: "Metadynamics and Enhanced Sampling for Molecular Dynamics"
 
 foundations:
+  - slug: boltzmann-distribution
+    title: "Boltzmann Distribution"
+    status: mainstream
+    domain: general
+  - slug: free-energy
+    title: "Free Energy"
+    status: mainstream
+    domain: general
+  - slug: langevin-dynamics
+    title: "Langevin Dynamics"
+    status: mainstream
+    domain: general
+  - slug: markov-state-models
+    title: "Markov State Models"
+    status: mainstream
+    domain: general
+  - slug: molecular-dynamics
+    title: "Molecular Dynamics Simulation"
+    status: mainstream
+    domain: general
+  - slug: potential-energy-surface
+    title: "Potential Energy Surface"
+    status: mainstream
+    domain: general
+  - slug: rare-events
+    title: "Rare Events and the Timescale Problem"
+    status: mainstream
+    domain: general
