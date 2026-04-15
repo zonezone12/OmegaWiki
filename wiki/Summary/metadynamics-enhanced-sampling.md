@@ -56,10 +56,10 @@ ML now enters the field in two ways:
 
 ## Key references
 
-- [[laio-parrinello-metadynamics-2002]] (seminal)
-- [[well-tempered-metadynamics-barducci-2008]]
-- [[plumed-2-tribello-2014]]
-- [[opes-invernizzi-parrinello-2020]]
+- Laio A, Parrinello M. "Escaping free-energy minima." PNAS 2002. doi:10.1073/pnas.202427399 (seminal — not yet ingested)
+- Barducci A, Bussi G, Parrinello M. "Well-Tempered Metadynamics." PRL 2008. doi:10.1103/PhysRevLett.100.020603 (not yet ingested)
+- Tribello GA et al. "PLUMED 2." CPC 2014. (not yet ingested)
+- [[unified-approach-enhanced-sampling]] — Invernizzi, Piaggi, Parrinello (2020)
 
 ## Related
 

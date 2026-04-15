@@ -1,0 +1,969 @@
+%apsrev4-2.bst 2019-01-14 (MD) hand-edited version of apsrev4-1.bst
+%Control: key (0)
+%Control: author (8) initials jnrlst
+%Control: editor formatted (1) identically to author
+%Control: production of article title (0) allowed
+%Control: page (0) single
+%Control: year (1) truncated
+%Control: production of eprint (0) enabled
+\begin{thebibliography}{79}%
+\makeatletter
+\providecommand \@ifxundefined [1]{%
+ \@ifx{#1\undefined}
+}%
+\providecommand \@ifnum [1]{%
+ \ifnum #1\expandafter \@firstoftwo
+ \else \expandafter \@secondoftwo
+ \fi
+}%
+\providecommand \@ifx [1]{%
+ \ifx #1\expandafter \@firstoftwo
+ \else \expandafter \@secondoftwo
+ \fi
+}%
+\providecommand \natexlab [1]{#1}%
+\providecommand \enquote  [1]{``#1''}%
+\providecommand \bibnamefont  [1]{#1}%
+\providecommand \bibfnamefont [1]{#1}%
+\providecommand \citenamefont [1]{#1}%
+\providecommand \href@noop [0]{\@secondoftwo}%
+\providecommand \href [0]{\begingroup \@sanitize@url \@href}%
+\providecommand \@href[1]{\@@startlink{#1}\@@href}%
+\providecommand \@@href[1]{\endgroup#1\@@endlink}%
+\providecommand \@sanitize@url [0]{\catcode `\\12\catcode `\$12\catcode
+  `\&12\catcode `\#12\catcode `\^12\catcode `\_12\catcode `\%12\relax}%
+\providecommand \@@startlink[1]{}%
+\providecommand \@@endlink[0]{}%
+\providecommand \url  [0]{\begingroup\@sanitize@url \@url }%
+\providecommand \@url [1]{\endgroup\@href {#1}{\urlprefix }}%
+\providecommand \urlprefix  [0]{URL }%
+\providecommand \Eprint [0]{\href }%
+\providecommand \doibase [0]{https://doi.org/}%
+\providecommand \selectlanguage [0]{\@gobble}%
+\providecommand \bibinfo  [0]{\@secondoftwo}%
+\providecommand \bibfield  [0]{\@secondoftwo}%
+\providecommand \translation [1]{[#1]}%
+\providecommand \BibitemOpen [0]{}%
+\providecommand \bibitemStop [0]{}%
+\providecommand \bibitemNoStop [0]{.\EOS\space}%
+\providecommand \EOS [0]{\spacefactor3000\relax}%
+\providecommand \BibitemShut  [1]{\csname bibitem#1\endcsname}%
+\let\auto@bib@innerbib\@empty
+%</preamble>
+\bibitem [{\citenamefont {Earl}\ and\ \citenamefont {Deem}(2005)}]{Earl2005}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.~J.}\ \bibnamefont
+  {Earl}}\ and\ \bibinfo {author} {\bibfnamefont {M.~W.}\ \bibnamefont
+  {Deem}},\ }\bibfield  {title} {\bibinfo {title} {{Parallel tempering: Theory,
+  applications, and new perspectives}},\ }\href
+  {https://doi.org/10.1039/b509983h} {\bibfield  {journal} {\bibinfo  {journal}
+  {Physical Chemistry Chemical Physics}\ }\textbf {\bibinfo {volume} {7}},\
+  \bibinfo {pages} {3910} (\bibinfo {year} {2005})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Lyubartsev}\ \emph {et~al.}(1992)\citenamefont
+  {Lyubartsev}, \citenamefont {Martsinovski}, \citenamefont {Shevkunov},\ and\
+  \citenamefont {Vorontsov‐Velyaminov}}]{Lyubartsev1992}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~P.}\ \bibnamefont
+  {Lyubartsev}}, \bibinfo {author} {\bibfnamefont {A.~A.}\ \bibnamefont
+  {Martsinovski}}, \bibinfo {author} {\bibfnamefont {S.~V.}\ \bibnamefont
+  {Shevkunov}},\ and\ \bibinfo {author} {\bibfnamefont {P.~N.}\ \bibnamefont
+  {Vorontsov‐Velyaminov}},\ }\bibfield  {title} {\bibinfo {title} {{New
+  approach to Monte Carlo calculation of the free energy: Method of expanded
+  ensembles}},\ }\href {https://doi.org/10.1063/1.462133} {\bibfield  {journal}
+  {\bibinfo  {journal} {The Journal of Chemical Physics}\ }\textbf {\bibinfo
+  {volume} {96}},\ \bibinfo {pages} {1776} (\bibinfo {year}
+  {1992})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Invernizzi}\ and\ \citenamefont
+  {Parrinello}(2020)}]{Invernizzi2020}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Invernizzi}}\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Parrinello}},\ }\bibfield  {title} {\bibinfo {title} {{Rethinking
+  Metadynamics: From Bias Potentials to Probability Distributions}},\ }\href
+  {https://doi.org/10.1021/acs.jpclett.0c00497} {\bibfield  {journal} {\bibinfo
+   {journal} {The Journal of Physical Chemistry Letters}\ }\textbf {\bibinfo
+  {volume} {11}},\ \bibinfo {pages} {2731} (\bibinfo {year} {2020})},\ \Eprint
+  {https://arxiv.org/abs/1909.07250} {arXiv:1909.07250} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Laio}\ and\ \citenamefont
+  {Parrinello}(2002)}]{Laio2002}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Laio}}\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Parrinello}},\ }\bibfield  {title} {\bibinfo {title} {{Escaping free-energy
+  minima}},\ }\href {https://doi.org/10.1073/pnas.202427399} {\bibfield
+  {journal} {\bibinfo  {journal} {Proceedings of the National Academy of
+  Sciences}\ }\textbf {\bibinfo {volume} {99}},\ \bibinfo {pages} {12562}
+  (\bibinfo {year} {2002})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Torrie}\ and\ \citenamefont
+  {Valleau}(1974)}]{Torrie1974}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.~M.}\ \bibnamefont
+  {Torrie}}\ and\ \bibinfo {author} {\bibfnamefont {J.~P.}\ \bibnamefont
+  {Valleau}},\ }\bibfield  {title} {\bibinfo {title} {{Monte Carlo free energy
+  estimates using non-Boltzmann sampling: Application to the sub-critical
+  Lennard-Jones fluid}},\ }\href {https://doi.org/10.1016/0009-2614(74)80109-0}
+  {\bibfield  {journal} {\bibinfo  {journal} {Chemical Physics Letters}\
+  }\textbf {\bibinfo {volume} {28}},\ \bibinfo {pages} {578} (\bibinfo {year}
+  {1974})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Torrie}\ and\ \citenamefont
+  {Valleau}(1977)}]{Torrie1977}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Torrie}}\ and\ \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Valleau}},\ }\bibfield  {title} {\bibinfo {title} {{Nonphysical sampling
+  distributions in Monte Carlo free-energy estimation: Umbrella sampling}},\
+  }\href {https://doi.org/10.1016/0021-9991(77)90121-8} {\bibfield  {journal}
+  {\bibinfo  {journal} {Journal of Computational Physics}\ }\textbf {\bibinfo
+  {volume} {23}},\ \bibinfo {pages} {187} (\bibinfo {year} {1977})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Swendsen}\ and\ \citenamefont
+  {Wang}(1986)}]{Swendsen1986}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.~H.}\ \bibnamefont
+  {Swendsen}}\ and\ \bibinfo {author} {\bibfnamefont {J.-S.}\ \bibnamefont
+  {Wang}},\ }\bibfield  {title} {\bibinfo {title} {{Replica Monte Carlo
+  Simulation of Spin-Glasses}},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.57.2607} {\bibfield  {journal} {\bibinfo
+   {journal} {Physical Review Letters}\ }\textbf {\bibinfo {volume} {57}},\
+  \bibinfo {pages} {2607} (\bibinfo {year} {1986})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Marinari}\ and\ \citenamefont
+  {Parisi}(1992)}]{Marinari1992}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Marinari}}\ and\ \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Parisi}},\ }\bibfield  {title} {\bibinfo {title} {{Simulated Tempering: A
+  New Monte Carlo Scheme}},\ }\href
+  {https://doi.org/10.1209/0295-5075/19/6/002} {\bibfield  {journal} {\bibinfo
+  {journal} {Europhysics Letters (EPL)}\ }\textbf {\bibinfo {volume} {19}},\
+  \bibinfo {pages} {451} (\bibinfo {year} {1992})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Sugita}\ and\ \citenamefont
+  {Okamoto}(1999)}]{Sugita1999}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont
+  {Sugita}}\ and\ \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont
+  {Okamoto}},\ }\bibfield  {title} {\bibinfo {title} {{Replica-exchange
+  molecular dynamics method for protein folding}},\ }\href
+  {https://doi.org/10.1016/S0009-2614(99)01123-9} {\bibfield  {journal}
+  {\bibinfo  {journal} {Chemical Physics Letters}\ }\textbf {\bibinfo {volume}
+  {314}},\ \bibinfo {pages} {141} (\bibinfo {year} {1999})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Bussi}\ \emph {et~al.}(2006)\citenamefont {Bussi},
+  \citenamefont {Gervasio}, \citenamefont {Laio},\ and\ \citenamefont
+  {Parrinello}}]{Bussi2006}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Bussi}}, \bibinfo {author} {\bibfnamefont {F.~L.}\ \bibnamefont {Gervasio}},
+  \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Laio}},\ and\ \bibinfo
+  {author} {\bibfnamefont {M.}~\bibnamefont {Parrinello}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Free-Energy Landscape for $\beta$ Hairpin Folding from
+  Combined Parallel Tempering and Metadynamics}},\ }\href
+  {https://doi.org/10.1021/ja062463w} {\bibfield  {journal} {\bibinfo
+  {journal} {Journal of the American Chemical Society}\ }\textbf {\bibinfo
+  {volume} {128}},\ \bibinfo {pages} {13435} (\bibinfo {year}
+  {2006})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Piana}\ and\ \citenamefont {Laio}(2007)}]{Piana2007}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Piana}}\ and\ \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Laio}},\
+  }\bibfield  {title} {\bibinfo {title} {{A Bias-Exchange Approach to Protein
+  Folding}},\ }\href {https://doi.org/10.1021/jp067873l} {\bibfield  {journal}
+  {\bibinfo  {journal} {The Journal of Physical Chemistry B}\ }\textbf
+  {\bibinfo {volume} {111}},\ \bibinfo {pages} {4553} (\bibinfo {year}
+  {2007})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Bonomi}\ and\ \citenamefont
+  {Parrinello}(2010)}]{Bonomi2010}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Bonomi}}\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Parrinello}},\ }\bibfield  {title} {\bibinfo {title} {{Enhanced Sampling in
+  the Well-Tempered Ensemble}},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.104.190601} {\bibfield  {journal}
+  {\bibinfo  {journal} {Physical Review Letters}\ }\textbf {\bibinfo {volume}
+  {104}},\ \bibinfo {pages} {190601} (\bibinfo {year} {2010})},\ \Eprint
+  {https://arxiv.org/abs/0910.4914} {arXiv:0910.4914} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Nava}\ \emph {et~al.}(2015)\citenamefont {Nava},
+  \citenamefont {Quhe}, \citenamefont {Palazzesi}, \citenamefont {Tiwary},\
+  and\ \citenamefont {Parrinello}}]{Nava2015}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Nava}}, \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {Quhe}}, \bibinfo
+  {author} {\bibfnamefont {F.}~\bibnamefont {Palazzesi}}, \bibinfo {author}
+  {\bibfnamefont {P.}~\bibnamefont {Tiwary}},\ and\ \bibinfo {author}
+  {\bibfnamefont {M.}~\bibnamefont {Parrinello}},\ }\bibfield  {title}
+  {\bibinfo {title} {{de Broglie Swapping Metadynamics for Quantum and
+  Classical Sampling}},\ }\href {https://doi.org/10.1021/acs.jctc.5b00818}
+  {\bibfield  {journal} {\bibinfo  {journal} {Journal of Chemical Theory and
+  Computation}\ }\textbf {\bibinfo {volume} {11}},\ \bibinfo {pages} {5114}
+  (\bibinfo {year} {2015})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Abrams}\ and\ \citenamefont
+  {Bussi}(2014)}]{Abrams2014}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {C.}~\bibnamefont
+  {Abrams}}\ and\ \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Bussi}},\
+  }\bibfield  {title} {\bibinfo {title} {{Enhanced sampling in molecular
+  dynamics using metadynamics, replica-exchange, and
+  temperature-acceleration}},\ }\href {https://doi.org/10.3390/e16010163}
+  {\bibfield  {journal} {\bibinfo  {journal} {Entropy}\ }\textbf {\bibinfo
+  {volume} {16}},\ \bibinfo {pages} {163} (\bibinfo {year} {2014})},\ \Eprint
+  {https://arxiv.org/abs/1401.0387} {arXiv:1401.0387} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Yang}\ \emph {et~al.}(2019)\citenamefont {Yang},
+  \citenamefont {Shao}, \citenamefont {Zhang}, \citenamefont {Yang},\ and\
+  \citenamefont {Gao}}]{Yang2019}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.~I.}\ \bibnamefont
+  {Yang}}, \bibinfo {author} {\bibfnamefont {Q.}~\bibnamefont {Shao}}, \bibinfo
+  {author} {\bibfnamefont {J.}~\bibnamefont {Zhang}}, \bibinfo {author}
+  {\bibfnamefont {L.}~\bibnamefont {Yang}},\ and\ \bibinfo {author}
+  {\bibfnamefont {Y.~Q.}\ \bibnamefont {Gao}},\ }\bibfield  {title} {\bibinfo
+  {title} {{Enhanced sampling in molecular dynamics}},\ }\href
+  {https://doi.org/10.1063/1.5109531} {\bibfield  {journal} {\bibinfo
+  {journal} {The Journal of Chemical Physics}\ }\textbf {\bibinfo {volume}
+  {151}},\ \bibinfo {pages} {070902} (\bibinfo {year} {2019})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Rosso}\ \emph {et~al.}(2002)\citenamefont {Rosso},
+  \citenamefont {Min{\'{a}}ry}, \citenamefont {Zhu},\ and\ \citenamefont
+  {Tuckerman}}]{Rosso2002}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {L.}~\bibnamefont
+  {Rosso}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Min{\'{a}}ry}},
+  \bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont {Zhu}},\ and\ \bibinfo
+  {author} {\bibfnamefont {M.~E.}\ \bibnamefont {Tuckerman}},\ }\bibfield
+  {title} {\bibinfo {title} {{On the use of the adiabatic molecular dynamics
+  technique in the calculation of free energy profiles}},\ }\href
+  {https://doi.org/10.1063/1.1448491} {\bibfield  {journal} {\bibinfo
+  {journal} {The Journal of Chemical Physics}\ }\textbf {\bibinfo {volume}
+  {116}},\ \bibinfo {pages} {4389} (\bibinfo {year} {2002})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Darve}\ and\ \citenamefont
+  {Pohorille}(2001)}]{Darve2001}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Darve}}\ and\ \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Pohorille}},\ }\bibfield  {title} {\bibinfo {title} {{Calculating free
+  energies using average force}},\ }\href {https://doi.org/10.1063/1.1410978}
+  {\bibfield  {journal} {\bibinfo  {journal} {The Journal of Chemical Physics}\
+  }\textbf {\bibinfo {volume} {115}},\ \bibinfo {pages} {9169} (\bibinfo {year}
+  {2001})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Sugita}\ \emph {et~al.}(2000)\citenamefont {Sugita},
+  \citenamefont {Kitao},\ and\ \citenamefont {Okamoto}}]{Sugita2000}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont
+  {Sugita}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Kitao}},\ and\
+  \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Okamoto}},\ }\bibfield
+  {title} {\bibinfo {title} {{Multidimensional replica-exchange method for
+  free-energy calculations}},\ }\href {https://doi.org/10.1063/1.1308516}
+  {\bibfield  {journal} {\bibinfo  {journal} {The Journal of Chemical Physics}\
+  }\textbf {\bibinfo {volume} {113}},\ \bibinfo {pages} {6042} (\bibinfo {year}
+  {2000})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Micheletti}\ \emph {et~al.}(2004)\citenamefont
+  {Micheletti}, \citenamefont {Laio},\ and\ \citenamefont
+  {Parrinello}}]{Micheletti2004}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {C.}~\bibnamefont
+  {Micheletti}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Laio}},\
+  and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Parrinello}},\
+  }\bibfield  {title} {\bibinfo {title} {{Reconstructing the Density of States
+  by History-Dependent Metadynamics}},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.92.170601} {\bibfield  {journal}
+  {\bibinfo  {journal} {Physical Review Letters}\ }\textbf {\bibinfo {volume}
+  {92}},\ \bibinfo {pages} {170601} (\bibinfo {year} {2004})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Mezei}(1987)}]{Mezei1987}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Mezei}},\ }\bibfield  {title} {\bibinfo {title} {{Adaptive umbrella
+  sampling: Self-consistent determination of the non-Boltzmann bias}},\ }\href
+  {https://doi.org/10.1016/0021-9991(87)90054-4} {\bibfield  {journal}
+  {\bibinfo  {journal} {Journal of Computational Physics}\ }\textbf {\bibinfo
+  {volume} {68}},\ \bibinfo {pages} {237} (\bibinfo {year} {1987})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Wang}\ and\ \citenamefont {Landau}(2001)}]{Wang2001}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
+  {Wang}}\ and\ \bibinfo {author} {\bibfnamefont {D.~P.}\ \bibnamefont
+  {Landau}},\ }\bibfield  {title} {\bibinfo {title} {{Efficient, Multiple-Range
+  Random Walk Algorithm to Calculate the Density of States}},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.86.2050} {\bibfield  {journal} {\bibinfo
+   {journal} {Physical Review Letters}\ }\textbf {\bibinfo {volume} {86}},\
+  \bibinfo {pages} {2050} (\bibinfo {year} {2001})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Berg}\ and\ \citenamefont
+  {Neuhaus}(1991)}]{Berg1991}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.~A.}\ \bibnamefont
+  {Berg}}\ and\ \bibinfo {author} {\bibfnamefont {T.}~\bibnamefont {Neuhaus}},\
+  }\bibfield  {title} {\bibinfo {title} {{Multicanonical algorithms for first
+  order phase transitions}},\ }\href
+  {https://doi.org/10.1016/0370-2693(91)91256-U} {\bibfield  {journal}
+  {\bibinfo  {journal} {Physics Letters B}\ }\textbf {\bibinfo {volume}
+  {267}},\ \bibinfo {pages} {249} (\bibinfo {year} {1991})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Lee}(1993)}]{Lee1993}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Lee}},\ }\bibfield  {title} {\bibinfo {title} {{New Monte Carlo algorithm:
+  Entropic sampling}},\ }\href {https://doi.org/10.1103/PhysRevLett.71.211}
+  {\bibfield  {journal} {\bibinfo  {journal} {Physical Review Letters}\
+  }\textbf {\bibinfo {volume} {71}},\ \bibinfo {pages} {211} (\bibinfo {year}
+  {1993})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Barducci}\ \emph {et~al.}(2008)\citenamefont
+  {Barducci}, \citenamefont {Bussi},\ and\ \citenamefont
+  {Parrinello}}]{Barducci2008}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Barducci}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Bussi}},\
+  and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Parrinello}},\
+  }\bibfield  {title} {\bibinfo {title} {{Well-Tempered Metadynamics: A
+  Smoothly Converging and Tunable Free-Energy Method}},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.100.020603} {\bibfield  {journal}
+  {\bibinfo  {journal} {Physical Review Letters}\ }\textbf {\bibinfo {volume}
+  {100}},\ \bibinfo {pages} {020603} (\bibinfo {year} {2008})},\ \Eprint
+  {https://arxiv.org/abs/0803.3861} {arXiv:0803.3861} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {White}\ \emph {et~al.}(2015)\citenamefont {White},
+  \citenamefont {Dama},\ and\ \citenamefont {Voth}}]{White2015}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~D.}\ \bibnamefont
+  {White}}, \bibinfo {author} {\bibfnamefont {J.~F.}\ \bibnamefont {Dama}},\
+  and\ \bibinfo {author} {\bibfnamefont {G.~A.}\ \bibnamefont {Voth}},\
+  }\bibfield  {title} {\bibinfo {title} {{Designing Free Energy Surfaces That
+  Match Experimental Data with Metadynamics}},\ }\href
+  {https://doi.org/10.1021/acs.jctc.5b00178} {\bibfield  {journal} {\bibinfo
+  {journal} {Journal of Chemical Theory and Computation}\ }\textbf {\bibinfo
+  {volume} {11}},\ \bibinfo {pages} {2451} (\bibinfo {year}
+  {2015})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Hesselbo}\ and\ \citenamefont
+  {Stinchcombe}(1995)}]{Hesselbo1995}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
+  {Hesselbo}}\ and\ \bibinfo {author} {\bibfnamefont {R.~B.}\ \bibnamefont
+  {Stinchcombe}},\ }\bibfield  {title} {\bibinfo {title} {{Monte Carlo
+  Simulation and Global Optimization without Parameters}},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.74.2151} {\bibfield  {journal} {\bibinfo
+   {journal} {Physical Review Letters}\ }\textbf {\bibinfo {volume} {74}},\
+  \bibinfo {pages} {2151} (\bibinfo {year} {1995})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {P{\'{a}}rtay}\ \emph {et~al.}(2010)\citenamefont
+  {P{\'{a}}rtay}, \citenamefont {Bart{\'{o}}k},\ and\ \citenamefont
+  {Cs{\'{a}}nyi}}]{Partay2010}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {L.~B.}\ \bibnamefont
+  {P{\'{a}}rtay}}, \bibinfo {author} {\bibfnamefont {A.~P.}\ \bibnamefont
+  {Bart{\'{o}}k}},\ and\ \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Cs{\'{a}}nyi}},\ }\bibfield  {title} {\bibinfo {title} {{Efficient Sampling
+  of Atomic Configurational Spaces}},\ }\href
+  {https://doi.org/10.1021/jp1012973} {\bibfield  {journal} {\bibinfo
+  {journal} {The Journal of Physical Chemistry B}\ }\textbf {\bibinfo {volume}
+  {114}},\ \bibinfo {pages} {10502} (\bibinfo {year} {2010})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Liu}\ \emph {et~al.}(2005)\citenamefont {Liu},
+  \citenamefont {Kim}, \citenamefont {Friesner},\ and\ \citenamefont
+  {Berne}}]{Liu2005}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Liu}}, \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont {Kim}}, \bibinfo
+  {author} {\bibfnamefont {R.~A.}\ \bibnamefont {Friesner}},\ and\ \bibinfo
+  {author} {\bibfnamefont {B.~J.}\ \bibnamefont {Berne}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Replica exchange with solute tempering: A method for
+  sampling biological systems in explicit water}},\ }\href
+  {https://doi.org/10.1073/pnas.0506346102} {\bibfield  {journal} {\bibinfo
+  {journal} {Proceedings of the National Academy of Sciences}\ }\textbf
+  {\bibinfo {volume} {102}},\ \bibinfo {pages} {13749} (\bibinfo {year}
+  {2005})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Bussi}(2014)}]{Bussi2014}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Bussi}},\ }\bibfield  {title} {\bibinfo {title} {{Hamiltonian replica
+  exchange in GROMACS: a flexible implementation}},\ }\href
+  {https://doi.org/10.1080/00268976.2013.824126} {\bibfield  {journal}
+  {\bibinfo  {journal} {Molecular Physics}\ }\textbf {\bibinfo {volume}
+  {112}},\ \bibinfo {pages} {379} (\bibinfo {year} {2014})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Gao}(2008)}]{Gao2008}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.~Q.}\ \bibnamefont
+  {Gao}},\ }\bibfield  {title} {\bibinfo {title} {{An
+  integrate-over-temperature approach for enhanced sampling}},\ }\href
+  {https://doi.org/10.1063/1.2825614} {\bibfield  {journal} {\bibinfo
+  {journal} {The Journal of Chemical Physics}\ }\textbf {\bibinfo {volume}
+  {128}},\ \bibinfo {pages} {064105} (\bibinfo {year} {2008})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Nymeyer}(2010)}]{Nymeyer2010}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
+  {Nymeyer}},\ }\bibfield  {title} {\bibinfo {title} {{Serial tempering without
+  exchange}},\ }\href {https://doi.org/10.1063/1.3480013} {\bibfield  {journal}
+  {\bibinfo  {journal} {The Journal of Chemical Physics}\ }\textbf {\bibinfo
+  {volume} {133}},\ \bibinfo {pages} {114113} (\bibinfo {year}
+  {2010})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {K{\"{a}}stner}(2011)}]{Kastner2011}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {K{\"{a}}stner}},\ }\bibfield  {title} {\bibinfo {title} {{Umbrella
+  sampling}},\ }\href {https://doi.org/10.1002/wcms.66} {\bibfield  {journal}
+  {\bibinfo  {journal} {Wiley Interdisciplinary Reviews: Computational
+  Molecular Science}\ }\textbf {\bibinfo {volume} {1}},\ \bibinfo {pages} {932}
+  (\bibinfo {year} {2011})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Vega}\ \emph {et~al.}(2008)\citenamefont {Vega},
+  \citenamefont {Sanz}, \citenamefont {Abascal},\ and\ \citenamefont
+  {Noya}}]{Vega2008}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {C.}~\bibnamefont
+  {Vega}}, \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Sanz}}, \bibinfo
+  {author} {\bibfnamefont {J.~L.~F.}\ \bibnamefont {Abascal}},\ and\ \bibinfo
+  {author} {\bibfnamefont {E.~G.}\ \bibnamefont {Noya}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Determination of phase diagrams via computer simulation:
+  methodology and applications to water, electrolytes and proteins}},\ }\href
+  {https://doi.org/10.1088/0953-8984/20/15/153101} {\bibfield  {journal}
+  {\bibinfo  {journal} {Journal of Physics: Condensed Matter}\ }\textbf
+  {\bibinfo {volume} {20}},\ \bibinfo {pages} {153101} (\bibinfo {year}
+  {2008})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Kumar}\ \emph {et~al.}(1992)\citenamefont {Kumar},
+  \citenamefont {Rosenberg}, \citenamefont {Bouzida}, \citenamefont
+  {Swendsen},\ and\ \citenamefont {Kollman}}]{Kumar1992}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Kumar}}, \bibinfo {author} {\bibfnamefont {J.~M.}\ \bibnamefont
+  {Rosenberg}}, \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont {Bouzida}},
+  \bibinfo {author} {\bibfnamefont {R.~H.}\ \bibnamefont {Swendsen}},\ and\
+  \bibinfo {author} {\bibfnamefont {P.~A.}\ \bibnamefont {Kollman}},\
+  }\bibfield  {title} {\bibinfo {title} {{The weighted histogram analysis
+  method for free-energy calculations on biomolecules. I. The method}},\ }\href
+  {https://doi.org/10.1002/jcc.540130812} {\bibfield  {journal} {\bibinfo
+  {journal} {Journal of Computational Chemistry}\ }\textbf {\bibinfo {volume}
+  {13}},\ \bibinfo {pages} {1011} (\bibinfo {year} {1992})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Valsson}\ and\ \citenamefont
+  {Parrinello}(2014)}]{Valsson2014}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {O.}~\bibnamefont
+  {Valsson}}\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Parrinello}},\ }\bibfield  {title} {\bibinfo {title} {{Variational Approach
+  to Enhanced Sampling and Free Energy Calculations}},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.113.090601} {\bibfield  {journal}
+  {\bibinfo  {journal} {Physical Review Letters}\ }\textbf {\bibinfo {volume}
+  {113}},\ \bibinfo {pages} {090601} (\bibinfo {year} {2014})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Shaffer}\ \emph {et~al.}(2016)\citenamefont
+  {Shaffer}, \citenamefont {Valsson},\ and\ \citenamefont
+  {Parrinello}}]{Shaffer2016}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Shaffer}}, \bibinfo {author} {\bibfnamefont {O.}~\bibnamefont {Valsson}},\
+  and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Parrinello}},\
+  }\bibfield  {title} {\bibinfo {title} {{Enhanced, targeted sampling of
+  high-dimensional free-energy landscapes using variationally enhanced
+  sampling, with an application to chignolin}},\ }\href
+  {https://doi.org/10.1073/pnas.1519712113} {\bibfield  {journal} {\bibinfo
+  {journal} {Proceedings of the National Academy of Sciences}\ }\textbf
+  {\bibinfo {volume} {113}},\ \bibinfo {pages} {1150} (\bibinfo {year}
+  {2016})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Invernizzi}\ \emph {et~al.}(2017)\citenamefont
+  {Invernizzi}, \citenamefont {Valsson},\ and\ \citenamefont
+  {Parrinello}}]{Invernizzi2017}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Invernizzi}}, \bibinfo {author} {\bibfnamefont {O.}~\bibnamefont
+  {Valsson}},\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Parrinello}},\ }\bibfield  {title} {\bibinfo {title} {{Coarse graining from
+  variationally enhanced sampling applied to the Ginzburg–Landau model}},\
+  }\href {https://doi.org/10.1073/pnas.1618455114} {\bibfield  {journal}
+  {\bibinfo  {journal} {Proceedings of the National Academy of Sciences}\
+  }\textbf {\bibinfo {volume} {114}},\ \bibinfo {pages} {3370} (\bibinfo {year}
+  {2017})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Debnath}\ \emph {et~al.}(2019)\citenamefont
+  {Debnath}, \citenamefont {Invernizzi},\ and\ \citenamefont
+  {Parrinello}}]{Debnath2019}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Debnath}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Invernizzi}},\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Parrinello}},\ }\bibfield  {title} {\bibinfo {title} {{Enhanced Sampling of
+  Transition States}},\ }\href {https://doi.org/10.1021/acs.jctc.8b01283}
+  {\bibfield  {journal} {\bibinfo  {journal} {Journal of Chemical Theory and
+  Computation}\ }\textbf {\bibinfo {volume} {15}},\ \bibinfo {pages} {2454}
+  (\bibinfo {year} {2019})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Piaggi}\ and\ \citenamefont
+  {Parrinello}(2019{\natexlab{a}})}]{Piaggi2019}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.~M.}\ \bibnamefont
+  {Piaggi}}\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Parrinello}},\ }\bibfield  {title} {\bibinfo {title}
+  {{Multithermal-Multibaric Molecular Simulations from a Variational
+  Principle}},\ }\href {https://doi.org/10.1103/PhysRevLett.122.050601}
+  {\bibfield  {journal} {\bibinfo  {journal} {Physical Review Letters}\
+  }\textbf {\bibinfo {volume} {122}},\ \bibinfo {pages} {050601} (\bibinfo
+  {year} {2019}{\natexlab{a}})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Piaggi}\ and\ \citenamefont
+  {Parrinello}(2019{\natexlab{b}})}]{Piaggi2019cv}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.~M.}\ \bibnamefont
+  {Piaggi}}\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Parrinello}},\ }\bibfield  {title} {\bibinfo {title} {{Calculation of phase
+  diagrams in the multithermal-multibaric ensemble}},\ }\href
+  {https://doi.org/10.1063/1.5102104} {\bibfield  {journal} {\bibinfo
+  {journal} {The Journal of Chemical Physics}\ }\textbf {\bibinfo {volume}
+  {150}},\ \bibinfo {pages} {244119} (\bibinfo {year}
+  {2019}{\natexlab{b}})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Bonati}\ \emph {et~al.}(2020)\citenamefont {Bonati},
+  \citenamefont {Rizzi},\ and\ \citenamefont {Parrinello}}]{Bonati2020}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {L.}~\bibnamefont
+  {Bonati}}, \bibinfo {author} {\bibfnamefont {V.}~\bibnamefont {Rizzi}},\ and\
+  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Parrinello}},\ }\bibfield
+   {title} {\bibinfo {title} {{Data-Driven Collective Variables for Enhanced
+  Sampling}},\ }\href {https://doi.org/10.1021/acs.jpclett.0c00535} {\bibfield
+  {journal} {\bibinfo  {journal} {The Journal of Physical Chemistry Letters}\
+  }\textbf {\bibinfo {volume} {11}},\ \bibinfo {pages} {2998} (\bibinfo {year}
+  {2020})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Mandelli}\ \emph {et~al.}(2020)\citenamefont
+  {Mandelli}, \citenamefont {Hirshberg},\ and\ \citenamefont
+  {Parrinello}}]{Mandelli2020}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Mandelli}}, \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
+  {Hirshberg}},\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Parrinello}},\ }\bibfield  {title} {\bibinfo {title} {{Metadynamics of
+  Paths}},\ }\href {https://doi.org/10.1103/PhysRevLett.125.026001} {\bibfield
+  {journal} {\bibinfo  {journal} {Physical Review Letters}\ }\textbf {\bibinfo
+  {volume} {125}},\ \bibinfo {pages} {026001} (\bibinfo {year}
+  {2020})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Martinsson}\ \emph {et~al.}(2019)\citenamefont
+  {Martinsson}, \citenamefont {Lu}, \citenamefont {Leimkuhler},\ and\
+  \citenamefont {Vanden-Eijnden}}]{Martinsson2019}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Martinsson}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Lu}},
+  \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont {Leimkuhler}},\ and\
+  \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Vanden-Eijnden}},\
+  }\bibfield  {title} {\bibinfo {title} {{The simulated tempering method in the
+  infinite switch limit with adaptive weight learning}},\ }\href
+  {https://doi.org/10.1088/1742-5468/aaf323} {\bibfield  {journal} {\bibinfo
+  {journal} {Journal of Statistical Mechanics: Theory and Experiment}\ }\textbf
+  {\bibinfo {volume} {2019}},\ \bibinfo {pages} {013207} (\bibinfo {year}
+  {2019})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Reinhardt}\ and\ \citenamefont
+  {Grubm{\"{u}}ller}(2020)}]{Reinhardt2020}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Reinhardt}}\ and\ \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
+  {Grubm{\"{u}}ller}},\ }\bibfield  {title} {\bibinfo {title} {{Determining
+  Free Energy Differences Through Variationally-Derived Intermediates}},\
+  }\href {https://doi.org/10.1021/acs.jctc.0c00106} {\bibfield  {journal}
+  {\bibinfo  {journal} {Journal of Chemical Theory and Computation}\ }\textbf
+  {\bibinfo {volume} {116}},\ \bibinfo {pages} {acs.jctc.0c00106} (\bibinfo
+  {year} {2020})},\ \Eprint {https://arxiv.org/abs/1906.12124}
+  {arXiv:1906.12124} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Pfaendtner}\ and\ \citenamefont
+  {Bonomi}(2015)}]{Pfaendtner2015}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Pfaendtner}}\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Bonomi}},\ }\bibfield  {title} {\bibinfo {title} {{Efficient Sampling of
+  High-Dimensional Free-Energy Landscapes with Parallel Bias Metadynamics}},\
+  }\href {https://doi.org/10.1021/acs.jctc.5b00846} {\bibfield  {journal}
+  {\bibinfo  {journal} {Journal of Chemical Theory and Computation}\ }\textbf
+  {\bibinfo {volume} {11}},\ \bibinfo {pages} {5062} (\bibinfo {year}
+  {2015})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Zwanzig}(1954)}]{Zwanzig1954}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.~W.}\ \bibnamefont
+  {Zwanzig}},\ }\bibfield  {title} {\bibinfo {title} {{High‐Temperature
+  Equation of State by a Perturbation Method. I. Nonpolar Gases}},\ }\href
+  {https://doi.org/10.1063/1.1740409} {\bibfield  {journal} {\bibinfo
+  {journal} {The Journal of Chemical Physics}\ }\textbf {\bibinfo {volume}
+  {22}},\ \bibinfo {pages} {1420} (\bibinfo {year} {1954})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Raiteri}\ \emph {et~al.}(2006)\citenamefont
+  {Raiteri}, \citenamefont {Laio}, \citenamefont {Gervasio}, \citenamefont
+  {Micheletti},\ and\ \citenamefont {Parrinello}}]{Raiteri2006}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Raiteri}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Laio}},
+  \bibinfo {author} {\bibfnamefont {F.~L.}\ \bibnamefont {Gervasio}}, \bibinfo
+  {author} {\bibfnamefont {C.}~\bibnamefont {Micheletti}},\ and\ \bibinfo
+  {author} {\bibfnamefont {M.}~\bibnamefont {Parrinello}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Efficient Reconstruction of Complex Free Energy
+  Landscapes by Multiple Walkers Metadynamics †}},\ }\href
+  {https://doi.org/10.1021/jp054359r} {\bibfield  {journal} {\bibinfo
+  {journal} {The Journal of Physical Chemistry B}\ }\textbf {\bibinfo {volume}
+  {110}},\ \bibinfo {pages} {3533} (\bibinfo {year} {2006})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Park}(2008)}]{Park2008}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Park}},\ }\bibfield  {title} {\bibinfo {title} {{Comparison of the serial
+  and parallel algorithms of generalized ensemble simulations: An analytical
+  approach}},\ }\href {https://doi.org/10.1103/PhysRevE.77.016709} {\bibfield
+  {journal} {\bibinfo  {journal} {Physical Review E}\ }\textbf {\bibinfo
+  {volume} {77}},\ \bibinfo {pages} {016709} (\bibinfo {year}
+  {2008})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Radak}\ \emph {et~al.}(2018)\citenamefont {Radak},
+  \citenamefont {Suh},\ and\ \citenamefont {Roux}}]{Radak2018}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.~K.}\ \bibnamefont
+  {Radak}}, \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont {Suh}},\ and\
+  \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont {Roux}},\ }\bibfield
+  {title} {\bibinfo {title} {{A generalized linear response framework for
+  expanded ensemble and replica exchange simulations}},\ }\href
+  {https://doi.org/10.1063/1.5027494} {\bibfield  {journal} {\bibinfo
+  {journal} {The Journal of Chemical Physics}\ }\textbf {\bibinfo {volume}
+  {149}},\ \bibinfo {pages} {072315} (\bibinfo {year} {2018})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Kong}\ \emph {et~al.}(1994)\citenamefont {Kong},
+  \citenamefont {Liu},\ and\ \citenamefont {Wong}}]{Kong1994}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Kong}}, \bibinfo {author} {\bibfnamefont {J.~S.}\ \bibnamefont {Liu}},\ and\
+  \bibinfo {author} {\bibfnamefont {W.~H.}\ \bibnamefont {Wong}},\ }\bibfield
+  {title} {\bibinfo {title} {{Sequential Imputations and Bayesian Missing Data
+  Problems}},\ }\href {https://doi.org/10.1080/01621459.1994.10476469}
+  {\bibfield  {journal} {\bibinfo  {journal} {Journal of the American
+  Statistical Association}\ }\textbf {\bibinfo {volume} {89}},\ \bibinfo
+  {pages} {278} (\bibinfo {year} {1994})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Kish}(1965)}]{Kish1965}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {L.}~\bibnamefont
+  {Kish}},\ }\bibfield  {title} {\bibinfo {title} {{Sampling Organizations and
+  Groups of Unequal Sizes}},\ }\href {https://doi.org/10.2307/2091346}
+  {\bibfield  {journal} {\bibinfo  {journal} {American Sociological Review}\
+  }\textbf {\bibinfo {volume} {30}},\ \bibinfo {pages} {564} (\bibinfo {year}
+  {1965})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Bussi}\ and\ \citenamefont
+  {Tribello}(2019)}]{Bussi2019}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Bussi}}\ and\ \bibinfo {author} {\bibfnamefont {G.~A.}\ \bibnamefont
+  {Tribello}},\ }\bibfield  {title} {\bibinfo {title} {{Analyzing and Biasing
+  Simulations with PLUMED}},\ }in\ \href
+  {https://doi.org/10.1007/978-1-4939-9608-7_21} {\emph {\bibinfo {booktitle}
+  {Biomolecular Simulations: Methods and Protocols}}},\ \bibinfo {editor}
+  {edited by\ \bibinfo {editor} {\bibfnamefont {M.}~\bibnamefont {Bonomi}}\
+  and\ \bibinfo {editor} {\bibfnamefont {C.}~\bibnamefont {Camilloni}}}\
+  (\bibinfo  {publisher} {Springer New York},\ \bibinfo {address} {New York,
+  NY},\ \bibinfo {year} {2019})\ pp.\ \bibinfo {pages} {529--578},\ \Eprint
+  {https://arxiv.org/abs/1812.08213} {arXiv:1812.08213} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Hartmann}\ \emph {et~al.}(2020)\citenamefont
+  {Hartmann}, \citenamefont {Singh}, \citenamefont {Vanden-Eijnden},\ and\
+  \citenamefont {Hocky}}]{Hartmann2020}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~J.}\ \bibnamefont
+  {Hartmann}}, \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Singh}},
+  \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Vanden-Eijnden}},\ and\
+  \bibinfo {author} {\bibfnamefont {G.~M.}\ \bibnamefont {Hocky}},\ }\bibfield
+  {title} {\bibinfo {title} {{Infinite switch simulated tempering in force
+  (FISST)}},\ }\href {https://doi.org/10.1063/5.0009280} {\bibfield  {journal}
+  {\bibinfo  {journal} {The Journal of Chemical Physics}\ }\textbf {\bibinfo
+  {volume} {152}},\ \bibinfo {pages} {244120} (\bibinfo {year}
+  {2020})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Prakash}\ \emph {et~al.}(2011)\citenamefont
+  {Prakash}, \citenamefont {Barducci},\ and\ \citenamefont
+  {Parrinello}}]{Prakash2011}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~K.}\ \bibnamefont
+  {Prakash}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Barducci}},\
+  and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Parrinello}},\
+  }\bibfield  {title} {\bibinfo {title} {{Replica Temperatures for Uniform
+  Exchange and Efficient Roundtrip Times in Explicit Solvent Parallel Tempering
+  Simulations}},\ }\href {https://doi.org/10.1021/ct200208h} {\bibfield
+  {journal} {\bibinfo  {journal} {Journal of Chemical Theory and Computation}\
+  }\textbf {\bibinfo {volume} {7}},\ \bibinfo {pages} {2025} (\bibinfo {year}
+  {2011})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Abraham}\ \emph {et~al.}(2015)\citenamefont
+  {Abraham}, \citenamefont {Murtola}, \citenamefont {Schulz}, \citenamefont
+  {P{\'{a}}ll}, \citenamefont {Smith}, \citenamefont {Hess},\ and\
+  \citenamefont {Lindahl}}]{gromacs}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~J.}\ \bibnamefont
+  {Abraham}}, \bibinfo {author} {\bibfnamefont {T.}~\bibnamefont {Murtola}},
+  \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {Schulz}}, \bibinfo
+  {author} {\bibfnamefont {S.}~\bibnamefont {P{\'{a}}ll}}, \bibinfo {author}
+  {\bibfnamefont {J.~C.}\ \bibnamefont {Smith}}, \bibinfo {author}
+  {\bibfnamefont {B.}~\bibnamefont {Hess}},\ and\ \bibinfo {author}
+  {\bibfnamefont {E.}~\bibnamefont {Lindahl}},\ }\bibfield  {title} {\bibinfo
+  {title} {{GROMACS: High performance molecular simulations through multi-level
+  parallelism from laptops to supercomputers}},\ }\href
+  {https://doi.org/10.1016/j.softx.2015.06.001} {\bibfield  {journal} {\bibinfo
+   {journal} {SoftwareX}\ }\textbf {\bibinfo {volume} {1-2}},\ \bibinfo {pages}
+  {19} (\bibinfo {year} {2015})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Tribello}\ \emph {et~al.}(2014)\citenamefont
+  {Tribello}, \citenamefont {Bonomi}, \citenamefont {Branduardi}, \citenamefont
+  {Camilloni},\ and\ \citenamefont {Bussi}}]{plumed}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.~A.}\ \bibnamefont
+  {Tribello}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Bonomi}},
+  \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont {Branduardi}}, \bibinfo
+  {author} {\bibfnamefont {C.}~\bibnamefont {Camilloni}},\ and\ \bibinfo
+  {author} {\bibfnamefont {G.}~\bibnamefont {Bussi}},\ }\bibfield  {title}
+  {\bibinfo {title} {{PLUMED 2: New feathers for an old bird}},\ }\href
+  {https://doi.org/10.1016/j.cpc.2013.09.018} {\bibfield  {journal} {\bibinfo
+  {journal} {Computer Physics Communications}\ }\textbf {\bibinfo {volume}
+  {185}},\ \bibinfo {pages} {604} (\bibinfo {year} {2014})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Piana}\ \emph {et~al.}(2011)\citenamefont {Piana},
+  \citenamefont {Lindorff-Larsen},\ and\ \citenamefont {Shaw}}]{Piana2011}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Piana}}, \bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
+  {Lindorff-Larsen}},\ and\ \bibinfo {author} {\bibfnamefont {D.~E.}\
+  \bibnamefont {Shaw}},\ }\bibfield  {title} {\bibinfo {title} {{How Robust Are
+  Protein Folding Simulations with Respect to Force Field Parameterization?}},\
+  }\href {https://doi.org/10.1016/j.bpj.2011.03.051} {\bibfield  {journal}
+  {\bibinfo  {journal} {Biophysical Journal}\ }\textbf {\bibinfo {volume}
+  {100}},\ \bibinfo {pages} {L47} (\bibinfo {year} {2011})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Bussi}\ \emph {et~al.}(2007)\citenamefont {Bussi},
+  \citenamefont {Donadio},\ and\ \citenamefont {Parrinello}}]{Bussi2007}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Bussi}}, \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont {Donadio}},\
+  and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Parrinello}},\
+  }\bibfield  {title} {\bibinfo {title} {{Canonical sampling through velocity
+  rescaling}},\ }\href {https://doi.org/10.1063/1.2408420} {\bibfield
+  {journal} {\bibinfo  {journal} {The Journal of Chemical Physics}\ }\textbf
+  {\bibinfo {volume} {126}},\ \bibinfo {pages} {014101} (\bibinfo {year}
+  {2007})},\ \Eprint {https://arxiv.org/abs/0803.4060} {arXiv:0803.4060}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Parrinello}\ and\ \citenamefont
+  {Rahman}(1981)}]{Parrinello1981}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Parrinello}}\ and\ \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Rahman}},\ }\bibfield  {title} {\bibinfo {title} {{Polymorphic transitions
+  in single crystals: A new molecular dynamics method}},\ }\href
+  {https://doi.org/10.1063/1.328693} {\bibfield  {journal} {\bibinfo  {journal}
+  {Journal of Applied Physics}\ }\textbf {\bibinfo {volume} {52}},\ \bibinfo
+  {pages} {7182} (\bibinfo {year} {1981})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Honda}\ \emph {et~al.}(2008)\citenamefont {Honda},
+  \citenamefont {Akiba}, \citenamefont {Kato}, \citenamefont {Sawada},
+  \citenamefont {Sekijima}, \citenamefont {Ishimura}, \citenamefont {Ooishi},
+  \citenamefont {Watanabe}, \citenamefont {Odahara},\ and\ \citenamefont
+  {Harata}}]{Honda2008}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Honda}}, \bibinfo {author} {\bibfnamefont {T.}~\bibnamefont {Akiba}},
+  \bibinfo {author} {\bibfnamefont {Y.~S.}\ \bibnamefont {Kato}}, \bibinfo
+  {author} {\bibfnamefont {Y.}~\bibnamefont {Sawada}}, \bibinfo {author}
+  {\bibfnamefont {M.}~\bibnamefont {Sekijima}}, \bibinfo {author}
+  {\bibfnamefont {M.}~\bibnamefont {Ishimura}}, \bibinfo {author}
+  {\bibfnamefont {A.}~\bibnamefont {Ooishi}}, \bibinfo {author} {\bibfnamefont
+  {H.}~\bibnamefont {Watanabe}}, \bibinfo {author} {\bibfnamefont
+  {T.}~\bibnamefont {Odahara}},\ and\ \bibinfo {author} {\bibfnamefont
+  {K.}~\bibnamefont {Harata}},\ }\bibfield  {title} {\bibinfo {title} {{Crystal
+  Structure of a Ten-Amino Acid Protein}},\ }\href
+  {https://doi.org/10.1021/ja8030533} {\bibfield  {journal} {\bibinfo
+  {journal} {Journal of the American Chemical Society}\ }\textbf {\bibinfo
+  {volume} {130}},\ \bibinfo {pages} {15327} (\bibinfo {year}
+  {2008})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Lindorff-Larsen}\ \emph {et~al.}(2012)\citenamefont
+  {Lindorff-Larsen}, \citenamefont {Maragakis}, \citenamefont {Piana},
+  \citenamefont {Eastwood}, \citenamefont {Dror},\ and\ \citenamefont
+  {Shaw}}]{Lindorff-Larsen2012}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
+  {Lindorff-Larsen}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Maragakis}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Piana}},
+  \bibinfo {author} {\bibfnamefont {M.~P.}\ \bibnamefont {Eastwood}}, \bibinfo
+  {author} {\bibfnamefont {R.~O.}\ \bibnamefont {Dror}},\ and\ \bibinfo
+  {author} {\bibfnamefont {D.~E.}\ \bibnamefont {Shaw}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Systematic Validation of Protein Force Fields against
+  Experimental Data}},\ }\href {https://doi.org/10.1371/journal.pone.0032131}
+  {\bibfield  {journal} {\bibinfo  {journal} {PLoS ONE}\ }\textbf {\bibinfo
+  {volume} {7}},\ \bibinfo {pages} {e32131} (\bibinfo {year}
+  {2012})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Okumura}(2012)}]{Okumura2012}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
+  {Okumura}},\ }\bibfield  {title} {\bibinfo {title} {{Temperature and pressure
+  denaturation of chignolin: Folding and unfolding simulation by
+  multibaric-multithermal molecular dynamics method}},\ }\href
+  {https://doi.org/10.1002/prot.24125} {\bibfield  {journal} {\bibinfo
+  {journal} {Proteins: Structure, Function, and Bioinformatics}\ }\textbf
+  {\bibinfo {volume} {80}},\ \bibinfo {pages} {2397} (\bibinfo {year}
+  {2012})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Uralcan}\ and\ \citenamefont
+  {Debenedetti}(2019)}]{Uralcan2019}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
+  {Uralcan}}\ and\ \bibinfo {author} {\bibfnamefont {P.~G.}\ \bibnamefont
+  {Debenedetti}},\ }\bibfield  {title} {\bibinfo {title} {{Computational
+  Investigation of the Effect of Pressure on Protein Stability}},\ }\href
+  {https://doi.org/10.1021/acs.jpclett.9b00545} {\bibfield  {journal} {\bibinfo
+   {journal} {The Journal of Physical Chemistry Letters}\ }\textbf {\bibinfo
+  {volume} {10}},\ \bibinfo {pages} {1894} (\bibinfo {year}
+  {2019})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Frenkel}\ and\ \citenamefont
+  {Smit}(2001)}]{FrenkelBook}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Frenkel}}\ and\ \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont {Smit}},\
+  }\href@noop {} {\emph {\bibinfo {title} {Understanding molecular simulation:
+  from algorithms to applications}}},\ Vol.~\bibinfo {volume} {1}\ (\bibinfo
+  {publisher} {Academic press},\ \bibinfo {year} {2001})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Johnson}\ \emph {et~al.}(1993)\citenamefont
+  {Johnson}, \citenamefont {Zollweg},\ and\ \citenamefont
+  {Gubbins}}]{Johnson1993}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.~K.}\ \bibnamefont
+  {Johnson}}, \bibinfo {author} {\bibfnamefont {J.~A.}\ \bibnamefont
+  {Zollweg}},\ and\ \bibinfo {author} {\bibfnamefont {K.~E.}\ \bibnamefont
+  {Gubbins}},\ }\bibfield  {title} {\bibinfo {title} {{The Lennard-Jones
+  equation of state revisited}},\ }\href
+  {https://doi.org/10.1080/00268979300100411} {\bibfield  {journal} {\bibinfo
+  {journal} {Molecular Physics}\ }\textbf {\bibinfo {volume} {78}},\ \bibinfo
+  {pages} {591} (\bibinfo {year} {1993})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Plimpton}(1995)}]{lammps}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Plimpton}},\ }\bibfield  {title} {\bibinfo {title} {{Fast Parallel
+  Algorithms for Short-Range Molecular Dynamics}},\ }\href
+  {https://doi.org/10.1006/jcph.1995.1039} {\bibfield  {journal} {\bibinfo
+  {journal} {Journal of Computational Physics}\ }\textbf {\bibinfo {volume}
+  {117}},\ \bibinfo {pages} {1} (\bibinfo {year} {1995})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Valsson}\ \emph {et~al.}(2016)\citenamefont
+  {Valsson}, \citenamefont {Tiwary},\ and\ \citenamefont
+  {Parrinello}}]{Valsson2016}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {O.}~\bibnamefont
+  {Valsson}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Tiwary}},\
+  and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Parrinello}},\
+  }\bibfield  {title} {\bibinfo {title} {{Enhancing Important Fluctuations:
+  Rare Events and Metadynamics from a Conceptual Viewpoint}},\ }\href
+  {https://doi.org/10.1146/annurev-physchem-040215-112229} {\bibfield
+  {journal} {\bibinfo  {journal} {Annual Review of Physical Chemistry}\
+  }\textbf {\bibinfo {volume} {67}},\ \bibinfo {pages} {159} (\bibinfo {year}
+  {2016})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Debnath}\ and\ \citenamefont
+  {Parrinello}(2020)}]{Debnath2020}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Debnath}}\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Parrinello}},\ }\bibfield  {title} {\bibinfo {title} {{Gaussian Mixture
+  Based Enhanced Sampling For Statics And Dynamics}},\ }\href
+  {https://doi.org/10.1021/acs.jpclett.0c01125} {\bibfield  {journal} {\bibinfo
+   {journal} {The Journal of Physical Chemistry Letters}\ ,\ \bibinfo {pages}
+  {acs.jpclett.0c01125}} (\bibinfo {year} {2020})},\ \Eprint
+  {https://arxiv.org/abs/1909.07773} {arXiv:1909.07773} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Branduardi}\ \emph {et~al.}(2007)\citenamefont
+  {Branduardi}, \citenamefont {Gervasio},\ and\ \citenamefont
+  {Parrinello}}]{Branduardi2007}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Branduardi}}, \bibinfo {author} {\bibfnamefont {F.~L.}\ \bibnamefont
+  {Gervasio}},\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Parrinello}},\ }\bibfield  {title} {\bibinfo {title} {{From A to B in free
+  energy space}},\ }\href {https://doi.org/10.1063/1.2432340} {\bibfield
+  {journal} {\bibinfo  {journal} {The Journal of Chemical Physics}\ }\textbf
+  {\bibinfo {volume} {126}},\ \bibinfo {pages} {054103} (\bibinfo {year}
+  {2007})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Invernizzi}\ and\ \citenamefont
+  {Parrinello}(2019)}]{Invernizzi2019}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Invernizzi}}\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Parrinello}},\ }\bibfield  {title} {\bibinfo {title} {{Making the Best of a
+  Bad Situation: A Multiscale Approach to Free Energy Calculation}},\ }\href
+  {https://doi.org/10.1021/acs.jctc.9b00032} {\bibfield  {journal} {\bibinfo
+  {journal} {Journal of Chemical Theory and Computation}\ }\textbf {\bibinfo
+  {volume} {15}},\ \bibinfo {pages} {2187} (\bibinfo {year}
+  {2019})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Yang}\ \emph {et~al.}(2018)\citenamefont {Yang},
+  \citenamefont {Niu},\ and\ \citenamefont {Parrinello}}]{Yang2018}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.~I.}\ \bibnamefont
+  {Yang}}, \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont {Niu}},\ and\
+  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Parrinello}},\ }\bibfield
+   {title} {\bibinfo {title} {{Combining Metadynamics and Integrated Tempering
+  Sampling}},\ }\href {https://doi.org/10.1021/acs.jpclett.8b03005} {\bibfield
+  {journal} {\bibinfo  {journal} {The Journal of Physical Chemistry Letters}\
+  }\textbf {\bibinfo {volume} {9}},\ \bibinfo {pages} {6426} (\bibinfo {year}
+  {2018})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Niu}\ \emph {et~al.}(2019)\citenamefont {Niu},
+  \citenamefont {Yang},\ and\ \citenamefont {Parrinello}}]{Niu2019}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
+  {Niu}}, \bibinfo {author} {\bibfnamefont {Y.~I.}\ \bibnamefont {Yang}},\ and\
+  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Parrinello}},\ }\bibfield
+   {title} {\bibinfo {title} {{Temperature Dependence of Homogeneous Nucleation
+  in Ice}},\ }\href {https://doi.org/10.1103/PhysRevLett.122.245501} {\bibfield
+   {journal} {\bibinfo  {journal} {Physical Review Letters}\ }\textbf {\bibinfo
+  {volume} {122}},\ \bibinfo {pages} {245501} (\bibinfo {year}
+  {2019})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Hahn}\ \emph {et~al.}(2020)\citenamefont {Hahn},
+  \citenamefont {K{\"{o}}nig},\ and\ \citenamefont
+  {H{\"{u}}nenberger}}]{Hahn2020}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.~F.}\ \bibnamefont
+  {Hahn}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {K{\"{o}}nig}},\
+  and\ \bibinfo {author} {\bibfnamefont {P.~H.}\ \bibnamefont
+  {H{\"{u}}nenberger}},\ }\bibfield  {title} {\bibinfo {title} {{Overcoming
+  Orthogonal Barriers in Alchemical Free Energy Calculations: On the Relative
+  Merits of $\lambda$-Variations, $\lambda$-Extrapolations, and Biasing}},\
+  }\href {https://doi.org/10.1021/acs.jctc.9b00853} {\bibfield  {journal}
+  {\bibinfo  {journal} {Journal of Chemical Theory and Computation}\ }\textbf
+  {\bibinfo {volume} {16}},\ \bibinfo {pages} {1630} (\bibinfo {year}
+  {2020})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Niu}\ \emph {et~al.}(2020)\citenamefont {Niu},
+  \citenamefont {Bonati}, \citenamefont {Piaggi},\ and\ \citenamefont
+  {Parrinello}}]{Niu2020}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
+  {Niu}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Bonati}},
+  \bibinfo {author} {\bibfnamefont {P.~M.}\ \bibnamefont {Piaggi}},\ and\
+  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Parrinello}},\ }\bibfield
+   {title} {\bibinfo {title} {{Ab initio phase diagram and nucleation of
+  gallium}},\ }\href {https://doi.org/10.1038/s41467-020-16372-9} {\bibfield
+  {journal} {\bibinfo  {journal} {Nature Communications}\ }\textbf {\bibinfo
+  {volume} {11}},\ \bibinfo {pages} {2654} (\bibinfo {year}
+  {2020})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Wilson}\ \emph {et~al.}(2015)\citenamefont {Wilson},
+  \citenamefont {Gunawardana},\ and\ \citenamefont {Mendelev}}]{Mendelev2015}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.~R.}\ \bibnamefont
+  {Wilson}}, \bibinfo {author} {\bibfnamefont {K.~G. S.~H.}\ \bibnamefont
+  {Gunawardana}},\ and\ \bibinfo {author} {\bibfnamefont {M.~I.}\ \bibnamefont
+  {Mendelev}},\ }\bibfield  {title} {\bibinfo {title} {{Solid-liquid interface
+  free energies of pure bcc metals and B2 phases}},\ }\href
+  {https://doi.org/10.1063/1.4916741} {\bibfield  {journal} {\bibinfo
+  {journal} {The Journal of Chemical Physics}\ }\textbf {\bibinfo {volume}
+  {142}},\ \bibinfo {pages} {134705} (\bibinfo {year} {2015})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Piaggi}\ and\ \citenamefont
+  {Car}(2020)}]{Piaggi2020}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.~M.}\ \bibnamefont
+  {Piaggi}}\ and\ \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {Car}},\
+  }\bibfield  {title} {\bibinfo {title} {{Phase equilibrium of liquid water and
+  hexagonal ice from enhanced sampling molecular dynamics simulations}},\
+  }\href {https://doi.org/10.1063/5.0011140} {\bibfield  {journal} {\bibinfo
+  {journal} {The Journal of Chemical Physics}\ }\textbf {\bibinfo {volume}
+  {152}},\ \bibinfo {pages} {204116} (\bibinfo {year} {2020})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Lindahl}\ \emph {et~al.}(2018)\citenamefont
+  {Lindahl}, \citenamefont {Lidmar},\ and\ \citenamefont {Hess}}]{Lindahl2018}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {V.}~\bibnamefont
+  {Lindahl}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Lidmar}},\
+  and\ \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont {Hess}},\ }\bibfield
+  {title} {\bibinfo {title} {{Riemann metric approach to optimal sampling of
+  multidimensional free-energy landscapes}},\ }\href
+  {https://doi.org/10.1103/PhysRevE.98.023312} {\bibfield  {journal} {\bibinfo
+  {journal} {Physical Review E}\ }\textbf {\bibinfo {volume} {98}},\ \bibinfo
+  {pages} {023312} (\bibinfo {year} {2018})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {{The PLUMED consortium}}(2019)}]{nest}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibnamefont {{The PLUMED
+  consortium}}},\ }\bibfield  {title} {\bibinfo {title} {{Promoting
+  transparency and reproducibility in enhanced molecular simulations}},\ }\href
+  {https://doi.org/10.1038/s41592-019-0506-8} {\bibfield  {journal} {\bibinfo
+  {journal} {Nature Methods}\ }\textbf {\bibinfo {volume} {16}},\ \bibinfo
+  {pages} {670} (\bibinfo {year} {2019})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Flyvbjerg}\ and\ \citenamefont
+  {Petersen}(1989)}]{Flyvbjerg1989}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
+  {Flyvbjerg}}\ and\ \bibinfo {author} {\bibfnamefont {H.~G.}\ \bibnamefont
+  {Petersen}},\ }\bibfield  {title} {\bibinfo {title} {{Error estimates on
+  averages of correlated data}},\ }\href {https://doi.org/10.1063/1.457480}
+  {\bibfield  {journal} {\bibinfo  {journal} {The Journal of Chemical Physics}\
+  }\textbf {\bibinfo {volume} {91}},\ \bibinfo {pages} {461} (\bibinfo {year}
+  {1989})},\ \Eprint {https://arxiv.org/abs/arXiv:1011.1669v3}
+  {arXiv:arXiv:1011.1669v3} \BibitemShut {NoStop}%
+\end{thebibliography}%

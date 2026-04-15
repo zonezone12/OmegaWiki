@@ -41,6 +41,8 @@ Metadynamics is the central method: it accumulates history-dependent Gaussian bi
 
 ## Seminal works
 
+- [[e3-equivariant-graph-neural-networks-data-efficient]]
+- [[unified-approach-enhanced-sampling]]
 - Laio A, Parrinello M. "Escaping free-energy minima." PNAS 2002. doi:10.1073/pnas.202427399
 - Barducci A, Bussi G, Parrinello M. "Well-Tempered Metadynamics: A Smoothly Converging and Tunable Free-Energy Method." PRL 2008. doi:10.1103/PhysRevLett.100.020603
 - Tribello GA, Bonomi M, Branduardi D, Camilloni C, Bussi G. "PLUMED 2: New feathers for an old bird." CPC 2014.

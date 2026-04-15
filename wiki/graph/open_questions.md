@@ -1,3 +1,53 @@
 # Gap Map
 
 _Auto-generated open questions. Do not edit._
+
+- [paper/e3-equivariant-graph-neural-networks-data-efficient] Why does equivariance change the power-law exponent (slope) of the learning curve, not just the offset? Is there a theoretical explanation?
+- [paper/e3-equivariant-graph-neural-networks-data-efficient] What is the theoretical many-body expansion character of message passing interatomic potentials?
+- [paper/e3-equivariant-graph-neural-networks-data-efficient] What is the optimal maximum tensor rank `l` for different chemical systems?
+- [paper/e3-equivariant-graph-neural-networks-data-efficient] How does NequIP scale to very large systems (thousands of atoms) in production MD?
+- [paper/e3-equivariant-graph-neural-networks-data-efficient] Can equivariant models be extended to include long-range interactions without sacrificing data efficiency?
+- [paper/unified-approach-enhanced-sampling] Can expanded targets be combined with well-tempered-like distributions for better scaling with higher dimensionality of CVs?
+- [paper/unified-approach-enhanced-sampling] What are the optimal weighted expanded targets (different weights for different $\lambda$-states)?
+- [paper/unified-approach-enhanced-sampling] Rigorous optimality criterion for target distribution selection using effective sample size
+- [paper/unified-approach-enhanced-sampling] How does the velocity space difference between OPES-expand and replica exchange affect dynamical properties?
+- [paper/unified-approach-enhanced-sampling] Adaptive selection of $\lambda$-points during the simulation (beyond the initial unbiased estimate)
+- [topic/collective-variables] Principled framework for CV validation without ground truth reference
+- [topic/collective-variables] Efficient on-the-fly CV refinement during metadynamics
+- [topic/collective-variables] CVs that generalize across chemical families (transferable CVs)
+- [topic/machine-learning-molecular-dynamics] Active learning loops that efficiently grow ML potential training sets using enhanced sampling
+- [topic/machine-learning-molecular-dynamics] Robustness of ML CVs to changes in force field
+- [topic/metadynamics-enhanced-sampling] Systematic benchmarks comparing metadynamics variants on identical test systems
+- [topic/metadynamics-enhanced-sampling] Scalable methods for systems with many slow degrees of freedom (>3 CVs)
+- [topic/metadynamics-enhanced-sampling] Reliable absolute binding free energy protocols using metadynamics
+- [topic/collective-variables] Optimal objective function for learning CVs that capture the slowest modes
+- [topic/collective-variables] CVs for processes with multiple, branching pathways
+- [topic/collective-variables] Validation: how to know if a CV is "good enough" without knowing the ground truth
+- [topic/collective-variables] CVs for rare events with no prior trajectory data (cold start problem)
+- [topic/machine-learning-molecular-dynamics] Sample efficiency: large ab initio training datasets remain expensive
+- [topic/machine-learning-molecular-dynamics] Handling reactive chemistry (bond breaking/forming)
+- [topic/machine-learning-molecular-dynamics] Uncertainty quantification for reliable MD production runs
+- [topic/machine-learning-molecular-dynamics] Combining ML potentials with enhanced sampling (workflow integration)
+- [topic/metadynamics-enhanced-sampling] Automated selection of optimal collective variables without domain expertise
+- [topic/metadynamics-enhanced-sampling] Convergence diagnostics for complex, high-dimensional systems
+- [topic/metadynamics-enhanced-sampling] Kinetics estimation from biased simulations (beyond infrequent metadynamics)
+- [topic/metadynamics-enhanced-sampling] Integration with QM/MM for reactive processes
+- [concept/e3-equivariant-convolution] Theoretical explanation for why equivariance changes the learning curve exponent (not just offset)
+- [concept/e3-equivariant-convolution] Efficient implementations for very high l (l > 4)
+- [concept/e3-equivariant-convolution] Extension to include long-range electrostatic interactions within equivariant framework
+- [concept/e3-equivariant-convolution] Optimal tensor rank l for different chemical systems and properties
+- [concept/expanded-ensemble-target-distribution] Rigorous optimality criterion for the expanded ensemble target (Lyubartsev metric, Riemann metric approaches)
+- [concept/expanded-ensemble-target-distribution] Weighted expanded targets that preferentially sample thermodynamically important states
+- [concept/expanded-ensemble-target-distribution] Adaptive determination of $\lambda$-points during the simulation
+- [concept/expansion-collective-variables] Optimal distribution of $\lambda$-points to maximize effective sample size uniformity
+- [concept/expansion-collective-variables] Weighted expanded targets with non-uniform $\lambda$ weights
+- [concept/expansion-collective-variables] Extension to path-variable and other non-standard expanded ensemble formulations
+- [concept/machine-learning-interatomic-potential] Data-efficient potentials for multi-component reactive systems
+- [concept/machine-learning-interatomic-potential] Long-range interaction schemes compatible with equivariant local frameworks
+- [concept/machine-learning-interatomic-potential] Uncertainty quantification for production MD
+- [concept/machine-learning-interatomic-potential] Automatic active learning pipelines for robust potential construction
+- [concept/machine-learning-interatomic-potential] Transferable universal potentials across chemical space
+- [concept/opes-enhanced-sampling] Optimal target distribution selection for maximum effective sample size
+- [concept/opes-enhanced-sampling] Combination of expanded and well-tempered targets
+- [concept/opes-enhanced-sampling] Extension to path collective variables and other non-standard CV types
+- [concept/opes-enhanced-sampling] Weighted expanded targets for selective thermodynamic state sampling

@@ -23,6 +23,10 @@ Usage:
 
 from __future__ import annotations
 
+import sys as _sys  # UTF-8 stdout on Windows (cp950 default breaks emoji output)
+if hasattr(_sys.stdout, "reconfigure"):
+    _sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 import argparse
 import json as json_module
 import os

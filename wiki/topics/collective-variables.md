@@ -36,6 +36,8 @@ Classical CVs are manually crafted from chemical intuition: distances, angles, t
 
 ## Seminal works
 
+- [[e3-equivariant-graph-neural-networks-data-efficient]]
+- [[unified-approach-enhanced-sampling]]
 - Laio A, Rodriguez-Fortea A, Gervasio FL, Ceccarelli M, Parrinello M. "Assessing the accuracy of metadynamics." J Phys Chem B 2005.
 - Bonati L, Rizzi V, Parrinello M. "Data-driven collective variables for enhanced sampling." J Phys Chem Lett 2020.
 

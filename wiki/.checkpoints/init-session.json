@@ -1,8 +1,0 @@
-{
-  "task_id": "init-session",
-  "completed": [],
-  "failed": [],
-  "metadata": {
-    "stash_ref": "stash@{0}"
-  }
-}

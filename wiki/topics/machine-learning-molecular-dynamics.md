@@ -39,6 +39,8 @@ Machine learning is transforming molecular dynamics in two complementary ways:
 
 ## Seminal works
 
+- [[e3-equivariant-graph-neural-networks-data-efficient]]
+- [[unified-approach-enhanced-sampling]]
 - Behler J, Parrinello M. "Generalized Neural-Network Representation of High-Dimensional Potential-Energy Surfaces." PRL 2007.
 - Schütt KT et al. "SchNet: A continuous-filter convolutional neural network for modeling quantum interactions." NeurIPS 2017.
 - Batzner S et al. "E(3)-equivariant graph neural networks for data-efficient and accurate interatomic potentials." Nature Comm 2022.
