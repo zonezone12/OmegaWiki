@@ -68,12 +68,16 @@ claude login
 chmod +x setup.sh && ./setup.sh        # Linux / macOS
 # Windows (PowerShell):
 #   powershell -ExecutionPolicy Bypass -File .\setup.ps1
+# setup creates .venv for OmegaWiki
+# the script does not keep your shell activated, but /init will use .venv automatically
 
-# 4. Put your papers in raw/papers/ (.tex or .pdf)
+# 4. Put your own papers in raw/papers/ (.tex or .pdf)
+#    Optional: add intent notes to raw/notes/ and saved pages to raw/web/
+#    /init and direct local /ingest will manage generated inputs under raw/discovered/ and raw/tmp/
 
 # 5. Build your wiki
 claude
-# Then type: /init <your-research-topic>
+# Then type: /init [your-research-topic]
 ```
 
 <details>
@@ -131,8 +135,8 @@ and are best run from WSL2 or Linux/macOS.
 
 | Command | What it does |
 |---------|-------------|
-| `/prefill <domain>` | Seed `foundations/` with background knowledge (suggested before `/init`) |
-| `/init <topic>` | Bootstrap a full wiki from `raw/` |
+| `/prefill <domain>` | Optionally seed `foundations/` with background knowledge |
+| `/init [topic]` | Bootstrap a full wiki from user raw sources plus optional discovery |
 | `/ingest <source>` | Parse a paper → wiki pages + cross-references |
 | `/edit <request>` | Add/remove sources or update wiki content |
 | `/ask <question>` | Query the wiki, crystallize answers back |
@@ -213,12 +217,15 @@ OmegaWiki/
 │   ├── graph/                   #   Auto-generated: edges, context, gaps
 │   ├── index.md                 #   Content catalog
 │   └── log.md                   #   Chronological log
-├── raw/                         # Source materials (read-only)
-│   ├── papers/                  #   .tex / .pdf files
-│   ├── notes/                   #   .md notes
-│   └── web/                     #   HTML / Markdown
+├── raw/                         # Source materials
+│   ├── papers/                  #   User-owned .tex / .pdf files
+│   ├── discovered/              #   /init and /daily-arxiv-downloaded external papers
+│   ├── tmp/                     #   generated prepared local sidecars for /init and direct local /ingest
+│   ├── notes/                   #   User-owned .md notes
+│   └── web/                     #   User-owned HTML / Markdown
 ├── tools/                       # Deterministic Python helpers
 │   ├── research_wiki.py         #   Wiki engine (20 CLI commands)
+│   ├── init_discovery.py        #   /init prepare + plan + fetch helper
 │   ├── lint.py                  #   Structural validation (10 checks)
 │   ├── reset_wiki.py            #   Scoped destructive cleanup helper
 │   ├── fetch_arxiv.py           #   arXiv RSS fetcher
@@ -318,11 +325,12 @@ Drop the following into `~/.claude/settings.json` (or your project's `.claude/se
   "env": {
     "ANTHROPIC_BASE_URL": "https://api.xiaomimimo.com/anthropic",
     "ANTHROPIC_AUTH_TOKEN": "<your-personal-mimo-key>",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "mimo-v2-pro",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "mimo-v2-pro",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "mimo-v2-pro"
-  }
-}
+    "ANTHROPIC_MODEL": "mimo-v2.5",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "mimo-v2.5",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "mimo-v2.5-pro",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "mimo-v2.5"         
+  }                                                       
+}    
 ```
 
 **Step 2 — Skip the Claude Code onboarding** / **第 2 步：跳过 Claude Code 初始引导**
@@ -349,7 +357,8 @@ Then run `claude` as usual. That's it — zero extra setup.
 
 ## Community / 交流群
 
-<img src="assets/wechat-group.png" width="240" alt="WeChat Group QR Code">
+<img src="assets/wechat_group_2.jpg" width="240" alt="WeChat Group QR Code">
+<img src="assets/wechat_group_1.jpg" width="240" alt="WeChat Group QR Code">
 
 Scan to join the ΩmegaWiki WeChat group / 扫码加入微信交流群
 
@@ -403,11 +412,15 @@ claude login
 chmod +x setup.sh && ./setup.sh --lang zh        # Linux / macOS
 # Windows (PowerShell):
 #   powershell -ExecutionPolicy Bypass -File .\setup.ps1 -Lang zh
+# setup 会为 OmegaWiki 创建 .venv
+# 脚本不会把你当前 shell 永久激活，但 /init 会自动使用 .venv
 
-# 把论文放入 raw/papers/（.tex 或 .pdf）
+# 把你自己的论文放入 raw/papers/（.tex 或 .pdf）
+# 可选：把意图笔记放入 raw/notes/，网页存档放入 raw/web/
+# /init 与直接本地 /ingest 会自动管理 raw/discovered/ 与 raw/tmp/ 下的生成内容
 # 启动 Claude Code
 claude
-# 输入：/init <你的研究方向>
+# 输入：/init [你的研究方向]
 ```
 
 > **Windows 用户**：本地 pipeline 已原生支持。`/exp-run --env remote` 远程 GPU 实验依赖 `ssh`/`rsync`/`screen`，建议在 WSL2 或 Linux/macOS 下运行。
@@ -427,8 +440,8 @@ claude
 |------|------|
 | `/setup` | 首次配置（API key、语言、依赖） |
 | `/reset` | 按范围销毁性清理：`wiki \| raw \| log \| checkpoints \| all` |
-| `/prefill` | 预填 `foundations/` 背景知识（建议在 `/init` 之前运行） |
-| `/init` | 从 raw/ 搭建完整 wiki |
+| `/prefill` | 可选地预填 `foundations/` 背景知识 |
+| `/init` | 基于用户 raw 素材并按需做外部发现来搭建 wiki |
 | `/ingest` | 消化论文，创建页面 + 交叉引用 |
 | `/edit` | 增删 raw 或更新 wiki |
 | `/ask` | 对 wiki 提问 |
