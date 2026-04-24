@@ -228,7 +228,7 @@ claude
 <summary><b>Manual setup (Linux / macOS)</b></summary>
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env                 # Edit to add API keys
 cp config/settings.local.json.example .claude/settings.local.json

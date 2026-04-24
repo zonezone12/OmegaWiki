@@ -125,7 +125,7 @@ argument-hint: <paper-plan-path> [--review] [--sections <section-numbers>]
      - Clear legend
    - 执行脚本生成 PDF：
      ```bash
-     python3 paper/figures/plot_{name}.py
+     python paper/figures/plot_{name}.py
      ```
    - 保存到 `paper/figures/{figure-name}.pdf`
 
@@ -253,7 +253,7 @@ mcp__llm-review__chat:
    - 所有 `\ref{label}` 有对应 `\label{label}`
 3. 追加日志：
    ```bash
-   python3 tools/research_wiki.py log wiki/ \
+   python tools/research_wiki.py log wiki/ \
      "paper-draft | drafted {venue} paper '{title}' | {N} sections, {M} figures, {K} citations ({V} verified)"
    ```
 4. 输出到终端：
@@ -306,9 +306,9 @@ mcp__llm-review__chat:
 ## Dependencies
 
 ### Tools（via Bash）
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — 追加日志
-- `python3 tools/fetch_s2.py search "<title>"` — BibTeX fallback（S2 搜索）
-- `python3` — 执行 matplotlib figure 脚本
+- `python tools/research_wiki.py log wiki/ "<message>"` — 追加日志
+- `python tools/fetch_s2.py search "<title>"` — BibTeX fallback（S2 搜索）
+- `python` — 执行 matplotlib figure 脚本
 
 ### MCP Servers
 - `mcp__llm-review__chat` — 逐 section review（可选，--review）+ 全文 cross-review（Step 5）

@@ -49,18 +49,18 @@ Set `WIKI_ROOT=wiki/`.
 
 **Default mode (report only)**:
 ```bash
-python3 tools/lint.py --wiki-dir wiki/ --json
+python tools/lint.py --wiki-dir wiki/ --json
 ```
 
 **Auto-fix mode** (when user specifies `--fix`):
 ```bash
-python3 tools/lint.py --wiki-dir wiki/ --fix --json
+python tools/lint.py --wiki-dir wiki/ --fix --json
 ```
 Auto-fixes deterministic issues (xref reverse-link completion, missing fields filled with default values) and outputs a fix report.
 
 **Preview mode** (when user specifies `--fix --dry-run`):
 ```bash
-python3 tools/lint.py --wiki-dir wiki/ --fix --dry-run --json
+python tools/lint.py --wiki-dir wiki/ --fix --dry-run --json
 ```
 Previews what would be fixed without applying any changes.
 
@@ -165,7 +165,7 @@ Classification:
 
 Append log:
 ```bash
-python3 tools/research_wiki.py log wiki/ "check | report: N 🔴, M 🟡, K 🔵"
+python tools/research_wiki.py log wiki/ "check | report: N 🔴, M 🟡, K 🔵"
 ```
 
 ## Constraints
@@ -186,6 +186,6 @@ python3 tools/research_wiki.py log wiki/ "check | report: N 🔴, M 🟡, K 🔵
 ## Dependencies
 
 ### Tools（via Bash）
-- `python3 tools/lint.py --wiki-dir wiki/ [--json] [--fix] [--dry-run] [--suggest]` — automated structural check + fix (core dependency)
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — append log
-- `python3 tools/research_wiki.py stats wiki/` — get statistics (optional, for the report)
+- `python tools/lint.py --wiki-dir wiki/ [--json] [--fix] [--dry-run] [--suggest]` — automated structural check + fix (core dependency)
+- `python tools/research_wiki.py log wiki/ "<message>"` — append log
+- `python tools/research_wiki.py stats wiki/` — get statistics (optional, for the report)

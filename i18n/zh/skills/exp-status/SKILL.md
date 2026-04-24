@@ -77,7 +77,7 @@ argument-hint: "[--pipeline <slug>] [--collect-ready] [--auto-advance]"
    - **Local**：`screen -ls | grep "exp-{slug}"`
      - 有结果 → `alive: true`
      - 无结果 → `alive: false`（session 已消失）
-   - **Remote**：`python3 tools/remote.py check --name "exp-{slug}"`
+   - **Remote**：`python tools/remote.py check --name "exp-{slug}"`
      - 解析 JSON：`alive`、`last_lines`、`anomalies`
 
 3. **若 alive == true**：
@@ -137,7 +137,7 @@ argument-hint: "[--pipeline <slug>] [--collect-ready] [--auto-advance]"
 
 追加日志：
 ```bash
-python3 tools/research_wiki.py log wiki/ \
+python tools/research_wiki.py log wiki/ \
   "exp-status | running: {N}, anomaly: {M}, pending-collect: {K}"
 ```
 
@@ -176,7 +176,7 @@ Args: "{slug} --collect"
      ```
    - 追加日志：
      ```bash
-     python3 tools/research_wiki.py log wiki/ \
+     python tools/research_wiki.py log wiki/ \
        "exp-status | pipeline {slug}: all experiments done, advancing to stage4"
      ```
    - 触发下一阶段：
@@ -209,10 +209,10 @@ Args: "{slug} --collect"
 - `/research` — `--auto-advance` 触发 Stage 4
 
 ### Tools（via Bash）
-- `python3 tools/remote.py check --name "exp-{slug}"` — remote 实验状态检查
-- `python3 tools/remote.py tail-log --name "exp-{slug}" --lines 20` — remote 日志获取
-- `python3 tools/research_wiki.py set-meta <path> <field> <value>` — 更新 pipeline-progress
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — 追加日志
+- `python tools/remote.py check --name "exp-{slug}"` — remote 实验状态检查
+- `python tools/remote.py tail-log --name "exp-{slug}" --lines 20` — remote 日志获取
+- `python tools/research_wiki.py set-meta <path> <field> <value>` — 更新 pipeline-progress
+- `python tools/research_wiki.py log wiki/ "<message>"` — 追加日志
 - `screen -ls` — local 进程状态
 - `tail -20 {log}` — local 日志获取
 

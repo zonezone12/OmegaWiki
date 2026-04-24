@@ -1,297 +1,429 @@
 ---
-description: Ingest a paper into the wiki — creates pages (papers + concepts + methods + people) and builds all cross-references and graph edges. Trigger whenever the user says "ingest", "add this paper", drops a `.pdf` / `.tex` / arXiv URL, or asks to fold a paper into the knowledge base.
-argument-hint: <local-path-or-arXiv-URL> [--discover] [--visualize]
+description: Ingest a paper into the wiki — creates pages (papers + concepts + people + claims) and builds all cross-references and graph edges
+argument-hint: <local-path-or-arXiv-URL>
 ---
 
 # /ingest
 
-Turn one paper into a fully wired set of wiki pages. Emit well-formed entities and correct cross-references; leave semantic audits (backlink symmetry, dangling nodes, field-value policing) for `/check`.
-
-Use these local references on demand:
-
-- `references/pdf-preprocessing.md` — arXiv-ID recovery, tex fetching, prepare-paper handoff for direct PDF drops
-- `references/dedup-policy.md` — merge-vs-create decision rule for concepts and methods, and the line that separates `/ingest` shape checks from `/check` semantic audits
-- `references/cross-references.md` — forward/reverse link matrix and paper-to-paper edge-type selection
-- `references/init-mode.md` — manifest-driven handoff from `/init` and parallel-safety conventions
-- `references/error-handling.md` — source parse, API, and slug-collision fallbacks
-
-Open `runtime/schema/entities.yaml` for frontmatter field definitions and `runtime/templates/{kind}.md.tmpl` for body section structure. For `index.md`, `log.md`, and `graph/` shapes, see `runtime/schema/conventions.yaml` and `runtime/schema/edges.yaml`.
+> Fully absorb a paper into the wiki: create the paper page, extract/create concepts, people, and claims,
+> establish all bidirectional cross-references, maintain graph edges, update index.md and log.md.
+> This is the wiki's core skill — all knowledge flows in through ingest.
 
 ## Inputs
 
-- `source`: one of — arXiv URL (e.g. `https://arxiv.org/abs/2106.09685`), local `.tex`, local `.pdf`, or a `canonical_ingest_path` handed off by `/init` via `.checkpoints/init-sources.json`(see `references/init-mode.md`)
-- `--discover` (optional, default **off**): after the final report, invoke `/discover --anchor <this-paper's-arxiv-id>` and append the shortlist to the report as "Related papers you may want to ingest next". Never auto-ingests the suggestions. Skipped automatically in INIT MODE. Treat this as a user-owned flag: do not set it based on repo state.
-- `--visualize` (optional, default **off**): after Step 7 rebuild, regenerate Canvas visualization artifacts via `tools/visualize.py generate-canvas`. Skipped automatically in INIT MODE — the parent `/init` handles visualization once at fan-in. Treat this as a user-owned flag: do not set it based on repo state. (The interactive web Graph view lives in the SPA at `app/modules/graph.js`, served by `tools/serve.py`; it reads `wiki/graph/` live and needs no per-ingest regeneration.)
+- `source`: local .tex / .pdf path, or arXiv URL (e.g. `https://arxiv.org/abs/2106.09685`)
 
 ## Outputs
 
-- One fully-wired paper page plus linked entities (concepts, methods, people)
-- Graph edges and citations appended via `tools/research_wiki.py`
-- Terminal summary with page counts and suggested follow-up ingests
+- `wiki/papers/{slug}.md` — paper page
+- `wiki/concepts/{slug}.md` — new concept pages (if not already in wiki)
+- `wiki/people/{slug}.md` — key author pages (importance >= 4 and not already in wiki)
+- `wiki/claims/{slug}.md` — core claims from the paper (if not already in wiki)
+- updated cross-reference pages (backlinks in concepts, topics, people, claims)
+- updated `wiki/graph/edges.jsonl`
+- updated `wiki/graph/context_brief.md` and `wiki/graph/open_questions.md`
+- updated `wiki/index.md` and `wiki/log.md`
 
 ## Wiki Interaction
 
 ### Reads
-
-- `wiki/index.md` for existing slugs and tags
-- `wiki/papers/*.md` to detect an already-ingested paper
-- `wiki/concepts/*.md` and `wiki/foundations/*.md` for dedup matches
-- `wiki/methods/*.md` for dedup matches against existing reusable methods
-- `wiki/people/*.md` for existing authors
-- `wiki/topics/*.md` to place the paper under existing topics
-- `wiki/graph/open_questions.md` to notice when the paper addresses a known gap
+- `wiki/index.md` — get all existing page slugs and tags for matching
+- `wiki/papers/*.md` — check if paper is already ingested
+- `wiki/concepts/*.md` — match existing concepts, append key_papers
+- `wiki/topics/*.md` — match research directions, append paper
+- `wiki/people/*.md` — match existing authors
+- `wiki/claims/*.md` — match existing claims, append evidence
+- `wiki/graph/open_questions.md` — check if paper fills known knowledge gaps
 
 ### Writes
-
 - `wiki/papers/{slug}.md` — CREATE
-- `wiki/concepts/{slug}.md` — CREATE (new) or EDIT (append `key_papers`, aliases, variants)
-- `wiki/methods/{slug}.md` — CREATE (new, only when the method is named, reusable, and citable across papers) or EDIT (append `source_papers`)
-- `wiki/people/{slug}.md` — CREATE (importance ≥ 4 only) or EDIT (append into `## Recent work`)
-- `wiki/topics/{slug}.md` — EDIT only (no CREATE from `/ingest`)
-- `wiki/graph/edges.jsonl` — APPEND via tool
-- `wiki/graph/citations.jsonl` — APPEND via tool
-- `wiki/graph/context_brief.md` — REBUILD (skipped in INIT MODE)
-- `wiki/graph/open_questions.md` — REBUILD (skipped in INIT MODE)
-- `wiki/index.md` — APPEND
-- `wiki/log.md` — APPEND via tool
-- `wiki/canvases/*.canvas` — CREATE/OVERWRITE (only when `--visualize` is set and not in INIT MODE)
+- `wiki/concepts/{slug}.md` — CREATE (new concept) or EDIT (append key_papers)
+- `wiki/topics/{slug}.md` — EDIT (append seminal_works / recent_work)
+- `wiki/people/{slug}.md` — CREATE (new author) or EDIT (append Key papers)
+- `wiki/claims/{slug}.md` — CREATE (new claim) or EDIT (append evidence)
+- `wiki/graph/edges.jsonl` — APPEND (via tools/research_wiki.py add-edge)
+- `wiki/graph/context_brief.md` — REBUILD
+- `wiki/graph/open_questions.md` — REBUILD
+- `wiki/index.md` — EDIT
+- `wiki/log.md` — APPEND
 
 ### Graph edges created
-
-- `paper → concept`: `introduces_concept` / `uses_concept` / `extends_concept` / `critiques_concept` with `confidence`
-- `paper → foundation`: `derived_from` (foundation is terminal; no reverse link)
-- `paper → paper`: `same_problem_as` / `similar_method_to` / `complementary_to` / `builds_on` / `compares_against` / `improves_on` / `challenges` / `surveys` with `confidence`
-- bibliographic `paper → paper`: `cites` in `graph/citations.jsonl`
-
-`tools/research_wiki.py add-edge` rejects missing confidence/evidence for
-paper-paper and paper-concept semantic edges, and rejects legacy
-paper-to-concept or paper-to-paper types on new writes.
+- `paper → concept`: `supports` / `extends`
+- `paper → paper`: `extends` / `contradicts` / `supersedes`
+- `paper → claim`: `supports` / `contradicts`
+- `concept → topic`: (if new concept discovered under existing topic)
 
 ## Workflow
 
-**Pre-condition**: working directory contains `wiki/`, `raw/`, and `tools/`. Resolve the Python interpreter once and reuse it:
+**Prerequisites**: confirm working directory is the wiki project root (contains `wiki/`, `raw/`, `tools/`).
+Set `WIKI_ROOT=wiki/`.
+
+### Step 1: Parse Source
+
+1. Detect source type:
+   - **arXiv URL**: fetch tex source (ar5iv HTML or direct .tex download); fall back to PDF if unavailable
+   - **local .tex**: read directly
+   - **local .pdf**: extract text (PyMuPDF or vision API fallback)
+2. Extract metadata: title, abstract, author list (with affiliations), publication date, venue
+3. Extract reference list (BibTeX entries or reference section)
+4. If arXiv ID is present, save source file to `raw/papers/`
+
+### Step 2: Preprocessing and Annotation
+
+1. **Generate slug**:
+   ```bash
+   python tools/research_wiki.py slug "<paper-title>"
+   ```
+2. **Deduplication check**: search `wiki/papers/` for an existing page with the same slug or arXiv ID. If found, notify user and stop.
+3. **Extract keywords**: pull 3-8 core keywords from title and abstract
+4. **Assign domain**: determine research domain (NLP / CV / ML Systems / Robotics, etc.)
+5. **Query Semantic Scholar** (if arXiv ID is available):
+   ```bash
+   python tools/fetch_s2.py paper <arxiv_id>
+   ```
+   Retrieve citation count and s2_id; assess importance (1-5) from venue prestige and relevance.
+6. **DeepXiv enrichment** (if arXiv ID is available, optional):
+   ```bash
+   python tools/fetch_deepxiv.py brief <arxiv_id>
+   ```
+   Use TLDR to seed the Key idea section; use keywords to supplement tags.
+   ```bash
+   python tools/fetch_deepxiv.py head <arxiv_id>
+   ```
+   Use paper structure (section names + TLDRs) to verify/supplement parsing from tex/pdf.
+   ```bash
+   python tools/fetch_deepxiv.py social <arxiv_id>
+   ```
+   Social impact metrics as an auxiliary signal for importance scoring (high tweet count → high community attention).
+   **If DeepXiv unavailable**: skip all DeepXiv steps; rely on S2 + source file parsing only.
+7. **Extract figure/table descriptions**: figure and table captions; key figures can be sent to vision API for interpretation
+8. **Appendix summary** (summary extraction, not full text)
+
+### Step 3: Create Paper Page
+
+Fill all fields per the CLAUDE.md paper template and write `wiki/papers/{slug}.md`:
+
+- frontmatter: title, slug, arxiv, venue, year, tags, importance, date_added, source_type, s2_id, keywords, domain, code_url, cited_by
+- body sections: Problem, Key idea, Method, Results, Limitations, Open questions, My take, Related
+
+### Step 4: Identify Claims (FIND existing first, CREATE only as last resort)
+
+> 🚨 **CRITICAL — read this before doing anything in Step 4.**
+> Claims are **shared** across papers. Multiple papers usually support the **same proposition** with different evidence. Your job is to find the existing claim each paper supports, not to create a new claim per paper. In production (test6 OmegaWiki, 15 papers), this step was previously done casually and produced 45 claims — including 4 separate claims all expressing "method X produces prompts that beat human/manual prompts". This wasted everyone's time and broke claim-graph reasoning. **The dedup tool below was built specifically to prevent this. Use it.**
+
+**Hard limit per paper:**
+- importance < 5: **at most 1 new claim**
+- importance == 5 (seminal): **at most 2 new claims**
+- All other claims this paper supports MUST be matched against existing claims (Branch A or B below)
+
+#### Step 4.1: Identify candidate claims
+
+Read the paper's contributions section and abstract. List 1-3 propositions the paper explicitly asserts as its main empirical or conceptual claims. Each candidate has:
+- A short title (the proposition itself, e.g. "LLM-optimized prompts outperform human-written prompts")
+- A few tags (e.g. `prompt-optimization,llm`)
+
+#### Step 4.2: For each candidate, search for an existing equivalent — MANDATORY tool call
 
 ```bash
-# Find the project root via git so worktree subagents can still locate .venv.
-# .venv is gitignored, so a subagent whose cwd is ../.worktrees/<branch>/
-# doesn't have one — without this lookup it falls back to system python3 and
-# misses the .env-loaded API keys plus the installed deps (deepxiv-sdk etc.).
-# git rev-parse --git-common-dir returns the main repo's .git regardless of
-# which worktree the shell is in; its parent is the project root.
-GIT_COMMON_DIR=$(git rev-parse --git-common-dir 2>/dev/null || true)
-PROJECT_ROOT=""
-if [ -n "$GIT_COMMON_DIR" ]; then
-  PROJECT_ROOT=$(cd "$(dirname "$GIT_COMMON_DIR")" 2>/dev/null && pwd)
-fi
-
-if   [ -x "$PROJECT_ROOT/.venv/bin/python" ];         then PYTHON_BIN="$PROJECT_ROOT/.venv/bin/python"
-elif [ -x "$PROJECT_ROOT/.venv/Scripts/python.exe" ]; then PYTHON_BIN="$PROJECT_ROOT/.venv/Scripts/python.exe"
-elif [ -x .venv/bin/python ];                         then PYTHON_BIN=.venv/bin/python
-elif [ -x .venv/Scripts/python.exe ];                 then PYTHON_BIN=.venv/Scripts/python.exe
-else                                                       PYTHON_BIN=python3
-fi
-export PYTHON_BIN
+python tools/research_wiki.py find-similar-claim wiki/ "<candidate claim title>" --tags "<comma-separated tags>"
 ```
 
-### Step 1: Resolve the source
+This is a deterministic tool that uses canonicalized token matching plus tag-aware Jaccard. It returns a JSON list of existing claims sorted by similarity score, e.g.:
 
-1. If `/init` passed a `canonical_ingest_path`, enter **INIT MODE** and consume that path verbatim. Do not rescan `raw/`. See `references/init-mode.md`.
-2. If the source is an arXiv URL, extract the arXiv ID, use `"$PYTHON_BIN" tools/fetch_s2.py paper <arxiv-id>` to recover the title when possible, then run `"$PYTHON_BIN" tools/init_discovery.py download --raw-root raw --arxiv-id <arxiv-id> --title "<title-or-arxiv-id>"`. Continue from the returned `canonical_ingest_path`. The helper tries arXiv source first and falls back to PDF; do not call `fetch_arxiv.py` for a single paper because it is RSS-only.
-3. If the source is a local `.tex`, use it directly.
-4. If the source is a local `.pdf`, run the preprocessing pipeline in `references/pdf-preprocessing.md` to produce a prepared `.tex` under `raw/tmp/` before continuing.
+```json
+[
+  {
+    "slug": "llm-prompts-beat-human",
+    "title": "LLM-optimized prompts outperform human-written prompts",
+    "tags": ["prompt-optimization", "llm"],
+    "status": "weakly_supported",
+    "confidence": 0.7,
+    "source_papers": ["opro"],
+    "score": 0.62,
+    "match_reason": "canonicalized token Jaccard 0.56; tags shared: ['prompt-optimization']"
+  }
+]
+```
 
-Raw persistence rule: never copy or duplicate a file already under `raw/discovered/`, `raw/tmp/`, or `raw/papers/` into a different raw subtree.
+An empty list `[]` means no similar claim exists; you may proceed to Branch C.
 
-### Step 2: Paper identity and enrichment
+#### Step 4.3: Branch on the JSON result
 
-1. Generate the paper slug:
-
+**Branch A — top result has score >= 0.80** (or exact title match, score == 1.0):
+This is the **same claim**. Do NOT create a new file. Instead:
+1. Read the existing claim file: `wiki/claims/<top-slug>.md`
+2. Append a new entry to its `evidence` list:
+   ```yaml
+   - source: <paper-slug>
+     type: supports        # or contradicts
+     strength: moderate    # weak | moderate | strong
+     detail: "<one-sentence evidence summary from this paper>"
+   ```
+3. Append `<paper-slug>` to the claim's `source_papers` list (if not already there)
+4. Re-evaluate `confidence` and `status`: more strong evidence ⇒ higher confidence; mixed evidence ⇒ `weakly_supported`
+5. Add graph edge:
    ```bash
-   "$PYTHON_BIN" tools/research_wiki.py slug "<paper-title>"
+   python tools/research_wiki.py add-edge wiki/ --from papers/<paper-slug> --to claims/<top-slug> --type supports --evidence "<detail>"
+   ```
+6. Append `supports: [[<top-slug>]]` to the paper page's `## Related`
+
+**Branch B — top result has score 0.40-0.80** (similar but not identical):
+Read the existing claim's title and `## Statement` section. Make the call:
+- If both express the **same proposition** with different wording → treat as Branch A
+- If they express **genuinely different propositions** that just share vocabulary → treat as Branch C
+
+**Default to Branch A when uncertain.** Over-merging is a much smaller mistake than over-creating: a wrongly-merged claim can be split later, but a sea of near-duplicate claims poisons every downstream reasoning step. If you choose Branch C here, your reasoning must mention what specific aspect of the proposition is genuinely novel.
+
+**Branch C — top result has score < 0.40, OR list is empty**:
+No existing claim covers this proposition.
+1. **Check the hard limit first.** Count how many new claims you have already created for this paper. If you are at the limit (1 for importance < 5, 2 for importance == 5), **STOP creating new claims**. Force the remaining candidates into Branch A by picking the closest existing match from your earlier `find-similar-claim` results, even with score < 0.40.
+2. Otherwise, create `wiki/claims/{claim-slug}.md` per the CLAUDE.md template:
+   - Generate slug: `python tools/research_wiki.py slug "<claim-title>"`
+   - status: `proposed` or `weakly_supported` (based on this paper's evidence strength)
+   - source_papers: `[<paper-slug>]`
+   - initialize `evidence` with this paper's entry
+3. Add graph edge + paper `## Related` append (same as Branch A steps 5-6)
+
+#### Step 4.4: Self-check at end of Step 4 — MANDATORY
+
+Log how many claims this ingest created vs. matched:
+```bash
+python tools/research_wiki.py log wiki/ "ingest | claims for <paper-slug>: N matched existing, M new"
+```
+
+**If M > the hard limit**, you violated the constraint. STOP, undo the extra new claim files, convert them to Branch A appends.
+
+#### Anti-patterns (do NOT do these)
+
+- ❌ **Skipping `find-similar-claim`** because "I already know this is a new claim" — you don't, and the test6 incident proves it
+- ❌ **Creating one new claim per main contribution** without checking if existing claims already cover it
+- ❌ **Slug-only matching** ("the slugs are different so they must be different claims") — slugs are autogenerated from titles, paraphrases get different slugs even when the proposition is identical
+- ❌ **Treating Branch B as "default to create"** — the default is merge, not split
+
+### Step 5: Cross-References
+
+**Part A — Concept matching and creation (FIND existing first, CREATE only as last resort)**
+
+> 🚨 **CRITICAL — read this before creating any concept page.**
+> Concepts are **shared** across papers. Multiple papers usually deepen the same concept rather than introducing new ones. Your job is to find the existing concept each paper extends and append this paper to its `key_papers`, not to create a new concept per paper. In production (test6 OmegaWiki, 15 papers), this step previously produced 37 concepts including 3 separate concepts for "LLM as gradient" (`textual-gradient-descent`, `textual-gradient-optimization`, `verbal-gradient`) and 2 separate concepts for "LLM as evolutionary operator" (`llm-driven-evolutionary-operators`, `llms-evolutionary-operators`). **The dedup tool below was built specifically to prevent this. Use it.**
+
+**Hard limit per paper (counts NEW concept pages only):**
+- importance < 5: **at most 1 new concept**
+- importance == 5 (seminal): **at most 3 new concepts**
+- All other concepts this paper relates to MUST be matched to an existing concept OR referenced from an existing foundation (Branch 0 / Branch A / Branch B below)
+- Foundation references (Branch 0) do **not** count against the limit — referencing background knowledge is zero-cost
+
+#### Step 5.A.1: Identify candidate concepts
+
+Read the paper's method/approach sections. List 1-3 technical concepts the paper either introduces or substantially extends. Each candidate has:
+- A title (e.g. "Textual Gradient Descent")
+- A few alternative names / aliases the paper uses (e.g. `["natural language gradient", "text gradient", "APO gradient"]`)
+
+#### Step 5.A.2: For each candidate, search for an existing equivalent — MANDATORY tool call
+
+```bash
+python tools/research_wiki.py find-similar-concept wiki/ "<candidate concept title>" --aliases "<comma-separated alternative names>"
+```
+
+This is a deterministic tool that matches by exact title, alias overlap, phrase containment, and token Jaccard. It scans **both `wiki/concepts/` and `wiki/foundations/`** and tags each result with `entity_type: "concept"` or `entity_type: "foundation"`. Results are returned as a JSON list sorted so that foundation hits come first, then concepts by score. Example:
+
+```json
+[
+  {
+    "entity_type": "foundation",
+    "slug": "attention-mechanism",
+    "title": "Attention Mechanism",
+    "aliases": ["scaled dot-product attention", "self-attention"],
+    "score": 0.85,
+    "match_reason": "phrase containment: 'self-attention' ↔ 'attention mechanism'"
+  },
+  {
+    "entity_type": "concept",
+    "slug": "textual-gradient-descent",
+    "title": "Textual Gradient Descent",
+    "aliases": ["natural language gradient", "text gradient"],
+    "key_papers": ["protegi"],
+    "maturity": "emerging",
+    "score": 1.0,
+    "match_reason": "exact normalized match: 'Natural Language Gradient' == 'natural language gradient'"
+  }
+]
+```
+
+An empty list `[]` means no similar concept or foundation exists; you may proceed to Branch C.
+
+#### Step 5.A.3: Branch on the JSON result
+
+**Branch 0 — any result has `entity_type: "foundation"` and score >= 0.80** (evaluate this FIRST, before Branch A):
+The candidate is foundational background knowledge. **Do not create a concept page, and do not modify the foundation page (foundations are terminal — no reverse link).**
+1. Append `[[<foundation-slug>]]` to the paper page's `## Related` (reference the foundation directly)
+2. Add a graph edge:
+   ```bash
+   python tools/research_wiki.py add-edge wiki/ --from papers/<paper-slug> --to foundations/<foundation-slug> --type derived_from --evidence "<one-line summary>"
+   ```
+3. Do NOT add the paper to the foundation's frontmatter — foundations write no reverse links.
+4. This candidate does **not** count toward the per-paper hard limit.
+
+If the top result is a foundation with score 0.40-0.80, read the foundation's `## Definition`. If it's truly the same textbook concept, treat as Branch 0. If the paper is proposing a specifically new technical mechanism on top of that background, fall through to Branch A/B/C — but link `derived_from` to the foundation in addition to whatever concept you end up referencing.
+
+**Branch A — top concept result (entity_type "concept") has score >= 0.85** (exact, alias, or phrase containment):
+This is the **same concept**. Do NOT create a new file. Instead:
+1. Read the existing concept file: `wiki/concepts/<top-slug>.md`
+2. Append `<paper-slug>` to its `key_papers` list (skip if already present)
+3. If the paper uses a new alternative name not in the concept's `aliases`, append it
+4. If the paper introduces a notable variant, append a bullet to the concept's `## Variants` section
+5. Add graph edge:
+   ```bash
+   python tools/research_wiki.py add-edge wiki/ --from papers/<paper-slug> --to concepts/<top-slug> --type supports --evidence "<one-line summary>"
+   ```
+6. Append `[[<top-slug>]]` to the paper page's `## Related`
+
+**Branch B — top concept result has score 0.40-0.85** (similar but not identical):
+Read the existing concept's `## Definition` and `## Intuition` sections. Make the call:
+- If both refer to the **same technical idea** (one is a more specific name, alternative phrasing, or subclass) → treat as Branch A. If the candidate is a meaningful subclass, also append it to the existing concept's `## Variants`.
+- If they are **genuinely distinct technical ideas** that share vocabulary → treat as Branch C.
+
+**Default to Branch A when uncertain.** Over-merging is a much smaller mistake than over-creating: a wrongly-merged concept can be split later (with `## Variants` history preserved), but a sea of near-duplicate concepts poisons gap detection, citation graphs, and survey generation. If you choose Branch C here, your reasoning must point to a specific technical distinction (different mechanism, different mathematical formulation, different application class).
+
+**Branch C — top result has score < 0.40, OR list is empty**:
+No existing concept or foundation covers this idea.
+1. **Check the hard limit first.** Count how many NEW concept pages you have already created for this paper (Branch 0 foundation references do not count). If you are at the limit (1 for importance < 5, 3 for importance == 5), **STOP creating new concepts**. Force the remaining candidates into Branch A using the closest existing concept from `find-similar-concept`, even at score < 0.40.
+2. Otherwise, create `wiki/concepts/{concept-slug}.md` per the CLAUDE.md template:
+   - Generate slug: `python tools/research_wiki.py slug "<concept-title>"`
+   - maturity: `emerging`
+   - key_papers: `[<paper-slug>]`
+   - aliases: list of all alternative names you found in the paper (be generous — this list is what future ingests will match against)
+3. Append `[[<concept-slug>]]` to the paper page's `## Related`
+4. Add graph edge (same as Branch A step 5)
+
+#### Step 5.A.4: Self-check at end of Part A — MANDATORY
+
+Log how many concepts this ingest created vs. matched vs. referenced-as-foundation:
+```bash
+python tools/research_wiki.py log wiki/ "ingest | concepts for <paper-slug>: N matched existing, M new, F foundation-refs"
+```
+
+**If M > the hard limit**, you violated the constraint. STOP, undo the extra new concept files, convert them to Branch A appends.
+
+#### Anti-patterns (do NOT do these)
+
+- ❌ **Skipping `find-similar-concept`** because "I already read all the concept pages at the start of /ingest" — even if you did, the test6 incident proves human-eye dedup misses paraphrases; and you also need the foundations scan
+- ❌ **Creating one new concept per technical idea in the paper** without checking if existing concepts or foundations already cover them
+- ❌ **Slug-only matching** — slugs are autogenerated from titles, the same idea phrased differently gets different slugs (test6: `llm-driven-evolutionary-operators` vs `llms-evolutionary-operators`)
+- ❌ **Treating Branch B as "default to create"** — the default is merge, not split
+- ❌ **Creating a "more general" or "more specific" version of an existing concept as a new page** — extend the existing concept with `## Variants` instead
+- ❌ **Writing back to a foundation page** — foundations are terminal; their `key_papers`-style fields do not exist, and any reverse link violates the invariant. Only paper → foundation edges in `edges.jsonl` and `[[foundation-slug]]` in the paper's `## Related` are allowed.
+
+**Part B — Topic matching:**
+
+1. Match paper's domain/tags against existing topics
+2. For each matched topic:
+   - importance >= 4: append to `## Seminal works`
+   - importance < 4: append to `## SOTA tracker` or `## Recent work` (by year)
+3. If the paper directly addresses a topic's `## Open problems` or `## Research gaps`: annotate on the topic page
+
+**Part C — Semantic Scholar external citations:**
+
+1. If arXiv ID is available, query citations and references:
+   ```bash
+   python tools/fetch_s2.py citations <arxiv_id>
+   python tools/fetch_s2.py references <arxiv_id>
+   ```
+2. For papers in citations that already exist in wiki: auto-backfill `cited_by`
+3. For high-citation papers in references not yet in wiki: list as ingestion suggestions in the report
+
+### Step 6: Handle Authors
+
+1. Extract first author and corresponding author
+2. For each key author:
+   - **If `wiki/people/{author-slug}.md` exists**: append this paper to `## Key papers`; add `[[author-slug]]` to paper
+   - **If not found and importance >= 4**: create page per the CLAUDE.md people template
+3. For matched topics, if the author is a key figure in that domain: append to topic's `key_people`; reverse: append topic to people's `## Research areas`
+
+### Step 7: Update Navigation and Graph
+
+1. **index.md**: append all new/modified page entries under their respective categories
+   ```bash
+   # Format per CLAUDE.md index.md format section
+   ```
+2. **log.md**:
+   ```bash
+   python tools/research_wiki.py log wiki/ "ingest | added papers/<slug> | updated: <list-of-updated-pages>"
+   ```
+3. **Rebuild graph derived files**:
+   ```bash
+   python tools/research_wiki.py rebuild-context-brief wiki/
+   python tools/research_wiki.py rebuild-open-questions wiki/
    ```
 
-2. Stop-if-exists: if `wiki/papers/{slug}.md` already exists and the arXiv ID or title matches, report and exit. If they differ, resolve the collision per `references/error-handling.md`.
-3. When an arXiv ID is available, query Semantic Scholar:
+### Step 8: Report to User
 
-   ```bash
-   "$PYTHON_BIN" tools/fetch_s2.py paper <arxiv-id>
-   ```
+Output a summary including:
+- list of pages created (papers, concepts, people, claims)
+- list of pages updated (pages that received cross-reference appends)
+- extracted claims and their status
+- number of graph edges added
+- contradictions discovered (if any)
+- S2 high-citation uningest papers suggested for follow-up (if any)
 
-   Use the result for `venue`, `year`, `s2_id`, citation count, and the evidence behind the `importance` score (1-5).
-4. Optional DeepXiv enrichment, when available. Skip silently if it fails:
-
-   ```bash
-   "$PYTHON_BIN" tools/fetch_deepxiv.py brief <arxiv-id>
-   "$PYTHON_BIN" tools/fetch_deepxiv.py head <arxiv-id>
-   "$PYTHON_BIN" tools/fetch_deepxiv.py social <arxiv-id>
-   ```
-
-   `brief` seeds the Key-idea section AND the new `tldr` frontmatter field; `head` sanity-checks your tex parsing against the section structure; `social` is an auxiliary importance signal.
-
-### Step 3: Write the paper page
-
-Open `runtime/schema/entities.yaml` (papers section) for the field set and `runtime/templates/papers.md.tmpl` for body section order. Fill every required frontmatter field; leave `cited_by` empty for now (step 5 backfills it).
-
-Three frontmatter fields the new schema requires you to populate even though they are not lint-required (so existing pages do not break, but new ingests must:):
-
-- `tldr` — one-sentence summary of the paper, suitable as a search/preview line. NOT a multi-paragraph abstract; one sentence.
-- `contribution_type` — list of contribution kinds drawn from the closed set `[method, theory, benchmark, analysis, application, system, position, survey]`. A paper may have several (e.g. method + benchmark). Do not invent new values.
-- `datasets` — list of dataset / benchmark names the paper uses or introduces (e.g. `MMLU`, `BFCL`, `AppWorld`). Use `[]` when the paper introduces no concrete dataset; do not fabricate.
-
-Before writing, run a **shape check** on the frontmatter you are about to emit — no more than this:
-
-- every required key is present and non-empty
-- `importance` ∈ {1,2,3,4,5}; `maturity` on concepts ∈ the documented set; `type` on methods ∈ the documented set
-- `contribution_type` items all come from the enum above
-- YAML parses
-
-The shape check is intentionally narrow. Backlink symmetry, dangling-node detection, and cross-entity consistency are `/check`'s job, not this skill's.
-
-Body sections to populate, in this order: `Problem & Context`, `Key idea`, `Method`, `Experiment & Results`, `Limitations`, `Open questions`, `My take`, `Related`.
-
-Section semantics:
-
-- **Problem & Context** — what the paper attacks AND where the field stood before this paper. Two-in-one section.
-- **Experiment & Results** — setup, primary metrics, and results in one place. Do not stop at "they beat the baseline"; cite the numbers and their conditions.
-
-### Step 4: Concepts, methods, people
-
-Follow `references/dedup-policy.md`. In short:
-
-1. For each candidate concept, call `find-similar-concept` first.
-2. For each candidate method (named, reusable technique that other papers could cite), check `wiki/methods/` for an existing entry by name + tags. There is no `find-similar-method` tool — do a directory scan and a manual title/alias compare against `runtime/schema/entities.yaml`'s `methods.name` field.
-3. Prefer merging into the top result. Create a new page only when no acceptable candidate exists and the paper's importance justifies it. The `## Method` body section on the paper page is **always** filled (it is this paper's own method narrative); a separate `wiki/methods/{slug}.md` is only created when the technique is namable, reusable, and likely to be referenced by other papers.
-4. For each entity you write or edit, write the reverse link in the same turn. The obligation matrix lives in `references/cross-references.md`.
-5. Create a `wiki/people/{slug}.md` only for papers with importance ≥ 4. Otherwise append the paper's `[[paper-slug]]` to existing author pages' `## Recent work` only. People entities use `research_areas` (list_str) and a `type.kind` enum (`researcher` / `team` / `organization`); only assign `type.kind = team` or `organization` when the byline itself names the team or organization (do not infer it from a researcher's affiliation).
-
-### Step 5: Paper-to-paper edges and `cited_by`
-
-Skip this whole step in INIT MODE — the parent `/init` handles it at fan-in.
+### Step 9: Wiki Growth Report
 
 ```bash
-"$PYTHON_BIN" tools/fetch_s2.py references <arxiv-id>
-"$PYTHON_BIN" tools/fetch_s2.py citations <arxiv-id>
+python tools/research_wiki.py maturity wiki/ --json
 ```
 
-- For each reference whose arXiv ID or title resolves to an existing `wiki/papers/{slug}.md`, add a bibliographic `cites` row to `graph/citations.jsonl`.
-- Add a semantic paper-to-paper edge in `graph/edges.jsonl` only when the source text gives a clear cue. Edge-type selection is in `references/cross-references.md`. If no semantic relation cleanly fits, keep only the `cites` row.
-- For each citation already in the wiki, append the citer's slug to this paper's `cited_by`.
-- Surface unmatched high-citation references in the final report so the user can decide whether to follow up with another `/ingest`.
-
-### Step 6: Topics and index
-
-1. Match the paper's tags against existing `wiki/topics/*.md`. For each match:
-   - importance ≥ 4 → append to the topic's `## Seminal works`
-   - importance < 4 → append under `## SOTA tracker` or `## Recent work` by year
-   - if the paper directly addresses a listed open problem (under `## Open problems` / `### Known gaps` / `### Methodological gaps`), annotate that line on the topic page
-2. Do not create new topic pages from `/ingest` — topic creation belongs to `/init` and `/edit`.
-3. Append new or edited page entries to `wiki/index.md` under their category headings. Format: each entity kind is a top-level YAML key (matching `runtime/schema/entities.yaml`), with `- slug: <slug>` entries beneath.
-
-### Step 7: Log and rebuild
-
-```bash
-"$PYTHON_BIN" tools/research_wiki.py log wiki/ "ingest | added papers/<slug> | updated: <list>"
-```
-
-Unless in INIT MODE:
-
-```bash
-"$PYTHON_BIN" tools/research_wiki.py rebuild-context-brief wiki/
-"$PYTHON_BIN" tools/research_wiki.py rebuild-open-questions wiki/
-```
-
-### Step 7.5: Optional visualization (only if `--visualize` is set)
-
-Skip this step unless the user explicitly passed `--visualize`. Also skip it in INIT MODE — `/init`'s parent process regenerates Canvas + HTML once at fan-in, so individual subagents must not duplicate the work and risk concurrent writes.
-
-When active, regenerate Canvas + HTML (best-effort; visualize failure must not fail `/ingest`):
-
-```bash
-"$PYTHON_BIN" tools/visualize.py generate-canvas wiki/ \
-  || echo "WARN: visualize generate-canvas failed; run /visualize manually" >&2
-```
-
-`--obsidian` is not regenerated here — `wiki/.obsidian/graph.json` is project-level static config that only changes when `config/visualize.json` palette changes; run `/visualize --obsidian` manually for that case.
-
-### Step 8: Report
-
-Emit one compact summary covering: pages created, pages updated, graph edges added, contradictions surfaced (if any), and high-citation references not yet in the wiki (suggested follow-up ingests). Close with:
+Append a one-line wiki status summary to the report:
 
 ```
-Wiki: +1 paper, +{N} methods, +{M} concepts, +{K} edges
+Wiki: +1 paper, +{N} claims, +{M} concepts, +{K} edges | Maturity: {level} ({coverage}% coverage)
 ```
-
-### Step 9: Optional discovery (only if `--discover` is set)
-
-Skip this step unless the user explicitly passed `--discover`. Also skip it in INIT MODE — `/init`'s parent process decides whether to run discovery at fan-in, not individual subagents.
-
-When active, invoke `/discover` with the just-ingested paper as the single anchor:
-
-```bash
-"$PYTHON_BIN" tools/discover.py from-anchors \
-  --id <arxiv-id-of-this-paper> \
-  --wiki-root wiki \
-  --limit 10 \
-  --output-checkpoint .checkpoints/ \
-  --markdown
-```
-
-Append the markdown output to the report under a heading like "Related papers you may want to ingest next". Do not auto-ingest anything from the shortlist — the user picks. If discovery fails (S2 outage, all channels empty), note the failure in one line and continue — a failed `/discover` must not fail an otherwise successful `/ingest`.
 
 ## Constraints
 
-- `raw/papers/`, `raw/notes/`, `raw/web/` are user-owned and read-only. Direct local `/ingest` may add prepared sidecars under `raw/tmp/`; direct arXiv ingests may write fetched source artifacts under `raw/discovered/`. INIT MODE treats all of `raw/` as read-only.
-- `wiki/graph/` is tool-owned. Edit only through `tools/research_wiki.py`.
-- Slugs always come from `tools/research_wiki.py slug`. Never hand-craft.
-- Every forward link writes its reverse link in the same turn — the wiki's bidirectional-link invariant. The only exception is links to `wiki/foundations/`, which are terminal.
-- In INIT MODE, do not write reverse links into pages that already exist (created by a sibling worktree or scaffold). Record the relationship via `tools/research_wiki.py add-edge` only; the parent `/init` backfills reverse links during fan-in.
-- Source priority: `.tex` > `.pdf` > vision API fallback. Never ingest from a PDF when a usable `.tex` is available.
-- Ingest is conservative about new entities:
-  - importance < 4: at most **1** new concept and **1** new method per paper
-  - importance ≥ 4: at most **3** new concepts and **2** new methods per paper
-  - Any further candidates must be merged into their nearest existing entry, or left out for `/check` to flag. Rationale and matching rules: `references/dedup-policy.md`.
-- A `methods/` page is only justified when the technique is **named**, **reusable**, and **citable** by a future paper. The paper page's own `## Method` body section captures this paper's method narrative; do not duplicate it as a methods entity unless the method earns reuse.
-- `/ingest` runs a shape check on its own output (required keys, enum ranges, YAML parses) and stops there. Backlink symmetry, dangling nodes, and full semantic audits belong to `/check`. Do not re-implement them here.
-- Assume another `/ingest` may run concurrently in a sibling worktree. All shared-file writes (`graph/edges.jsonl`, `graph/citations.jsonl`, `index.md`, `log.md`) must go through `tools/research_wiki.py` or use append-only semantics. See `references/init-mode.md`.
-- In INIT MODE, skip `fetch_s2.py citations`, `fetch_s2.py references`, and the `rebuild-*` commands — the parent `/init` runs them once after fan-in.
-- In INIT MODE, also skip Step 7.5 visualization regardless of whether `--visualize` was set; the parent `/init` regenerates Canvas + HTML once at fan-in to avoid concurrent writes from sibling worktrees.
+- **raw/ is read-only**: do not modify files under `raw/`
+- **graph/ via tools only**: do not manually edit files in `graph/` — use `python tools/research_wiki.py` only
+- **Bidirectional links**: always write the reverse link when writing a forward link (see CLAUDE.md Cross-Reference Rules table)
+- **tex priority**: .tex > .pdf > vision API fallback
+- **Slug via tool**: always use `python tools/research_wiki.py slug` to generate slugs — never hand-craft
+- **index.md updated immediately**: index.md must be updated before ingest completes
+- **log.md append-only**: append via `python tools/research_wiki.py log`
+- **Importance scoring**: 1=niche, 2=useful, 3=field-standard, 4=influential, 5=seminal
+- **Conservative claim extraction**: extract only claims the paper explicitly asserts — do not over-infer
+- **Deduplication is mandatory, not optional**: BEFORE creating any new claim or concept page, you MUST run `find-similar-claim` / `find-similar-concept` and follow Step 4 / Step 5.A's branching logic. `find-similar-concept` scans both `concepts/` and `foundations/`; a foundation match routes to Branch 0 (reference only, never create). Skipping the dedup tool is the single most common cause of wiki bloat.
+- **Hard limits per paper**: at most 1 new claim and 1 new concept (or 2 claims and 3 concepts if importance == 5). All other claims/concepts must be matched to existing entries via Branch A, or referenced from a foundation via Branch 0. When in doubt, merge.
+- **Foundations are terminal**: never write a reverse link from a paper to a foundation's frontmatter. Foundation references live only in the paper's `## Related` and in `edges.jsonl`.
 
 ## Error Handling
 
-See `references/error-handling.md`. Highlights: source parse failures cascade tex → PDF → vision API → user handoff; S2 outages default `importance` to 3 and skip citation backfill; DeepXiv outages skip enrichment silently; slug collisions append a numeric suffix.
+- **Source parse failure**: tex fails → PDF parse → vision API → report to user for manual handling
+- **S2 API unavailable**: skip S2 steps (citations backfill, default importance to 3); note in report
+- **DeepXiv API unavailable**: skip DeepXiv enrichment (TLDR, structure verification, social metrics); fall back to S2 + source file parsing
+- **Slug conflict**: if generated slug already exists but content differs, append numeric suffix (e.g. `attention-mechanism-2`)
+- **wiki directory missing**: run `python tools/research_wiki.py init wiki/` to initialize, then retry
+- **Partial step failure**: preserve completed steps; list incomplete steps in report for manual follow-up
 
 ## Dependencies
 
-### Tools (via Bash)
-
-- `"$PYTHON_BIN" tools/research_wiki.py slug "<title>"`
-- `"$PYTHON_BIN" tools/research_wiki.py find-similar-concept wiki/ "<title>" --aliases "<a,b,c>"`
-- `"$PYTHON_BIN" tools/research_wiki.py add-edge wiki/ --from <id> --to <id> --type <type> --evidence "<text>" [--confidence high|medium|low]`
-  - `--confidence high|medium|low` is required for paper-paper and paper-concept semantic edges.
-- `"$PYTHON_BIN" tools/research_wiki.py add-citation wiki/ --from papers/<citing> --to papers/<cited> --source semantic_scholar`
-- `"$PYTHON_BIN" tools/research_wiki.py log wiki/ "<message>"`
-- `"$PYTHON_BIN" tools/research_wiki.py rebuild-context-brief wiki/`
-- `"$PYTHON_BIN" tools/research_wiki.py rebuild-open-questions wiki/`
-- `"$PYTHON_BIN" tools/prepare_paper_source.py --raw-root raw --source <local-path> [--title "<recovered-title>"] [--arxiv-id "<recovered-arxiv-id>"]`
-- `"$PYTHON_BIN" tools/init_discovery.py download --raw-root raw --arxiv-id <id> --title "<title-or-id>"` — single-paper arXiv source/PDF download into `raw/discovered/`
-- `"$PYTHON_BIN" tools/fetch_s2.py paper|citations|references <arxiv-id>`
-- `"$PYTHON_BIN" tools/fetch_deepxiv.py brief|head|social <arxiv-id>`
-- `"$PYTHON_BIN" tools/discover.py from-anchors --id <arxiv-id> --wiki-root wiki --limit 10 --output-checkpoint .checkpoints/ --markdown` — only when `--discover` is set
-- `"$PYTHON_BIN" tools/visualize.py generate-canvas wiki/` — only when `--visualize` is set and not in INIT MODE
+### Tools（via Bash）
+- `python tools/research_wiki.py slug "<title>"` — slug generation
+- `python tools/research_wiki.py find-similar-concept wiki/ "<title>" --aliases "<a,b,c>"` — **MANDATORY before creating any concept** (Step 5 Part A). Scans both `concepts/` and `foundations/`; tag-ranked foundations first.
+- `python tools/research_wiki.py find-similar-claim wiki/ "<title>" --tags "<a,b,c>"` — **MANDATORY before creating any claim** (Step 4). Canonicalized token Jaccard with tag-aware threshold.
+- `python tools/research_wiki.py add-edge wiki/ --from <id> --to <id> --type <type> --evidence "<text>"` — add graph edge
+- `python tools/research_wiki.py rebuild-context-brief wiki/` — rebuild compressed context
+- `python tools/research_wiki.py rebuild-open-questions wiki/` — rebuild knowledge gap map
+- `python tools/research_wiki.py log wiki/ "<message>"` — append log entry
+- `python tools/fetch_s2.py paper <arxiv_id>` — query Semantic Scholar
+- `python tools/fetch_s2.py citations <arxiv_id>` — query citations
+- `python tools/fetch_s2.py references <arxiv_id>` — query references
+- `python tools/fetch_deepxiv.py brief <arxiv_id>` — fetch TLDR + keywords
+- `python tools/fetch_deepxiv.py head <arxiv_id>` — fetch paper structure
+- `python tools/fetch_deepxiv.py social <arxiv_id>` — fetch social impact metrics
 
 ### Shared References
-
 - `.claude/skills/shared-references/citation-verification.md`
 
-### Skills
-
-- `/init` — calls `/ingest` in parallel subagents via INIT MODE
-- `/check` — audits wiki state after `/ingest` completes; owns every semantic check `/ingest` intentionally does not perform
-- `/discover` — optional follow-up when `--discover` is set; produces a shortlist of related papers the user may want to ingest next
-- `/visualize` — Step 7.5 (when `--visualize` is set and not in INIT MODE) regenerates Canvas + HTML by calling `tools/visualize.py` directly (best-effort)
-
 ### External APIs
-
-- Semantic Scholar (via `tools/fetch_s2.py`)
-- DeepXiv (via `tools/fetch_deepxiv.py`, optional; graceful fallback)
+- Semantic Scholar API (via tools/fetch_s2.py)
+- DeepXiv API (via tools/fetch_deepxiv.py, optional — graceful fallback when unavailable)
 - arXiv (source download)
+- ar5iv (HTML source)

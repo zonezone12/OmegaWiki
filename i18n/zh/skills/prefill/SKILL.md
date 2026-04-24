@@ -48,7 +48,7 @@ argument-hint: "[domain] [--add '概念名']"
 ### Step 2: 加载种子
 
 - **Catalog 模式**：读取 `.claude/skills/prefill/foundations-catalog.yaml`，取 `domains.{domain}` 下所有条目，并叠加 `domains.general` 的全部条目（general foundations 适用所有领域）。
-- **`--add` 模式**：构造单一种子 `{slug: <slugified concept>, title: <concept>, summary: ""}`。Slug 用 `python3 tools/research_wiki.py slug "<concept>"` 生成。
+- **`--add` 模式**：构造单一种子 `{slug: <slugified concept>, title: <concept>, summary: ""}`。Slug 用 `python tools/research_wiki.py slug "<concept>"` 生成。
 
 对每个种子，若 `wiki/foundations/{slug}.md` 已存在则**跳过**（不覆盖、不警告）。
 
@@ -57,9 +57,9 @@ argument-hint: "[domain] [--add '概念名']"
 对每个剩余种子调用 `tools/fetch_wikipedia.py`：
 
 ```bash
-python3 tools/fetch_wikipedia.py summary "<title>"
-python3 tools/fetch_wikipedia.py sections "<title>"
-python3 tools/fetch_wikipedia.py section "<title>" --index <N>   # 拉取相关章节
+python tools/fetch_wikipedia.py summary "<title>"
+python tools/fetch_wikipedia.py sections "<title>"
+python tools/fetch_wikipedia.py section "<title>" --index <N>   # 拉取相关章节
 ```
 
 - summary 调用返回 `{title, extract, url}`。
@@ -109,8 +109,8 @@ source_url: "{Wikipedia URL，404 时留空}"
 ### Step 5: 刷新导航和日志
 
 ```bash
-python3 tools/research_wiki.py rebuild-index wiki/
-python3 tools/research_wiki.py log wiki/ "prefill | {N} foundations created for {domain}"
+python tools/research_wiki.py rebuild-index wiki/
+python tools/research_wiki.py log wiki/ "prefill | {N} foundations created for {domain}"
 ```
 
 ### Step 6: 报告
@@ -143,7 +143,7 @@ python3 tools/research_wiki.py log wiki/ "prefill | {N} foundations created for 
 
 ## Error Handling
 
-- **`wiki/foundations/` 不存在**：先运行 `python3 tools/research_wiki.py init wiki/`。
+- **`wiki/foundations/` 不存在**：先运行 `python tools/research_wiki.py init wiki/`。
 - **Wikipedia 404**：记录缺失页面，该种子回退 LLM 知识（`source_url: ""`）。
 - **网络失败**：打印失败的种子，继续处理其余种子，不中断整个批次。
 - **catalog 文件缺失**：报错并指向 `.claude/skills/prefill/foundations-catalog.yaml`。
@@ -151,10 +151,10 @@ python3 tools/research_wiki.py log wiki/ "prefill | {N} foundations created for 
 ## Dependencies
 
 ### 工具（通过 Bash）
-- `python3 tools/fetch_wikipedia.py summary|sections|section|wikitext "<title>" [--index N]`
-- `python3 tools/research_wiki.py slug "<title>"`
-- `python3 tools/research_wiki.py rebuild-index wiki/`
-- `python3 tools/research_wiki.py log wiki/ "<message>"`
+- `python tools/fetch_wikipedia.py summary|sections|section|wikitext "<title>" [--index N]`
+- `python tools/research_wiki.py slug "<title>"`
+- `python tools/research_wiki.py rebuild-index wiki/`
+- `python tools/research_wiki.py log wiki/ "<message>"`
 
 ### Catalog
 - `.claude/skills/prefill/foundations-catalog.yaml`

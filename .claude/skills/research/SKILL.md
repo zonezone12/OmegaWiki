@@ -31,7 +31,7 @@ argument-hint: <research-direction-or-brief> [--auto] [--start-from stage1|stage
 
 ## Outputs
 
-- **Wiki updates** (delegated to sub-skills): ideas/, experiments/, methods/, outputs/, graph/
+- **Wiki updates** (delegated to sub-skills): ideas/, experiments/, claims/, outputs/, graph/
 - **wiki/outputs/pipeline-progress.md** — pipeline progress snapshot (for recovery)
 - **wiki/outputs/PIPELINE_REPORT.md** — full pipeline report
 - **paper/ directory** (if not --skip-paper) — submittable paper
@@ -42,9 +42,9 @@ argument-hint: <research-direction-or-brief> [--auto] [--start-from stage1|stage
 ### Reads
 - `wiki/graph/context_brief.md` — global context (passed to sub-skills)
 - `wiki/graph/open_questions.md` — knowledge gaps (passed to /ideate)
-- `wiki/ideas/*.md` — Gate 1 selection, Stage 4 verdict, Stage 5 paper planning
+- `wiki/ideas/*.md` — Gate 1 selection, Stage 4 verdict
 - `wiki/experiments/*.md` — Stage 3-4 status checks
-- `wiki/methods/*.md` — Stage 5 paper writing context
+- `wiki/claims/*.md` — Stage 4 verdict, Stage 5 paper planning
 - `wiki/outputs/pipeline-progress.md` — --start-from state recovery
 - `wiki/papers/*.md` — Stage 5 paper writing context
 
@@ -52,7 +52,7 @@ argument-hint: <research-direction-or-brief> [--auto] [--start-from stage1|stage
 - `wiki/outputs/pipeline-progress.md` — save progress at each Gate (wiki entity writes are delegated to sub-skills)
 - `wiki/outputs/PIPELINE_REPORT.md` — final report
 - `wiki/log.md` — append log entries
-- All other wiki entity writes are delegated to sub-skills (do not directly write to ideas/experiments/methods/)
+- All other wiki entity writes are delegated to sub-skills (do not directly write to ideas/experiments/claims/)
 
 ### Graph edges created
 - None directly — all graph edges are delegated to sub-skills (/ideate, /exp-design, /exp-eval each create their own edges)
@@ -68,7 +68,7 @@ argument-hint: <research-direction-or-brief> [--auto] [--start-from stage1|stage
 1. **Parse input**:
    - If file path: read RESEARCH_BRIEF.md, extract direction, domain, constraints, target_venue
    - If text: use as direction; leave domain/constraints blank
-   - Generate slug: `python3 tools/research_wiki.py slug "{direction}"`
+   - Generate slug: `python tools/research_wiki.py slug "{direction}"`
 
 2. **Auto-recovery detection** (when `--start-from` is not specified):
    - If `wiki/outputs/pipeline-progress.md` exists and `status == running`:
@@ -90,7 +90,7 @@ argument-hint: <research-direction-or-brief> [--auto] [--start-from stage1|stage
 
 3. **Check recovery** (when `--start-from` is specified):
    - If `wiki/outputs/pipeline-progress.md` exists:
-     - Read progress file, restore idea_slug, experiment_slugs, stage3a_deployed, linked_idea_slugs, monitoring_cron_id
+     - Read progress file, restore idea_slug, experiment_slugs, stage3a_deployed, claim_slugs, monitoring_cron_id
      - Jump to specified stage
    - If progress file does not exist: report error and exit; prompt user to run the full pipeline first
    - **`--start-from stage3-check`**: equivalent to calling `/exp-status --pipeline {slug}`; display status then exit
@@ -110,7 +110,7 @@ argument-hint: <research-direction-or-brief> [--auto] [--start-from stage1|stage
    idea_slug: ""
    experiment_slugs: []
    stage3a_deployed: []
-   linked_idea_slugs: []
+   claim_slugs: []
    iteration_count: 0
    ---
    ## Stage Log
@@ -128,29 +128,29 @@ argument-hint: <research-direction-or-brief> [--auto] [--start-from stage1|stage
 
 4. **Append log**:
    ```bash
-   python3 tools/research_wiki.py log wiki/ \
+   python tools/research_wiki.py log wiki/ \
      "research | started | direction: {direction} | mode: {auto|interactive}"
    ```
 
 5. **Snapshot wiki state** (for Growth Report in Step Final):
    ```bash
-   python3 tools/research_wiki.py maturity wiki/ --json
+   python tools/research_wiki.py maturity wiki/ --json
    ```
    Save returned JSON to memory variable `maturity_before`.
 
 ### Stage 0: Bootstrap (triggered automatically when wiki is empty)
 
-**Trigger condition**: run `python3 tools/research_wiki.py maturity wiki/ --json`. If `level == "cold"` and `papers < 3`: enter Bootstrap automatically. Otherwise skip and proceed to Stage 1.
+**Trigger condition**: run `python tools/research_wiki.py maturity wiki/ --json`. If `level == "cold"` and `papers < 3`: enter Bootstrap automatically. Otherwise skip and proceed to Stage 1.
 
 1. **Initialize wiki structure** (if not yet initialized):
    ```bash
-   python3 tools/research_wiki.py init wiki/
+   python tools/research_wiki.py init wiki/
    ```
 
 2. **Search for relevant papers** (use Agent tool with 3 parallel searches):
-   - DeepXiv: `python3 tools/fetch_deepxiv.py search "{direction}" --mode hybrid --limit 20`
-   - Semantic Scholar: `python3 tools/fetch_s2.py search "{direction}" --limit 20`
-   - arXiv: `python3 tools/fetch_arxiv.py` (using direction keywords)
+   - DeepXiv: `python tools/fetch_deepxiv.py search "{direction}" --mode hybrid --limit 20`
+   - Semantic Scholar: `python tools/fetch_s2.py search "{direction}" --limit 20`
+   - arXiv: `python tools/fetch_arxiv.py` (using direction keywords)
    - If DeepXiv is unavailable: skip; use only S2 + arXiv
 
 3. **Merge, rank, and select top 5**:
@@ -167,27 +167,27 @@ argument-hint: <research-direction-or-brief> [--auto] [--start-from stage1|stage
 
 5. **Rebuild derived data**:
    ```bash
-   python3 tools/research_wiki.py rebuild-context-brief wiki/
-   python3 tools/research_wiki.py rebuild-open-questions wiki/
+   python tools/research_wiki.py rebuild-context-brief wiki/
+   python tools/research_wiki.py rebuild-open-questions wiki/
    ```
 
 6. **Bootstrap report**:
    ```bash
-   python3 tools/research_wiki.py maturity wiki/ --json
+   python tools/research_wiki.py maturity wiki/ --json
    ```
    Output to terminal:
    ```
    Bootstrap complete:
-   Papers: {N} | Concepts: {K} | Methods: {Mt} | Edges: {E}
+   Papers: {N} | Claims: {M} | Concepts: {K} | Edges: {E}
    Maturity: cold → {new_level}
    Proceeding to Stage 1: Idea Discovery...
    ```
 
 7. **Log + update progress**:
    ```bash
-   python3 tools/research_wiki.py log wiki/ \
+   python tools/research_wiki.py log wiki/ \
      "research | stage0-bootstrap | auto-ingested {N} papers | maturity: {level}"
-   python3 tools/research_wiki.py set-meta \
+   python tools/research_wiki.py set-meta \
      wiki/outputs/pipeline-progress.md current_stage stage1
    ```
 
@@ -197,11 +197,11 @@ Call `/ideate`:
 
 ```
 Skill: ideate
-Args: "{direction}" --auto
+Args: "{direction}" --domain {domain}
 ```
 
 **After completion**:
-1. Read the generated ideas and sort them according to the pilot experiment results and priority.
+1. Read the generated ideas, sorted by priority
 2. Update pipeline-progress: Stage 1 → completed, record generated idea slugs
 3. Append log
 
@@ -212,7 +212,7 @@ Args: "{direction}" --auto
 - Output selection result to terminal without waiting for confirmation
 
 **If interactive mode**:
-- List all generated ideas (slug, title, priority, novelty score，pilot result)
+- List all generated ideas (slug, title, priority, novelty score)
 - Use AskUserQuestion to prompt user to select one idea (or enter "stop" to halt)
 - If user selects stop: save progress, terminate pipeline
 
@@ -226,11 +226,11 @@ Call `/exp-design`:
 
 ```
 Skill: exp-design
-Args: "{idea_slug}"
+Args: "{idea_slug}" --review
 ```
 
 **After completion**:
-1. Read generated experiment slugs (pages in wiki/experiments/ where linked_idea == idea_slug，and retrieve the detailed specs of the experiment block from experiments/designs/{slug}-master.md based on the exp-slug)
+1. Read generated experiment slugs (pages in wiki/experiments/ where linked_idea == idea_slug)
 2. Update pipeline-progress: Stage 2 → completed, record experiment_slugs
 
 ### Stage 3: Experiment Execution (non-blocking)
@@ -254,15 +254,15 @@ Args: "{experiment_slug}"
 
 **After all deployments complete**, update pipeline-progress.md:
 ```bash
-python3 tools/research_wiki.py set-meta \
+python tools/research_wiki.py set-meta \
   wiki/outputs/pipeline-progress.md current_stage stage3-await
-python3 tools/research_wiki.py set-meta \
+python tools/research_wiki.py set-meta \
   wiki/outputs/pipeline-progress.md stage3a_deployed \
   "[{experiment_slug_1}, {experiment_slug_2}, ...]"
 ```
 Append log:
 ```bash
-python3 tools/research_wiki.py log wiki/ \
+python tools/research_wiki.py log wiki/ \
   "research | stage3a | deployed {N} experiments | pipeline: {slug}"
 ```
 
@@ -272,7 +272,7 @@ After all experiments are deployed, compute ETA, save progress, and end the curr
 
 1. Update pipeline-progress:
    ```bash
-   python3 tools/research_wiki.py set-meta \
+   python tools/research_wiki.py set-meta \
      wiki/outputs/pipeline-progress.md current_stage stage3-await
    ```
 2. **Compute estimated completion time for each experiment**:
@@ -281,7 +281,7 @@ After all experiments are deployed, compute ETA, save progress, and end the curr
    - `recommended_return = max(all etas) + 30-minute buffer, rounded up to nearest hour or half-hour`
 3. Append log:
    ```bash
-   python3 tools/research_wiki.py log wiki/ \
+   python tools/research_wiki.py log wiki/ \
      "research | stage3b | awaiting {N} experiments | latest eta: {YYYY-MM-DD HH:MM} | pipeline: {slug}"
    ```
 4. Output instructions then **end current session**:
@@ -323,17 +323,14 @@ Args: "{experiment_slug} --collect"
 **After all collects complete**:
 - Update pipeline-progress: Stage 3 → completed
   ```bash
-  python3 tools/research_wiki.py set-meta \
+  python tools/research_wiki.py set-meta \
     wiki/outputs/pipeline-progress.md current_stage stage4
   ```
 - Append log:
   ```bash
-  python3 tools/research_wiki.py log wiki/ \
+  python tools/research_wiki.py log wiki/ \
     "research | stage3c | collected {N} experiments | pipeline: {slug}"
   ```
-
-- Update the status of linked idea: in_progress -> tested
-
 - Proceed to Stage 4
 
 ### Stage 4: Verdict & Iteration
@@ -345,15 +342,15 @@ Skill: exp-eval
 Args: "{experiment_slug}" --auto
 ```
 
-**Evaluate whether the linked idea is sufficient**:
-1. Read the latest status of the primary linked idea (and any supporting ideas)
+**Evaluate whether claims are sufficient**:
+1. Read the latest status of all target claims
 2. Determine whether iteration is needed:
-   - **Sufficient** (primary linked idea has been transitioned to `validated`, OR ≥1 supporting experiment has `outcome=succeeded`) → proceed to Gate 2
-   - **Insufficient** (idea remains `proposed`or`in_progress`or`tested` and all linked experiments are `failed`/`inconclusive`, or idea is `failed`) → enter iteration
+   - **Claims sufficient** (primary claim confidence >= 0.7 and status is supported or weakly_supported) → proceed to Gate 2
+   - **Claims insufficient** (confidence < 0.4 or status is challenged) → enter iteration
 
-**Iteration path** (when insufficient, up to 1 retry):
+**Iteration path** (when claims are insufficient, up to 1 retry):
 1. Analyze the cause of failure
-2. Call `/refine` for the corresponding experimental blocks that need improvement to optimize the experiment plan:
+2. Call `/refine` to improve the experiment plan:
    ```
    Skill: refine
    Args: "{experiment_plan_slug}" --max-rounds 2 --focus evidence
@@ -362,7 +359,7 @@ Args: "{experiment_slug}" --auto
 4. Maximum 2 iterations (prevents infinite loops); each stage has at most 1 auto-retry
 
 **After completion**:
-- Update pipeline-progress: Stage 4 → completed, record linked_idea_slugs
+- Update pipeline-progress: Stage 4 → completed, record claim_slugs
 
 ### Gate 2: Confirm Paper Ready
 
@@ -371,10 +368,10 @@ Args: "{experiment_slug}" --auto
 **If `--auto` mode**: automatically continue, enter Stage 5
 
 **If interactive mode**:
-- Display idea status summary:
+- Display claim status summary:
   ```
-  Idea: {slug} | Status: {status} | Novelty: {novelty_score}
-  Linked experiments: {count} ({succeeded}/{inconclusive}/{failed})
+  Claim: {slug} | Status: {status} | Confidence: {confidence}
+  Evidence: {count} sources ({strong}/{moderate}/{weak})
   ```
 - Use AskUserQuestion to prompt user: ready for paper / need more experiments / stop here
 - If "need more experiments": return to Stage 2 for replanning
@@ -390,9 +387,8 @@ Call sub-skills in sequence: /paper-plan → /paper-draft → /refine → /paper
 **5a. Call /paper-plan**:
 ```
 Skill: paper-plan
-Args: "{linked_idea_slugs}" --venue {venue}
+Args: "{claim_slugs}" --venue {venue}
 ```
-(passes the validated idea slug(s) collected in Stage 4 to /paper-plan)
 
 **5b. Call /paper-draft**:
 ```
@@ -441,10 +437,10 @@ Generate `wiki/outputs/PIPELINE_REPORT.md`:
 - **Priority**: {N}
 - **Novelty score**: {score}
 
-## Idea Trail
-| Idea | Initial Status | Final Status | Novelty (start → end) |
-|------|----------------|--------------|------------------------|
-| [[{slug}]] | proposed | validated | 3 → 4 |
+## Claims Trail
+| Claim | Initial Status | Final Status | Confidence (proposed → supported) |
+|-------|---------------|-------------|-----------------------------------|
+| [[{slug}]] | proposed | supported | 0.3 → 0.8 |
 
 ## Experiment Results
 | Experiment | Outcome | Key Result |
@@ -453,12 +449,12 @@ Generate `wiki/outputs/PIPELINE_REPORT.md`:
 
 ## Iteration History
 - Total iterations: {N}
-- Reason for iteration: {idea evidence insufficient / ...}
+- Reason for iteration: {claims insufficient / ...}
 
 ## Deliverables
-- Ideas: +{N} created, {N} validated
+- Ideas: +{N} created
 - Experiments: +{N} created, {N} completed
-- Methods: +{N} created/updated
+- Claims: {N} updated
 - Graph edges: +{N}
 - Paper: paper/main.pdf (if applicable)
 
@@ -466,7 +462,7 @@ Generate `wiki/outputs/PIPELINE_REPORT.md`:
 | Metric | Before | After | Delta |
 |--------|--------|-------|-------|
 | Papers | {N} | {N} | +{N} |
-| Methods | {N} | {N} | +{N} |
+| Claims | {N} | {N} | +{N} |
 | Ideas | {N} | {N} | +{N} |
 | Experiments | {N} | {N} | +{N} |
 | Edges | {N} | {N} | +{N} |
@@ -480,8 +476,8 @@ Generate `wiki/outputs/PIPELINE_REPORT.md`:
 
 Append log:
 ```bash
-python3 tools/research_wiki.py log wiki/ \
-  "research | completed | idea: {slug} | linked ideas: {N} updated | paper: {yes/no}"
+python tools/research_wiki.py log wiki/ \
+  "research | completed | idea: {slug} | claims: {N} updated | paper: {yes/no}"
 ```
 
 Update pipeline-progress: status: completed
@@ -495,7 +491,7 @@ Update pipeline-progress: status: completed
 - **Stage 3b ends the session**: after Stage 3b completes, the current session ends; do not continue waiting for experiments
 - **Maximum 2 iterations**: Stage 4 iterates at most 2 times to prevent infinite loops
 - **--auto does not skip computation**: auto mode skips human confirmation but skips no computation steps
-- **--skip-paper still runs Stage 4 /exp-eval**: idea/experiment updates must be completed even when not writing a paper
+- **--skip-paper still runs Stage 4 /exp-eval**: claim updates must be completed even when not writing a paper
 - **Pass sub-skill parameters through**: correctly pass domain, --venue, and other parameters to sub-skills
 - **Log every Stage**: append a log.md audit entry after each Stage completes
 - **Do not re-run completed stages**: --start-from skips already-completed stages
@@ -505,7 +501,7 @@ Update pipeline-progress: status: completed
 ## Error Handling
 
 - **pipeline-progress missing but --start-from specified**: report error; prompt user to run the full pipeline first
-- **pipeline-progress corrupted or malformed**: attempt to infer progress from current wiki state (read ideas/experiments statuses), recover to the nearest Gate
+- **pipeline-progress corrupted or malformed**: attempt to infer progress from current wiki state (read ideas/experiments/claims statuses), recover to the nearest Gate
 - **Sub-skill call fails**: record error to pipeline-progress, report the failed stage, suggest --start-from to resume
 - **All ideas generation fails**: terminate pipeline; suggest the user adjust the research direction
 - **All experiment deploys fail**: terminate pipeline (Stage 3a); generate failure report; suggest checking GPU/SSH configuration
@@ -514,7 +510,7 @@ Update pipeline-progress: status: completed
 - **Gate user selects stop**: save progress to pipeline-progress; generate partial report
 - **RESEARCH_BRIEF.md malformed**: fall back to plain-text direction; ignore structured fields
 - **Wiki empty (no papers/concepts)**: auto-trigger Stage 0 Bootstrap (search + auto-ingest 5 papers)
-- **Idea evidence still insufficient after iteration**: annotate report with "idea evidence insufficient after max iterations"; let user decide whether to continue
+- **Claims still insufficient after iteration**: annotate report with "claims insufficient after max iterations"; let user decide whether to continue
 - **User selects view status (auto-recovery detection [3])**: call `/exp-status --pipeline {slug}` then exit without starting a new pipeline
 
 ## Dependencies
@@ -532,14 +528,14 @@ Update pipeline-progress: status: completed
 - `/paper-compile` — Stage 5 paper compilation
 
 ### Tools（via Bash）
-- `python3 tools/research_wiki.py slug "{title}"` — generate pipeline slug
-- `python3 tools/research_wiki.py set-meta <path> <field> <value>` — update pipeline-progress fields
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — append log entry
-- `python3 tools/research_wiki.py maturity wiki/ --json` — check wiki maturity (Stage 0 trigger + Growth Report)
-- `python3 tools/research_wiki.py init wiki/` — initialize wiki structure (Stage 0)
-- `python3 tools/fetch_deepxiv.py search "{query}" --mode hybrid --limit 20` — DeepXiv semantic search (Stage 0)
-- `python3 tools/fetch_s2.py search "{query}" --limit 20` — Semantic Scholar search (Stage 0)
-- `python3 tools/fetch_arxiv.py` — arXiv RSS search (Stage 0)
+- `python tools/research_wiki.py slug "{title}"` — generate pipeline slug
+- `python tools/research_wiki.py set-meta <path> <field> <value>` — update pipeline-progress fields
+- `python tools/research_wiki.py log wiki/ "<message>"` — append log entry
+- `python tools/research_wiki.py maturity wiki/ --json` — check wiki maturity (Stage 0 trigger + Growth Report)
+- `python tools/research_wiki.py init wiki/` — initialize wiki structure (Stage 0)
+- `python tools/fetch_deepxiv.py search "{query}" --mode hybrid --limit 20` — DeepXiv semantic search (Stage 0)
+- `python tools/fetch_s2.py search "{query}" --limit 20` — Semantic Scholar search (Stage 0)
+- `python tools/fetch_arxiv.py` — arXiv RSS search (Stage 0)
 
 ### MCP Servers
 - None directly — all Review LLM interactions are used indirectly via sub-skills
@@ -547,6 +543,6 @@ Update pipeline-progress: status: completed
 ### Claude Code Native
 - `Read` — read pipeline-progress, wiki pages, RESEARCH_BRIEF
 - `Write` — write pipeline-progress, PIPELINE_REPORT
-- `Glob` — find experiments, ideas, methods
+- `Glob` — find experiments, ideas, claims
 - `Skill` — call sub-skills (core capability)
 - `AskUserQuestion` — user interaction at Gates and auto-recovery detection

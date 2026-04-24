@@ -43,7 +43,7 @@ argument-hint: "--scope wiki|raw|log|checkpoints|all"
 ### Step 1: 构造删除计划（dry-run）
 
 ```bash
-python3 tools/reset_wiki.py --scope <scope>
+python tools/reset_wiki.py --scope <scope>
 ```
 
 该命令打印 JSON 计划，列出将要删除或重置的全部文件，**不修改任何东西**。按 scope 分组展示给用户（wiki entity 目录、raw 子目录、log、checkpoints）。
@@ -61,7 +61,7 @@ About to delete N files and reset M files. Continue? [y/N]
 ### Step 3: 执行
 
 ```bash
-python3 tools/reset_wiki.py --scope <scope> --yes
+python tools/reset_wiki.py --scope <scope> --yes
 ```
 
 工具打印 JSON 状态报告（`{deleted_files, reset_files}`）。
@@ -71,7 +71,7 @@ python3 tools/reset_wiki.py --scope <scope> --yes
 若执行的 scope 不包含 `log`，追加一条日志：
 
 ```bash
-python3 tools/research_wiki.py log wiki/ "reset | scope: <scope>"
+python tools/research_wiki.py log wiki/ "reset | scope: <scope>"
 ```
 
 ### Step 5: 报告
@@ -107,6 +107,6 @@ Next steps:
 ## Dependencies
 
 ### 工具（通过 Bash）
-- `python3 tools/reset_wiki.py --scope <scope> [--yes] [--project-root .]` — 确定性破坏性辅助工具
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — 追加日志
+- `python tools/reset_wiki.py --scope <scope> [--yes] [--project-root .]` — 确定性破坏性辅助工具
+- `python tools/research_wiki.py log wiki/ "<message>"` — 追加日志
 - `reset_wiki.py` 在 `checkpoints` scope 下直接删除 `wiki/.checkpoints/*.json`(不走 CLI — `checkpoint-clear` 子命令需指定具体的 `task_id`,而 `/reset --scope checkpoints` 的语义是"全部清除")

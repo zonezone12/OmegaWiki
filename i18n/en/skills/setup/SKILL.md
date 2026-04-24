@@ -40,7 +40,7 @@ including what each does, which skills use it, how to get it, and fallback behav
 Run the following to check what is already configured:
 
 ```bash
-python3 -c "
+python -c "
 import sys, os
 sys.path.insert(0, 'tools')
 try:
@@ -63,7 +63,7 @@ for k, label in keys.items():
 Also detect the Python environment and `.venv` status:
 ```bash
 ls .venv/ 2>/dev/null && echo "venv:present" || echo "venv:absent"
-python3 --version
+python --version
 ```
 
 ### Step 3: Show Configuration Status
@@ -125,7 +125,7 @@ Without it, those skills fall back to arXiv RSS + Semantic Scholar — everythin
 
 **For option 1 — auto-register**, run:
 ```bash
-python3 -c "
+python -c "
 import sys, json
 from uuid import uuid4
 try:
@@ -209,7 +209,7 @@ it if the user explicitly asks, or if their research area is clearly outside ML/
 After the user finishes configuring, run the verification check from `config/setup-guide.md`:
 
 ```bash
-python3 -c "
+python -c "
 import sys, os
 sys.path.insert(0, 'tools')
 try:
@@ -269,8 +269,8 @@ Configuration updated. Restart Claude Code for Review LLM changes to take effect
 ## Dependencies
 
 ### Tools (via Bash)
-- `python3 -c "import _env; ..."` — read current `.env` state
-- `python3 -c "import requests; ..."` — DeepXiv auto-registration HTTP call
+- `python -c "import _env; ..."` — read current `.env` state
+- `python -c "import requests; ..."` — DeepXiv auto-registration HTTP call
 
 ### Files Read
 - `config/setup-guide.md` — complete reference for all configurable keys

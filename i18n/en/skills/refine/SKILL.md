@@ -143,8 +143,8 @@ Classify and handle each actionable item:
 
 If this round had wiki changes (Category C):
 ```bash
-python3 tools/research_wiki.py rebuild-context-brief wiki/
-python3 tools/research_wiki.py rebuild-open-questions wiki/
+python tools/research_wiki.py rebuild-context-brief wiki/
+python tools/research_wiki.py rebuild-open-questions wiki/
 ```
 
 ### Step 3: Final Report
@@ -190,7 +190,7 @@ After iteration ends, generate the REFINE_REPORT:
 
 Append log:
 ```bash
-python3 tools/research_wiki.py log wiki/ \
+python tools/research_wiki.py log wiki/ \
   "refine | {artifact-slug} | {N} rounds | score {initial}→{final} | verdict: {verdict}"
 ```
 
@@ -215,10 +215,10 @@ python3 tools/research_wiki.py log wiki/ \
 ## Dependencies
 
 ### Tools（via Bash）
-- `python3 tools/research_wiki.py rebuild-context-brief wiki/` — rebuild query_pack
-- `python3 tools/research_wiki.py rebuild-open-questions wiki/` — rebuild gap_map
-- `python3 tools/research_wiki.py add-edge wiki/ ...` — add graph edge (if needed)
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — append log entry
+- `python tools/research_wiki.py rebuild-context-brief wiki/` — rebuild query_pack
+- `python tools/research_wiki.py rebuild-open-questions wiki/` — rebuild gap_map
+- `python tools/research_wiki.py add-edge wiki/ ...` — add graph edge (if needed)
+- `python tools/research_wiki.py log wiki/ "<message>"` — append log entry
 
 ### Skills（via Skill tool）
 - `/review` — each round's review (core dependency)

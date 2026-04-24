@@ -77,7 +77,7 @@ For each target experiment, execute in parallel (or sequentially):
    - **Local**: `screen -ls | grep "exp-{slug}"`
      - Has output → `alive: true`
      - No output → `alive: false` (session is gone)
-   - **Remote**: `python3 tools/remote.py check --name "exp-{slug}"`
+   - **Remote**: `python tools/remote.py check --name "exp-{slug}"`
      - Parse JSON: `alive`, `last_lines`, `anomalies`
 
 3. **If alive == true**:
@@ -137,7 +137,7 @@ For each target experiment, execute in parallel (or sequentially):
 
 Append log:
 ```bash
-python3 tools/research_wiki.py log wiki/ \
+python tools/research_wiki.py log wiki/ \
   "exp-status | running: {N}, anomaly: {M}, pending-collect: {K}"
 ```
 
@@ -176,7 +176,7 @@ After all collections are done, re-print the updated status report.
      ```
    - Append log:
      ```bash
-     python3 tools/research_wiki.py log wiki/ \
+     python tools/research_wiki.py log wiki/ \
        "exp-status | pipeline {slug}: all experiments done, advancing to stage4"
      ```
    - Trigger next stage:
@@ -209,10 +209,10 @@ After all collections are done, re-print the updated status report.
 - `/research` — trigger Stage 4 via `--auto-advance`
 
 ### Tools（via Bash）
-- `python3 tools/remote.py check --name "exp-{slug}"` — remote experiment status check
-- `python3 tools/remote.py tail-log --name "exp-{slug}" --lines 20` — fetch remote logs
-- `python3 tools/research_wiki.py set-meta <path> <field> <value>` — update pipeline-progress
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — append log
+- `python tools/remote.py check --name "exp-{slug}"` — remote experiment status check
+- `python tools/remote.py tail-log --name "exp-{slug}" --lines 20` — fetch remote logs
+- `python tools/research_wiki.py set-meta <path> <field> <value>` — update pipeline-progress
+- `python tools/research_wiki.py log wiki/ "<message>"` — append log
 - `screen -ls` — local process status
 - `tail -20 {log}` — fetch local logs
 

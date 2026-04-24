@@ -139,7 +139,7 @@ If output format is LaTeX, following `shared-references/citation-verification.md
 
 1. **Generate slug**:
    ```bash
-   python3 tools/research_wiki.py slug "<query-keywords>"
+   python tools/research_wiki.py slug "<query-keywords>"
    ```
 
 2. **Write archive file**:
@@ -159,14 +159,14 @@ If output format is LaTeX, following `shared-references/citation-verification.md
 3. **Add graph edges**:
    ```bash
    # output → each cited paper
-   python3 tools/research_wiki.py add-edge wiki/ \
+   python tools/research_wiki.py add-edge wiki/ \
      --from "outputs/related-work-{slug}-{date}" --to "papers/{paper-slug}" \
      --type derived_from --evidence "Cited in related work section"
    ```
 
 4. **Append log**:
    ```bash
-   python3 tools/research_wiki.py log wiki/ \
+   python tools/research_wiki.py log wiki/ \
      "survey | {topic} | {N} papers, {G} groups, format: {format}"
    ```
 
@@ -194,10 +194,10 @@ If output format is LaTeX, following `shared-references/citation-verification.md
 ## Dependencies
 
 ### Tools（via Bash）
-- `python3 tools/research_wiki.py slug "<title>"` — generate slug
-- `python3 tools/research_wiki.py add-edge wiki/ ...` — add graph edge
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — append log
-- `python3 tools/fetch_s2.py search "<title>"` — BibTeX fallback (S2 search)
+- `python tools/research_wiki.py slug "<title>"` — generate slug
+- `python tools/research_wiki.py add-edge wiki/ ...` — add graph edge
+- `python tools/research_wiki.py log wiki/ "<message>"` — append log
+- `python tools/fetch_s2.py search "<title>"` — BibTeX fallback (S2 search)
 
 ### MCP Servers
 - None (survey does not require Review LLM; use /review --focus writing for separate review)

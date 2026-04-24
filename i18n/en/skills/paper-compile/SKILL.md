@@ -102,7 +102,7 @@ After successful compilation, run the following checks:
 **3a. Page count check**:
 ```bash
 # get PDF page count
-python3 -c "
+python -c "
 import subprocess
 result = subprocess.run(['pdfinfo', 'paper/main.pdf'], capture_output=True, text=True)
 for line in result.stdout.splitlines():
@@ -194,7 +194,7 @@ pdffonts paper/main.pdf
 
 Append log:
 ```bash
-python3 tools/research_wiki.py log wiki/ \
+python tools/research_wiki.py log wiki/ \
   "paper-compile | {SUCCESS/FAILED} | {pages} pages, {errors} errors, {verify_count} [UNCONFIRMED], {checks_passed}/{checks_total} checks passed"
 ```
 
@@ -223,7 +223,7 @@ python3 tools/research_wiki.py log wiki/ \
 - `latexmk` — LaTeX compilation
 - `pdfinfo` — PDF page count check (poppler-utils)
 - `pdffonts` — font embedding check (poppler-utils)
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — append log
+- `python tools/research_wiki.py log wiki/ "<message>"` — append log
 
 ### MCP Servers
 - None

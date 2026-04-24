@@ -139,7 +139,7 @@ argument-hint: <research-question-or-idea-slugs> [--format latex|markdown] [--ma
 
 1. **生成 slug**：
    ```bash
-   python3 tools/research_wiki.py slug "<query-keywords>"
+   python tools/research_wiki.py slug "<query-keywords>"
    ```
 
 2. **写入归档文件**：
@@ -159,14 +159,14 @@ argument-hint: <research-question-or-idea-slugs> [--format latex|markdown] [--ma
 3. **添加 graph edges**：
    ```bash
    # output → 每篇引用的论文
-   python3 tools/research_wiki.py add-edge wiki/ \
+   python tools/research_wiki.py add-edge wiki/ \
      --from "outputs/related-work-{slug}-{date}" --to "papers/{paper-slug}" \
      --type derived_from --evidence "Cited in related work section"
    ```
 
 4. **追加日志**：
    ```bash
-   python3 tools/research_wiki.py log wiki/ \
+   python tools/research_wiki.py log wiki/ \
      "survey | {topic} | {N} papers, {G} groups, format: {format}"
    ```
 
@@ -194,10 +194,10 @@ argument-hint: <research-question-or-idea-slugs> [--format latex|markdown] [--ma
 ## Dependencies
 
 ### Tools（via Bash）
-- `python3 tools/research_wiki.py slug "<title>"` — 生成 slug
-- `python3 tools/research_wiki.py add-edge wiki/ ...` — 添加 graph edge
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — 追加日志
-- `python3 tools/fetch_s2.py search "<title>"` — BibTeX fallback（S2 搜索）
+- `python tools/research_wiki.py slug "<title>"` — 生成 slug
+- `python tools/research_wiki.py add-edge wiki/ ...` — 添加 graph edge
+- `python tools/research_wiki.py log wiki/ "<message>"` — 追加日志
+- `python tools/fetch_s2.py search "<title>"` — BibTeX fallback（S2 搜索）
 
 ### MCP Servers
 - 无（survey 不需要 Review LLM，可通过 /review --focus writing 单独审查）

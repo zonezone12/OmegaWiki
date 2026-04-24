@@ -1,11 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """OmegaWiki — Wiki Knowledge Engine.
 
 Core operations for a wiki-centric research knowledge base: entity metadata
 read/write, typed graph management, knowledge-state queries, purpose-driven
 context compilation, lifecycle enforcement, and audit logging.
 
-Called by skills via:  Bash: python3 tools/research_wiki.py <command> [args]
+Called by skills via:  Bash: python tools/research_wiki.py <command> [args]
 
 Commands:
     # Infrastructure

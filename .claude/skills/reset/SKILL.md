@@ -43,7 +43,7 @@ Manual: `/reset --scope wiki` / `--scope raw` / `--scope log` / `--scope checkpo
 ### Step 1: Build the deletion plan (dry-run)
 
 ```bash
-python3 tools/reset_wiki.py --scope <scope>
+python tools/reset_wiki.py --scope <scope>
 ```
 
 This prints a JSON plan listing every file that would be deleted or reset, **without modifying anything**. Display the plan to the user grouped by scope (wiki entity dirs, raw subdirs, log, checkpoints).
@@ -61,7 +61,7 @@ If the user says no, exit. **Never proceed without explicit approval** — `/res
 ### Step 3: Execute
 
 ```bash
-python3 tools/reset_wiki.py --scope <scope> --yes
+python tools/reset_wiki.py --scope <scope> --yes
 ```
 
 The tool prints a JSON status report (`{deleted_files, reset_files}`).
@@ -71,7 +71,7 @@ The tool prints a JSON status report (`{deleted_files, reset_files}`).
 If the executed scope did not include `log`, append a log entry so future sessions can see the reset happened:
 
 ```bash
-python3 tools/research_wiki.py log wiki/ "reset | scope: <scope>"
+python tools/research_wiki.py log wiki/ "reset | scope: <scope>"
 ```
 
 ### Step 5: Report
@@ -107,6 +107,6 @@ Next steps:
 ## Dependencies
 
 ### Tools (via Bash)
-- `python3 tools/reset_wiki.py --scope <scope> [--yes] [--project-root .]` — deterministic destructive helper
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — append log
+- `python tools/reset_wiki.py --scope <scope> [--yes] [--project-root .]` — deterministic destructive helper
+- `python tools/research_wiki.py log wiki/ "<message>"` — append log
 - `reset_wiki.py` clears `wiki/.checkpoints/*.json` directly for `checkpoints` scope (no CLI dispatch — the `checkpoint-clear` subcommand requires a specific `task_id`, while `/reset --scope checkpoints` semantics is "clear everything")

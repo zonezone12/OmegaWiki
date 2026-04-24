@@ -142,8 +142,8 @@ Args: "<artifact-path-or-content>" --difficulty {difficulty} --focus {focus}
 
 若本轮有 wiki 变更（Category C）：
 ```bash
-python3 tools/research_wiki.py rebuild-context-brief wiki/
-python3 tools/research_wiki.py rebuild-open-questions wiki/
+python tools/research_wiki.py rebuild-context-brief wiki/
+python tools/research_wiki.py rebuild-open-questions wiki/
 ```
 
 ### Step 3: 最终报告
@@ -189,7 +189,7 @@ python3 tools/research_wiki.py rebuild-open-questions wiki/
 
 追加日志：
 ```bash
-python3 tools/research_wiki.py log wiki/ \
+python tools/research_wiki.py log wiki/ \
   "refine | {artifact-slug} | {N} rounds | score {initial}→{final} | verdict: {verdict}"
 ```
 
@@ -214,10 +214,10 @@ python3 tools/research_wiki.py log wiki/ \
 ## Dependencies
 
 ### Tools（via Bash）
-- `python3 tools/research_wiki.py rebuild-context-brief wiki/` — 重建 query_pack
-- `python3 tools/research_wiki.py rebuild-open-questions wiki/` — 重建 gap_map
-- `python3 tools/research_wiki.py add-edge wiki/ ...` — 添加 graph edge（若需要）
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — 追加日志
+- `python tools/research_wiki.py rebuild-context-brief wiki/` — 重建 query_pack
+- `python tools/research_wiki.py rebuild-open-questions wiki/` — 重建 gap_map
+- `python tools/research_wiki.py add-edge wiki/ ...` — 添加 graph edge（若需要）
+- `python tools/research_wiki.py log wiki/ "<message>"` — 追加日志
 
 ### Skills（via Skill tool）
 - `/review` — 每轮审查（核心依赖）

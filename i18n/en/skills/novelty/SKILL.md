@@ -1,6 +1,6 @@
 ---
-description: Multi-source novelty verification — WebSearch + Semantic Scholar + wiki + Review LLM cross-verify — outputs novelty score and recommendations. Optionally writes the score back to an idea page with --write.
-argument-hint: <idea-description-or-slug> [--quick] [--verbose] [--write]
+description: Multi-source novelty verification — WebSearch + Semantic Scholar + wiki + Review LLM cross-verify — outputs novelty score and recommendations
+argument-hint: <idea-description-or-slug>
 ---
 
 # /novelty
@@ -18,30 +18,28 @@ argument-hint: <idea-description-or-slug> [--quick] [--verbose] [--write]
   - paper title or arXiv URL (check novelty of that paper's method)
 - `--quick`: fast mode, skip Review LLM cross-verify (Step 3), search only
 - `--verbose`: output full search results, not just summaries
-- `--write` (optional, default **off**): persist the resulting `novelty_score` to the target's frontmatter. **Only takes effect when `target` is an idea slug** (i.e. `wiki/ideas/{slug}.md` exists). Free-text targets and paper-novelty checks remain read-only regardless of this flag. Treat as a user-owned flag — `/ideate` Phase 4 sets it explicitly when calling `/novelty`; do not infer it from repo state.
 
 ## Outputs
 
-- **Novelty Report** (output to terminal):
+- **Novelty Report** (output to terminal, not written to wiki):
   - Novelty Score (1-5)
   - List of closest prior work (top 3-5)
   - Differentiation points versus each prior work
   - Review LLM cross-verify assessment (unless --quick)
   - Recommended action: proceed / modify / abandon
-- **Idea page write (only when `--write` is set AND target is an idea slug)**: updates `wiki/ideas/{slug}.md` frontmatter `novelty_score` field via `tools/research_wiki.py set-meta`. No other field is touched.
+- This skill is a **read-only query** — it does not modify any wiki content
 
 ## Wiki Interaction
 
 ### Reads
 - `wiki/papers/*.md` — search existing papers for similar methods
 - `wiki/concepts/*.md` — check concept overlap
-- `wiki/methods/*.md` — check for already-cataloged methods that overlap with the candidate
 - `wiki/ideas/*.md` — check for duplication with existing ideas (especially `failure_reason` of failed ideas)
+- `wiki/claims/*.md` — check the current status of claims the idea depends on
 - `wiki/graph/context_brief.md` — global context to assist search
 
 ### Writes
-- `wiki/ideas/{slug}.md` (only when `--write` and target is an idea slug) — sets `novelty_score`. Otherwise none.
-- `wiki/log.md` (only when a write occurs) — append "novelty | wrote novelty_score=N to ideas/{slug}".
+- **None**. Novelty check is a pure query operation; it does not modify the wiki.
 
 ### Graph edges created
 - **None**.
@@ -74,14 +72,14 @@ Execute the following searches in parallel (use Agent tool for concurrency):
 
 **Source B — Semantic Scholar + DeepXiv:**
 ```bash
-python3 tools/fetch_s2.py search "<method-keywords>" --limit 20
-python3 tools/fetch_deepxiv.py search "<method-keywords>" --mode hybrid --limit 20
+python tools/fetch_s2.py search "<method-keywords>" --limit 20
+python tools/fetch_deepxiv.py search "<method-keywords>" --mode hybrid --limit 20
 ```
 Merge results from both sources (deduplicate by arxiv_id). DeepXiv's hybrid semantic search finds semantically similar work that S2 keyword search may miss.
 - Fetch details and TLDR for top 5 results:
 ```bash
-python3 tools/fetch_s2.py paper <s2_id>
-python3 tools/fetch_deepxiv.py brief <arxiv_id>
+python tools/fetch_s2.py paper <s2_id>
+python tools/fetch_deepxiv.py brief <arxiv_id>
 ```
 Use DeepXiv brief TLDRs to quickly judge method similarity.
 **If DeepXiv is unavailable**: fall back to S2 search only (original behavior).
@@ -165,22 +163,9 @@ Synthesize Step 2 search results and Step 3 Review LLM assessment into a structu
 - If wiki contains a failed idea whose failure_reason overlaps with this idea → lower score by 1
 - If wiki contains a highly overlapping in_progress idea → mark as abandon (internal duplication)
 
-### Step 5: Persist score (only when `--write` is set AND target is an idea slug)
-
-Skip this step entirely if the target was a free-text description or a paper slug, or if `--write` was not set. Otherwise:
-
-```bash
-python3 tools/research_wiki.py set-meta wiki/ideas/{slug}.md novelty_score {N}
-python3 tools/research_wiki.py log wiki/ "novelty | wrote novelty_score=${N} to ideas/${slug}"
-```
-
-Where `{N}` is the integer 1-5 from the composite scoring rules above. If `set-meta` errors (e.g. the field is missing from the existing page because it was created before this schema version), surface the error in the report — do not silently swallow it.
-
 ## Constraints
 
-- **Default is read-only**: without `--write`, novelty check produces only a terminal report; no wiki content is modified.
-- **`--write` is the only persistence path**: when set, only `novelty_score` and `wiki/log.md` are written. Do not edit any other field of the idea page (status, priority, body sections, etc.).
-- **`--write` is meaningless for non-idea targets**: if the target is free text or a paper slug, ignore `--write` and produce the read-only report.
+- **Do not modify the wiki**: novelty check is a pure query; all results are output to terminal only
 - **Conservative scoring**: underestimate novelty rather than overestimate to avoid wasting effort on known work
 - **Must check failed ideas**: ideas with status=failed in wiki/ideas/ are important anti-repetition signals
 - **Search coverage**: at least 5 distinct WebSearch queries + Semantic Scholar + wiki internal search
@@ -199,12 +184,10 @@ Where `{N}` is the integer 1-5 from the composite scoring rules above. If `set-m
 ## Dependencies
 
 ### Tools（via Bash）
-- `python3 tools/fetch_s2.py search "<query>" --limit 20` — Semantic Scholar keyword search
-- `python3 tools/fetch_s2.py paper <s2_id>` — fetch paper details
-- `python3 tools/fetch_deepxiv.py search "<query>" --mode hybrid --limit 20` — DeepXiv semantic search
-- `python3 tools/fetch_deepxiv.py brief <arxiv_id>` — fetch paper TLDR for similarity judgment
-- `python3 tools/research_wiki.py set-meta wiki/ideas/{slug}.md novelty_score <1-5>` — only when `--write` is set and target is an idea slug
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — append log on write
+- `python tools/fetch_s2.py search "<query>" --limit 20` — Semantic Scholar keyword search
+- `python tools/fetch_s2.py paper <s2_id>` — fetch paper details
+- `python tools/fetch_deepxiv.py search "<query>" --mode hybrid --limit 20` — DeepXiv semantic search
+- `python tools/fetch_deepxiv.py brief <arxiv_id>` — fetch paper TLDR for similarity judgment
 
 ### MCP Servers
 - `mcp__llm-review__chat` — Review LLM cross-verify (Step 3)

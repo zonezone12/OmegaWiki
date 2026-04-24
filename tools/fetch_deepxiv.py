@@ -1,14 +1,14 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """DeepXiv API wrapper — semantic search, progressive reading, trending papers.
 
 Usage:
-    python3 tools/fetch_deepxiv.py search "low rank adaptation" --limit 10
-    python3 tools/fetch_deepxiv.py brief 2106.09685
-    python3 tools/fetch_deepxiv.py head 2106.09685
-    python3 tools/fetch_deepxiv.py section 2106.09685 Introduction
-    python3 tools/fetch_deepxiv.py raw 2106.09685
-    python3 tools/fetch_deepxiv.py trending --days 7
-    python3 tools/fetch_deepxiv.py social 2106.09685
+    python tools/fetch_deepxiv.py search "low rank adaptation" --limit 10
+    python tools/fetch_deepxiv.py brief 2106.09685
+    python tools/fetch_deepxiv.py head 2106.09685
+    python tools/fetch_deepxiv.py section 2106.09685 Introduction
+    python tools/fetch_deepxiv.py raw 2106.09685
+    python tools/fetch_deepxiv.py trending --days 7
+    python tools/fetch_deepxiv.py social 2106.09685
 
 Requires: pip install deepxiv-sdk
 Token: reads DEEPXIV_TOKEN env var. If absent, SDK auto-registers on first use.

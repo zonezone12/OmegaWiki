@@ -58,7 +58,7 @@ argument-hint: <review-file-or-path> [--paper-slug <slug>] [--venue <venue>] [--
 **Precondition**:
 1. Confirm working directory is the wiki project root (containing `wiki/`, `raw/`, `tools/`)
 2. Read `cross-model-review.md` to confirm stress-test independence principle
-3. Generate slug: `python3 tools/research_wiki.py slug "{paper-slug}-rebuttal"`
+3. Generate slug: `python tools/research_wiki.py slug "{paper-slug}-rebuttal"`
 
 ### Step 1: Parse Review Comments
 
@@ -294,7 +294,7 @@ Additional Experiments (if applicable):
 - For methods with weak coverage: append concerns to `## Limitations` in `wiki/methods/{slug}.md`
 - Append log:
   ```bash
-  python3 tools/research_wiki.py log wiki/ \
+  python tools/research_wiki.py log wiki/ \
     "rebuttal | {N} concerns addressed | {M} evidence gaps | stress-test avg: {score}/5"
   ```
 
@@ -323,8 +323,8 @@ Additional Experiments (if applicable):
 ## Dependencies
 
 ### Tools（via Bash）
-- `python3 tools/research_wiki.py slug "{title}"` — generate rebuttal slug
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — append log entry
+- `python tools/research_wiki.py slug "{title}"` — generate rebuttal slug
+- `python tools/research_wiki.py log wiki/ "<message>"` — append log entry
 
 ### MCP Servers
 - `mcp__llm-review__chat` — Step 5 stress-test first round

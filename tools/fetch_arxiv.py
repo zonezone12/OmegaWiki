@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Fetch recent papers from arXiv RSS feeds.
 
 Usage:
-    python3 tools/fetch_arxiv.py              # output JSON to stdout
-    python3 tools/fetch_arxiv.py -o out.json  # output to file
-    python3 tools/fetch_arxiv.py --hours 48   # fetch last 48h (default: 24h)
+    python tools/fetch_arxiv.py              # output JSON to stdout
+    python tools/fetch_arxiv.py -o out.json  # output to file
+    python tools/fetch_arxiv.py --hours 48   # fetch last 48h (default: 24h)
 """
 
 from __future__ import annotations

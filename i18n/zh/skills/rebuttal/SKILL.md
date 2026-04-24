@@ -57,7 +57,7 @@ argument-hint: <review-file-or-path> [--paper-slug <slug>] [--venue <venue>] [--
 **前置**：
 1. 确认工作目录为 wiki 项目根（包含 `wiki/`、`raw/`、`tools/` 的目录）
 2. 读取 `cross-model-review.md` 确认 stress-test 独立性原则
-3. 生成 slug：`python3 tools/research_wiki.py slug "{paper-slug}-rebuttal"`
+3. 生成 slug：`python tools/research_wiki.py slug "{paper-slug}-rebuttal"`
 
 ### Step 1: 解析审稿意见
 
@@ -293,7 +293,7 @@ Additional Experiments (if applicable):
 - 对覆盖薄弱的 method：在 `wiki/methods/{slug}.md` 的 `## Limitations` 追加 concern
 - 追加日志：
   ```bash
-  python3 tools/research_wiki.py log wiki/ \
+  python tools/research_wiki.py log wiki/ \
     "rebuttal | {N} concerns addressed | {M} evidence gaps | stress-test avg: {score}/5"
   ```
 
@@ -322,8 +322,8 @@ Additional Experiments (if applicable):
 ## Dependencies
 
 ### Tools（via Bash）
-- `python3 tools/research_wiki.py slug "{title}"` — 生成 rebuttal slug
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — 追加日志
+- `python tools/research_wiki.py slug "{title}"` — 生成 rebuttal slug
+- `python tools/research_wiki.py log wiki/ "<message>"` — 追加日志
 
 ### MCP Servers
 - `mcp__llm-review__chat` — Step 5 stress-test 首轮

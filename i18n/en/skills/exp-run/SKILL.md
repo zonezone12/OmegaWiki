@@ -1,12 +1,11 @@
 ---
-description: Full experiment execution pipeline — prepare code → deploy(Confirm with the user before operation and ask the applicant to conduct manual inspection) → monitor → collect results, supporting three run modes
+description: Full experiment execution pipeline — prepare code → deploy → monitor → collect results, supporting three run modes
 argument-hint: <experiment-slug> [--review] [--collect] [--full] [--env local|remote]
 ---
 
 # /exp-run
 
 > Execute an experiment that has been planned in wiki/experiments/.
-> **No matter which operation mode it is, before preparing the experimental codes and deploying them for operation, confirmation shall be obtained from users. Users need to manually check relevant information such as codes and experimental configurations(Dataset paths, interface parameter selection, API configuration, etc.). The operation can only be launched after confirmation; otherwise, revisions shall be made repeatedly until users approve the execution.**
 > **Three run modes** for different scenarios:
 > - **Default (deploy)**: Phase 1-2 only — deploy and return immediately. Best for experiments that take hours or days.
 > - **`--collect`**: Phase 3-4 only — check whether a deployed experiment has finished; collect results if so (`--check` is an alias).
@@ -45,10 +44,11 @@ argument-hint: <experiment-slug> [--review] [--collect] [--full] [--env local|re
 ## Wiki Interaction
 
 ### Reads
-- `wiki/experiments/{slug}.md` — experiment config: setup, metrics, baseline, hypothesis, linked_idea
-- `wiki/ideas/{linked-idea}.md` — linked idea's approach sketch (guide code implementation, understand experiment purpose)
+- `wiki/experiments/{slug}.md` — experiment config: setup, metrics, baseline, hypothesis, target_claim
+- `wiki/claims/{target-claim}.md` — target claim context (understand experiment purpose)
+- `wiki/ideas/{linked-idea}.md` — linked idea's approach sketch (guide code implementation)
 - `wiki/papers/*.md` — related papers' method details and hyperparameters (implementation reference)
-- `wiki/experiments/*.md` — other experiments on the same idea (reference setup, avoid known mistakes)
+- `wiki/experiments/*.md` — other experiments on the same claim (reference setup, avoid known mistakes)
 
 ### Writes
 - `experiments/code/{slug}/` — experiment code directory (Phase 1, deploy / full mode)
@@ -56,11 +56,11 @@ argument-hint: <experiment-slug> [--review] [--collect] [--full] [--env local|re
   - `experiments/code/{slug}/config.yaml` — hyperparameter config file
   - `experiments/code/{slug}/run.sh` — launch wrapper script (includes CUDA_VISIBLE_DEVICES etc.)
   - `experiments/code/{slug}/requirements.txt` — dependencies (if different from main project)
-- `wiki/experiments/{slug}.md` — update status, outcome, key_result, date_completed, run_log, remote block (deploy / collect mode)
+- `wiki/experiments/{slug}.md` — update status, outcome, key_result, date_completed, run_log, remote block
 - `wiki/log.md` — append operation log
 
 ### Graph edges created
-- **None**. The tested_by edges between experiments and ideas are created by /exp-design.
+- **None**. The tested_by edges between experiments and claims are created by /exp-design.
 
 ## Workflow
 
@@ -81,18 +81,10 @@ argument-hint: <experiment-slug> [--review] [--collect] [--full] [--env local|re
 2. **Load implementation context**:
    - Read linked idea's approach sketch (implementation guide)
    - Read related papers' method descriptions (algorithm details)
-   - Read other experiments on the same idea (reference code structure)
+   - Read other experiments on the same claim (reference code structure)
 
-3. **Inspect the dataset and other configurations**
-   - The dataset is specified in the setup section of `wiki/experiments/{slug}.md`
-   - Obtain the dataset path (select local or remote access based on the --env parameter). You may ask users for the local or remote dataset paths and conduct independent retrieval.
-   - Prompt users if the dataset is missing, clarify the need to download the dataset, and confirm the installation path and download source with users.
-   - Check the integrity and availability of the dataset, and sort out its built-in structure and usage instructions.
-   - Other configurations include: LLM model name for invocation, URL, API key, etc.
-
-4. **Write experiment code** to `experiments/code/{slug}/`:
-   **Modular thinking in coding: avoid putting a large amount of code in a single file unless the project is small in scale and simple in logic**
-   - `train.py`: generate training/evaluation script based on setup config as the entry point of the program including:
+3. **Write experiment code** to `experiments/code/{slug}/`:
+   - `train.py`: generate training/evaluation script based on setup config, including:
      - Argument parsing (argparse, all hyperparameters configurable)
      - Data loading (support setup.dataset)
      - Model initialization (support setup.model and baseline model)
@@ -101,12 +93,11 @@ argument-hint: <experiment-slug> [--review] [--collect] [--full] [--env local|re
      - Result saving (JSON format, path: `results/{slug}/seed_{N}.json`)
      - Random seed control (multi-seed runs)
      - Checkpoint save/restore (`checkpoints/{slug}/`)
-   - Other required code folders and files such as utils, tools (e.g., `utils.py`, `data_loader.py`, etc.)
    - `config.yaml`: all hyperparameters (learning_rate, batch_size, epochs, seeds, etc.)
    - `run.sh`: complete launch command wrapper (includes CUDA_VISIBLE_DEVICES, logging, conda activation)
    - `requirements.txt`: experiment-specific dependencies (if different from main project requirements)
 
-5. **Optional Review LLM code review** (`--review`):
+4. **Optional Review LLM code review** (`--review`):
    ```
    mcp__llm-review__chat:
      system: "You are a senior ML engineer reviewing experiment code.
@@ -128,21 +119,16 @@ argument-hint: <experiment-slug> [--review] [--collect] [--full] [--env local|re
    ```
    Fix code based on Review LLM feedback.
 
-6. **Sanity check (small-scale validation)**:
+5. **Sanity check (small-scale validation)**:
    - Run at minimal scale (1 epoch / 100 steps / small subset)
    - Verify: no code crash, data loads correctly, GPU available, loss decreases
    - If sanity fails → fix code, retry once; if still failing, report error and stop
-
-
-**Gate: Manual User Inspection**
-
-> **Note**: Before preparing experimental code for deployment and execution, confirm with users and request them to manually check relevant information including codes and experimental configurations(Dataset paths, interface parameter selection, API configuration, etc.). Proceed with operation only after confirmation; otherwise, make revisions repeatedly until users approve the execution.
 
 **Phase 2: Deploy**
 
 #### Local mode (`--env local` or default)
 
-1. **Check GPU**: `nvidia-smi` to confirm GPU available and sufficient VRAM. If `setup.hardware` is `cpu`/`none`/empty and generated code has no CUDA/GPU keywords, skip GPU check and go to step 2 directly.
+1. **Check GPU**: `nvidia-smi` to confirm GPU available and sufficient VRAM
 2. **Launch**:
    ```bash
    screen -dmS exp-{slug} bash -c \
@@ -161,14 +147,14 @@ argument-hint: <experiment-slug> [--review] [--collect] [--full] [--env local|re
    | Multi-GPU or large model fine-tuning (≥7B) | 8 – 48h |
 
    ```bash
-   python3 tools/research_wiki.py set-meta \
+   python tools/research_wiki.py set-meta \
      wiki/experiments/{slug}.md started "{YYYY-MM-DDTHH:MM}"
-   python3 tools/research_wiki.py set-meta \
+   python tools/research_wiki.py set-meta \
      wiki/experiments/{slug}.md estimated_hours {N}
    ```
 5. Append log:
    ```bash
-   python3 tools/research_wiki.py log wiki/ \
+   python tools/research_wiki.py log wiki/ \
      "exp-run | deployed {slug} | env: local | session: exp-{slug} | eta: {N}h"
    ```
 
@@ -176,15 +162,15 @@ argument-hint: <experiment-slug> [--review] [--collect] [--full] [--env local|re
 
 **Prerequisite**: user has configured `config/server.yaml`.
 
-1. **Confirm connectivity**: `python3 tools/remote.py status`
+1. **Confirm connectivity**: `python tools/remote.py status`
    - If unreachable → report error and suggest checking config/server.yaml
-2. **Find free GPU**: `python3 tools/remote.py gpu-status` (skip if `setup.hardware` is `cpu`/`none`/empty and code has no CUDA/GPU keywords)
+2. **Find free GPU**: `python tools/remote.py gpu-status`
    - If no free GPU → report each GPU's usage, suggest waiting
-3. **Sync code**: `python3 tools/remote.py sync-code`
-4. **Install dependencies** (first time or if requirements changed): `python3 tools/remote.py setup-env`
+3. **Sync code**: `python tools/remote.py sync-code`
+4. **Install dependencies** (first time or if requirements changed): `python tools/remote.py setup-env`
 5. **Launch remote experiment**:
    ```bash
-   python3 tools/remote.py launch \
+   python tools/remote.py launch \
      --name "exp-{slug}" \
      --cmd "bash experiments/code/{slug}/run.sh" \
      --gpu {gpu_index}
@@ -192,8 +178,8 @@ argument-hint: <experiment-slug> [--review] [--collect] [--full] [--env local|re
 6. Update `wiki/experiments/{slug}.md` frontmatter — all of these fields already exist (empty) because `/exp-design` wrote the full CLAUDE.md template:
    ```bash
    # Top-level scalar fields — use set-meta
-   python3 tools/research_wiki.py set-meta wiki/experiments/{slug}.md status running
-   python3 tools/research_wiki.py set-meta wiki/experiments/{slug}.md run_log "logs/exp-{slug}.log"
+   python tools/research_wiki.py set-meta wiki/experiments/{slug}.md status running
+   python tools/research_wiki.py set-meta wiki/experiments/{slug}.md run_log "logs/exp-{slug}.log"
    ```
 
    The nested `remote:` block cannot be updated via `set-meta` (it only handles top-level scalar fields). Use the `Edit` tool directly to replace the five empty sub-field values in place. The pre-existing block in the file looks like:
@@ -209,14 +195,14 @@ argument-hint: <experiment-slug> [--review] [--collect] [--full] [--env local|re
 
 7. **Estimate runtime** and write to frontmatter (same estimation logic as local mode):
    ```bash
-   python3 tools/research_wiki.py set-meta \
+   python tools/research_wiki.py set-meta \
      wiki/experiments/{slug}.md started "{YYYY-MM-DDTHH:MM}"
-   python3 tools/research_wiki.py set-meta \
+   python tools/research_wiki.py set-meta \
      wiki/experiments/{slug}.md estimated_hours {N}
    ```
 8. Append log:
    ```bash
-   python3 tools/research_wiki.py log wiki/ \
+   python tools/research_wiki.py log wiki/ \
      "exp-run | deployed {slug} | env: remote | server: {host} | gpu: {gpu} | eta: {N}h"
    ```
 
@@ -259,12 +245,12 @@ tail -f logs/exp-{slug}.log
 
 2. **Check whether the process is still alive**:
    - **Local**: `screen -ls | grep exp-{slug}`
-   - **Remote**: `python3 tools/remote.py check --name "exp-{slug}"`, parse `alive` field
+   - **Remote**: `python tools/remote.py check --name "exp-{slug}"`, parse `alive` field
 
 3. **If experiment is still running (alive == true)**:
    - Fetch recent logs:
      - Local: `tail -30 logs/exp-{slug}.log`
-     - Remote: `python3 tools/remote.py tail-log --name "exp-{slug}" --lines 30`
+     - Remote: `python tools/remote.py tail-log --name "exp-{slug}" --lines 30`
    - **Anomaly detection**:
      - NaN loss: detect `loss: nan`
      - OOM: `CUDA out of memory`
@@ -291,11 +277,11 @@ tail -f logs/exp-{slug}.log
 
 1. **Pull remote results** (remote mode only):
    ```bash
-   python3 tools/remote.py pull-results \
+   python tools/remote.py pull-results \
      --remote-path "results/{slug}/" \
      --local-path "./results/{slug}/"
 
-   python3 tools/remote.py pull-results \
+   python tools/remote.py pull-results \
      --remote-path "logs/exp-{slug}.log" \
      --local-path "./logs/"
    ```
@@ -321,7 +307,7 @@ tail -f logs/exp-{slug}.log
 
 5. **Append log**:
    ```bash
-   python3 tools/research_wiki.py log wiki/ \
+   python tools/research_wiki.py log wiki/ \
      "exp-run | completed {slug} | outcome: {outcome} | key: {key_result}"
    ```
 
@@ -340,7 +326,7 @@ tail -f logs/exp-{slug}.log
    {key_result}
 
    ## Next Steps
-   - Run `/exp-eval {slug}` to update the linked idea in wiki
+   - Run `/exp-eval {slug}` to update claims in wiki
    - {if succeeded: proceed to next experiment in plan}
    - {if failed: analyze failure, consider /exp-design revision}
    ```
@@ -370,7 +356,7 @@ done
 - **Collect mode only accepts running experiments**: if status is planned, prompt to deploy first; if completed, note it is already done
 - **Collect mode: do not write wiki when alive**: only report progress, do not modify any wiki files
 - **Code goes in experiments/code/{slug}/**: do not write to project root or any other location
-- **Do not update the linked idea's status**: experiment results are written only to experiments/ pages; idea updates are handled by /exp-eval
+- **Do not update claims**: experiment results are written only to experiments/ pages; claim updates are handled by /exp-eval
 - **Sanity check must pass**: Phase 1 sanity failure blocks deployment (unless user explicitly overrides)
 - **Results must be saved**: all experiment results saved as JSON in `results/{slug}/seed_{N}.json`
 - **Multi-seed results use mean**: report mean ± std, not single-run results
@@ -396,8 +382,8 @@ done
 - No direct sub-skill calls
 
 ### Tools（via Bash）
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — append log
-- `python3 tools/remote.py <command>` — remote operations (status, gpu-status, sync-code, setup-env, launch, check, tail-log, pull-results)
+- `python tools/research_wiki.py log wiki/ "<message>"` — append log
+- `python tools/remote.py <command>` — remote operations (status, gpu-status, sync-code, setup-env, launch, check, tail-log, pull-results)
 - `nvidia-smi` — local GPU status
 - `screen` — local background process management
 

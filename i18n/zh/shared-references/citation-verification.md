@@ -52,7 +52,7 @@ WebFetch: https://api.crossref.org/works?query.bibliographic={url-encoded-title}
 
 ```bash
 # Use tools/fetch_s2.py which is already in the project
-python3 tools/fetch_s2.py search "<title>"
+python tools/fetch_s2.py search "<title>"
 # Returns paperId, title, authors, year, venue, externalIds
 ```
 

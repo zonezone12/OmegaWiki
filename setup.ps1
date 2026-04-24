@@ -41,7 +41,7 @@ Write-Info "Checking prerequisites..."
 
 # Python: prefer `python`, fall back to `py -3`
 $PythonCmd = $null
-foreach ($candidate in @("python", "python3", "py")) {
+foreach ($candidate in @("python", "python", "py")) {
     if (Get-Command $candidate -ErrorAction SilentlyContinue) {
         $PythonCmd = $candidate
         break

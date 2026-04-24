@@ -48,7 +48,7 @@ Manual: `/prefill [domain]` or `/prefill --add "concept name"`.
 ### Step 2: Load seeds
 
 - **Catalog mode**: read `.claude/skills/prefill/foundations-catalog.yaml`. Pick all entries under `domains.{domain}` plus everything under `domains.general` (general foundations apply to every research field).
-- **`--add` mode**: synthesize a single seed entry `{slug: <slugified concept>, title: <concept>, summary: ""}`. Use `python3 tools/research_wiki.py slug "<concept>"` to derive the slug.
+- **`--add` mode**: synthesize a single seed entry `{slug: <slugified concept>, title: <concept>, summary: ""}`. Use `python tools/research_wiki.py slug "<concept>"` to derive the slug.
 
 For each seed, check `wiki/foundations/{slug}.md`. If it already exists, **skip** (do not overwrite, do not warn).
 
@@ -57,9 +57,9 @@ For each seed, check `wiki/foundations/{slug}.md`. If it already exists, **skip*
 For each remaining seed, call `tools/fetch_wikipedia.py`:
 
 ```bash
-python3 tools/fetch_wikipedia.py summary "<title>"
-python3 tools/fetch_wikipedia.py sections "<title>"
-python3 tools/fetch_wikipedia.py section "<title>" --index <N>   # for relevant sections
+python tools/fetch_wikipedia.py summary "<title>"
+python tools/fetch_wikipedia.py sections "<title>"
+python tools/fetch_wikipedia.py section "<title>" --index <N>   # for relevant sections
 ```
 
 - The summary call returns `{title, extract, url}`.
@@ -109,8 +109,8 @@ Write each file to `wiki/foundations/{slug}.md`.
 ### Step 5: Refresh navigation and log
 
 ```bash
-python3 tools/research_wiki.py rebuild-index wiki/
-python3 tools/research_wiki.py log wiki/ "prefill | {N} foundations created for {domain}"
+python tools/research_wiki.py rebuild-index wiki/
+python tools/research_wiki.py log wiki/ "prefill | {N} foundations created for {domain}"
 ```
 
 ### Step 6: Report
@@ -143,7 +143,7 @@ Remind the user that subsequent `/ingest` runs will dedup against these foundati
 
 ## Error Handling
 
-- **`wiki/foundations/` does not exist**: run `python3 tools/research_wiki.py init wiki/` first.
+- **`wiki/foundations/` does not exist**: run `python tools/research_wiki.py init wiki/` first.
 - **Wikipedia 404**: log the missing page, fall back to LLM knowledge for that seed (`source_url: ""`).
 - **Network failure**: print which seeds failed and continue with the remainder; do not abort the whole batch.
 - **Catalog file missing**: print error pointing to `.claude/skills/prefill/foundations-catalog.yaml`.
@@ -151,10 +151,10 @@ Remind the user that subsequent `/ingest` runs will dedup against these foundati
 ## Dependencies
 
 ### Tools (via Bash)
-- `python3 tools/fetch_wikipedia.py summary|sections|section|wikitext "<title>" [--index N]`
-- `python3 tools/research_wiki.py slug "<title>"`
-- `python3 tools/research_wiki.py rebuild-index wiki/`
-- `python3 tools/research_wiki.py log wiki/ "<message>"`
+- `python tools/fetch_wikipedia.py summary|sections|section|wikitext "<title>" [--index N]`
+- `python tools/research_wiki.py slug "<title>"`
+- `python tools/research_wiki.py rebuild-index wiki/`
+- `python tools/research_wiki.py log wiki/ "<message>"`
 
 ### Catalog
 - `.claude/skills/prefill/foundations-catalog.yaml`

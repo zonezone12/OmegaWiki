@@ -24,7 +24,7 @@ Key points:
 
 - Create the skill directory as `kebab-case/SKILL.md`.
 - Skills are **orchestrators** that use LLM reasoning and multi-step decisions.
-- Skills call tools via `Bash: python3 tools/X.py` -- they do not contain deterministic logic themselves.
+- Skills call tools via `Bash: python tools/X.py` -- they do not contain deterministic logic themselves.
 - Every skill must read from and/or write back to the wiki.
 - **Bilingual requirement**: create both `i18n/en/skills/<name>/SKILL.md` and `i18n/zh/skills/<name>/SKILL.md`, then run `./setup.sh` to sync active files.
 - Add tests in `tests/test_skill_validation.py`.

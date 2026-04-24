@@ -67,8 +67,8 @@ argument-hint: <question>
 2. 读取 `wiki/graph/open_questions.md`——了解已知的开放问题和知识缺口
 3. 若两者都不存在，先重建：
    ```bash
-   python3 tools/research_wiki.py rebuild-context-brief wiki/
-   python3 tools/research_wiki.py rebuild-open-questions wiki/
+   python tools/research_wiki.py rebuild-context-brief wiki/
+   python tools/research_wiki.py rebuild-open-questions wiki/
    ```
 
 ### Step 2: 检索相关页面
@@ -114,7 +114,7 @@ argument-hint: <question>
 根据回答内容选择 crystallize 目标：
 
 **Case A — 写入 outputs/（默认）：**
-1. 生成 slug：`python3 tools/research_wiki.py slug "<query-summary>"`
+1. 生成 slug：`python tools/research_wiki.py slug "<query-summary>"`
 2. 创建 `wiki/outputs/{query-slug}.md`：
    ```yaml
    ---
@@ -128,7 +128,7 @@ argument-hint: <question>
    正文为回答内容（保留 wikilinks）
 3. 为每个引用的源页面添加 graph edge：
    ```bash
-   python3 tools/research_wiki.py add-edge wiki/ --from outputs/<slug> --to papers/<source-slug> --type derived_from --evidence "query answer"
+   python tools/research_wiki.py add-edge wiki/ --from outputs/<slug> --to papers/<source-slug> --type derived_from --evidence "query answer"
    ```
 
 **Case B — 创建新 concept：**
@@ -151,16 +151,16 @@ argument-hint: <question>
 1. **index.md**：在对应分类下追加新建页面条目
 2. **log.md**：
    ```bash
-   python3 tools/research_wiki.py log wiki/ "ask | <question-summary> | crystallized: <target-path>"
+   python tools/research_wiki.py log wiki/ "ask | <question-summary> | crystallized: <target-path>"
    ```
    若未 crystallize：
    ```bash
-   python3 tools/research_wiki.py log wiki/ "ask | <question-summary> | answer-only"
+   python tools/research_wiki.py log wiki/ "ask | <question-summary> | answer-only"
    ```
 3. **重建 graph 派生文件**（仅 crystallize 创建了新页面时）：
    ```bash
-   python3 tools/research_wiki.py rebuild-context-brief wiki/
-   python3 tools/research_wiki.py rebuild-open-questions wiki/
+   python tools/research_wiki.py rebuild-context-brief wiki/
+   python tools/research_wiki.py rebuild-open-questions wiki/
    ```
 
 ### Step 7: 报告给用户
@@ -186,21 +186,21 @@ argument-hint: <question>
 
 ## Error Handling
 
-- **context_brief.md 不存在**：运行 `python3 tools/research_wiki.py rebuild-context-brief wiki/` 重建后重试
+- **context_brief.md 不存在**：运行 `python tools/research_wiki.py rebuild-context-brief wiki/` 重建后重试
 - **wiki 为空**：告知用户先运行 `/init` 或 `/ingest` 建立知识基础
 - **无相关页面匹配**：坦诚告知 wiki 中无相关内容，建议搜索和 ingest 方向
 - **crystallize slug 冲突**：追加数字后缀（如 `query-result-2`）
-- **index.md 不存在**：运行 `python3 tools/research_wiki.py init wiki/` 初始化后重试
+- **index.md 不存在**：运行 `python tools/research_wiki.py init wiki/` 初始化后重试
 
 ## Dependencies
 
 ### Tools（via Bash）
-- `python3 tools/research_wiki.py slug "<title>"` — slug 生成
-- `python3 tools/research_wiki.py add-edge wiki/ --from <id> --to <id> --type <type> --evidence "<text>"` — 添加 graph edge
-- `python3 tools/research_wiki.py rebuild-context-brief wiki/` — 重建压缩上下文
-- `python3 tools/research_wiki.py rebuild-open-questions wiki/` — 重建知识缺口地图
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — 追加日志
-- `python3 tools/research_wiki.py init wiki/` — 初始化 wiki（fallback）
+- `python tools/research_wiki.py slug "<title>"` — slug 生成
+- `python tools/research_wiki.py add-edge wiki/ --from <id> --to <id> --type <type> --evidence "<text>"` — 添加 graph edge
+- `python tools/research_wiki.py rebuild-context-brief wiki/` — 重建压缩上下文
+- `python tools/research_wiki.py rebuild-open-questions wiki/` — 重建知识缺口地图
+- `python tools/research_wiki.py log wiki/ "<message>"` — 追加日志
+- `python tools/research_wiki.py init wiki/` — 初始化 wiki（fallback）
 
 ### Skills（via Skill tool）
 - `/ingest` — 若建议用户补充知识时引用

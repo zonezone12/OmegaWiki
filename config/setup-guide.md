@@ -167,7 +167,7 @@ After setting keys, verify they are loaded correctly:
 
 ```bash
 # Check which keys are set in .env
-source .venv/bin/activate && python3 -c "
+source .venv/bin/activate && python -c "
 import _env, os
 keys = ['SEMANTIC_SCHOLAR_API_KEY', 'DEEPXIV_TOKEN', 'LLM_API_KEY', 'LLM_BASE_URL', 'LLM_MODEL']
 for k in keys:

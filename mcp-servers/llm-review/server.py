@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """LLM Review MCP Server — OpenAI-compatible API for cross-model review
 
 Provides three tools:

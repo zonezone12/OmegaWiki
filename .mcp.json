@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "llm-review": {
-      "command": "python3",
+      "command": "python",
       "args": ["mcp-servers/llm-review/server.py"],
       "cwd": "${workspaceFolder}"
     }

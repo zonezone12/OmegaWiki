@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Reset wiki state to a clean scaffold (used by /reset skill).
 
 Scopes:
@@ -11,8 +11,8 @@ Scopes:
     all          all of the above.
 
 Usage:
-    python3 tools/reset_wiki.py --scope wiki --yes
-    python3 tools/reset_wiki.py --scope all --dry-run
+    python tools/reset_wiki.py --scope wiki --yes
+    python tools/reset_wiki.py --scope all --dry-run
 
 Without --yes the tool prints the plan and exits without touching the filesystem.
 """

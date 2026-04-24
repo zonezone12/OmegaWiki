@@ -49,18 +49,18 @@ description: 扫描全 wiki 发现健康问题，生成分级修复建议报告�
 
 **默认模式（只报告）**：
 ```bash
-python3 tools/lint.py --wiki-dir wiki/ --json
+python tools/lint.py --wiki-dir wiki/ --json
 ```
 
 **自动修复模式**（用户指定 `--fix` 时）：
 ```bash
-python3 tools/lint.py --wiki-dir wiki/ --fix --json
+python tools/lint.py --wiki-dir wiki/ --fix --json
 ```
 自动修复确定性问题（xref 反向链接补全、缺失字段填默认值），输出修复报告。
 
 **预览模式**（用户指定 `--fix --dry-run` 时）：
 ```bash
-python3 tools/lint.py --wiki-dir wiki/ --fix --dry-run --json
+python tools/lint.py --wiki-dir wiki/ --fix --dry-run --json
 ```
 预览会修复什么，不实际执行。
 
@@ -165,7 +165,7 @@ LLM 额外判断（需要阅读内容）：
 
 记录日志：
 ```bash
-python3 tools/research_wiki.py log wiki/ "check | report: N 🔴, M 🟡, K 🔵"
+python tools/research_wiki.py log wiki/ "check | report: N 🔴, M 🟡, K 🔵"
 ```
 
 ## Constraints
@@ -186,6 +186,6 @@ python3 tools/research_wiki.py log wiki/ "check | report: N 🔴, M 🟡, K 🔵
 ## Dependencies
 
 ### Tools（via Bash）
-- `python3 tools/lint.py --wiki-dir wiki/ [--json] [--fix] [--dry-run] [--suggest]` — 自动化结构检查 + 修复（核心依赖）
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — 追加日志
-- `python3 tools/research_wiki.py stats wiki/` — 获取统计信息（可选，用于报告）
+- `python tools/lint.py --wiki-dir wiki/ [--json] [--fix] [--dry-run] [--suggest]` — 自动化结构检查 + 修复（核心依赖）
+- `python tools/research_wiki.py log wiki/ "<message>"` — 追加日志
+- `python tools/research_wiki.py stats wiki/` — 获取统计信息（可选，用于报告）

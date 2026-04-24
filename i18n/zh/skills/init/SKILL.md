@@ -1,274 +1,562 @@
 ---
-description: 基于用户素材与可选外部发现搭建 ΩmegaWiki，并用并行 `/ingest` 完成最终论文集的消化
-argument-hint: "[topic] [--no-introduction]"
+description: 从 raw/ 目录搭建完整的 ΩmegaWiki，包括论文、概念、方向、人物页面，并初始化 ideas/experiments/claims 和 graph
+argument-hint: "[topic]"
 ---
 
 # /init
 
-> 从 `raw/` 搭建 wiki：先做确定性 prepare，再跑 planner-guided discovery；`raw/notes/` 与 `raw/web/` 可种下 provisional scaffold；论文消化仍走并行 `/ingest` fan-out / fan-in。
-
-按需打开这些本地参考文件：
-
-- `references/prepare-and-discovery.md` — prepare 流程、最终选择、fetch 与 source-manifest 规则
-- `references/planner-policy.md` — planner 行为与 LLM 裁剪期望
-- `references/parallel-ingest.md` — worktree 隔离、子代理 prompt 合同、merge 与清理
+> 从零搭建一个 ΩmegaWiki。扫描 raw/ 目录和外部来源，创建完整的 wiki 骨架，
+> 包含所有 8 种 entity 目录和 graph 初始化。每篇论文通过 `/ingest` 逐一消化，
+> 确保 cross-references 和 graph edges 从第一天就完整。
 
 ## Inputs
 
-- `topic`（可选）：研究方向关键词；当 `raw/` 已定义 seed set 时可省略
-- `--no-introduction`（可选）：禁用外部发现；仅在用户明确要求时使用
-- 用户自有素材：`raw/papers/`、`raw/notes/`、`raw/web/`
+- `topic`：研究方向关键词（如 "efficient fine-tuning for LLMs"）
+- `raw/papers/` 中的 .tex / .pdf 文件
+- 可选：`raw/notes/`、`raw/web/` 中的笔记和网页
 
 ## Outputs
 
-- `wiki/` 骨架与 provisional 页面（Summary、topics、ideas、concepts）
-- `raw/tmp/` 与 `raw/discovered/` 预处理来源
-- 并行 `/ingest` 产出的最终论文页面
-- `.checkpoints/init-*.json` 清单，用于恢复与重放
-- 更新后的 `wiki/index.md`、`wiki/log.md`、`wiki/graph/*`
-- 重新生成的可视化产物：`wiki/.obsidian/graph.json`（按实体类型的 colorGroups）与 `wiki/canvases/*.canvas`（best-effort，见 Step 6）。交互式网页 Graph 视图由 `tools/serve.py`（SPA）提供服务，不再单独生成产物。
+- 完整的 wiki 骨架：所有 8 种 entity 目录 + `graph/` + `outputs/`
+- `wiki/papers/*.md` — 每篇论文的结构化摘要（通过 /ingest 创建）
+- `wiki/concepts/*.md` — 核心技术概念页面（通过 /ingest 创建）
+- `wiki/topics/*.md` — 研究方向地图
+- `wiki/people/*.md` — 关键人物页面（通过 /ingest 创建）
+- `wiki/claims/*.md` — 核心 claims（通过 /ingest 提取）
+- `wiki/ideas/*.md` — 初始研究想法（基于 gap_map 生成，若有）
+- `wiki/Summary/{area}.md` — 领域全景综述
+- `wiki/index.md`、`wiki/log.md`
+- `wiki/graph/edges.jsonl`、`context_brief.md`、`open_questions.md`
 
 ## Wiki Interaction
 
 ### Reads
-
-- `raw/papers/`、`raw/notes/`、`raw/web/`
-- `.checkpoints/init-prepare.json` 与 `.checkpoints/init-sources.json`，供 resume、planning 与 fan-out 使用
-- `wiki/index.md` 以及已有 `wiki/topics/`、`wiki/ideas/`、`wiki/concepts/`、`wiki/methods/`，用于去重与 scaffold 对齐
+- `raw/papers/` — 待消化的论文来源
+- `raw/notes/` — 用户研究笔记
+- `raw/web/` — 保存的网页
+- `wiki/index.md` — 检查已有页面避免重复（Step 4 批量 ingest 时）
 
 ### Writes
-
-- `wiki/` scaffold 与 provisional 页面
-- `raw/tmp/` 与 `raw/discovered/`
-- `wiki/index.md`、`wiki/log.md`、`wiki/graph/*`
-- `.checkpoints/init-prepare.json`、`.checkpoints/init-plan.json`、`.checkpoints/init-sources.json` 与 `init-session` checkpoint metadata
+- `wiki/` 全目录结构（通过 `tools/research_wiki.py init`）
+- `wiki/CLAUDE.md` — 运行时 schema（从模板复制）
+- `wiki/index.md` — 内容目录
+- `wiki/log.md` — 时序日志
+- `wiki/Summary/{area}.md` — 领域综述
+- `wiki/topics/{topic}.md` — 研究方向页面
+- `wiki/ideas/{idea}.md` — 初始研究想法（若 gap_map 有内容）
+- 其余 entity 由 `/ingest` 负责写入（papers, concepts, people, claims）
 
 ### Graph edges created
-
-- `/init` 本身只在 provisional 页面需要时写入少量 scaffold 级别的 edges
-- 论文驱动的 edges 全部委托给 `/ingest`
+- 通过 `/ingest` 批量创建的所有 edges
+- `concept → topic`: `supports`（手动创建的 topic-concept 关联）
 
 ## Workflow
 
-**前置条件**：当前目录为项目根，且包含 `wiki/`、`raw/`、`tools/`。设 `WIKI_ROOT=wiki/`。先解析一次 `PYTHON_BIN`，并在整个 `/init` 流程里复用它，确保运行时使用与 `setup.sh` 安装依赖时相同的解释器：
+**前置**：确认工作目录为 wiki 项目根（包含 `wiki/`、`raw/`、`tools/` 的目录）。
+设 `WIKI_ROOT=wiki/`。
+
+### Step 1: 初始化 wiki 目录结构
+
+运行 init 命令，创建全部 8 种 entity 目录 + graph/ + outputs/ + seed 文件：
 
 ```bash
-# 通过 git 找到项目根，让 worktree 中的 subagent 也能定位 .venv。
-# .venv 被 gitignore，subagent 的 cwd 在 ../.worktrees/<branch>/ 时本地没有
-# .venv——若不解析项目根，PYTHON_BIN 会回退到系统 python3，既丢失 .env 里的
-# API key，也丢失安装的依赖（deepxiv-sdk 等）。
-# git rev-parse --git-common-dir 无论 cwd 位于哪个 worktree 都返回主仓库的
-# .git 目录；其父目录即项目根。
-GIT_COMMON_DIR=$(git rev-parse --git-common-dir 2>/dev/null || true)
-PROJECT_ROOT=""
-if [ -n "$GIT_COMMON_DIR" ]; then
-  PROJECT_ROOT=$(cd "$(dirname "$GIT_COMMON_DIR")" 2>/dev/null && pwd)
+python tools/research_wiki.py init wiki/
+```
+
+这将创建：
+- `wiki/papers/`, `wiki/concepts/`, `wiki/topics/`, `wiki/people/`
+- `wiki/ideas/`, `wiki/experiments/`, `wiki/claims/`
+- `wiki/Summary/`, `wiki/outputs/`
+- `wiki/graph/` (含空 `edges.jsonl`)
+- `wiki/index.md`, `wiki/log.md`
+
+若 `wiki/CLAUDE.md` 不存在，从产品模板复制。
+
+`init` 命令本身已经自动向 `log.md` 追加了一条 `init | wiki initialized`——不要在此再追加一次。
+
+### Step 2: 收集 Raw Sources + 智能扩展
+
+本步扫描用户已提供的论文，然后**有选择地扩展**——通过引用链和关键词搜索补充。目标：让 wiki 足够丰富，同时不让 init 耗时过长。
+
+**预算**：在用户提供的论文之外，最多额外添加 **5–8 篇**。宁缺毋滥。
+
+#### Phase A — 扫描本地来源
+
+1. 扫描 `raw/papers/`，识别所有文件：
+   - 压缩包（`.tar.gz` / `.zip`）：解压到 `raw/papers/{slug}/`
+   - `.tex` 存在：优先使用（tex > PDF）
+   - 仅 `.pdf`：使用 PyMuPDF 提取文本
+2. 扫描 `raw/notes/`、`raw/web/` 中的用户笔记和网页
+3. 记录为 `local_papers` 列表（标题、arxiv_id（如有）、路径）
+
+#### Phase B — 引用链扩展（主要发现方式）
+
+**调用 S2 前**先检查 API key 是否已配置：
+
+```bash
+python -c "
+import sys, os; sys.path.insert(0, 'tools')
+try: import _env
+except Exception: pass
+print('SET' if os.environ.get('SEMANTIC_SCHOLAR_API_KEY', '').strip() else 'UNSET')
+"
+```
+
+如果返回 `UNSET`，提示用户："未检测到 Semantic Scholar API key — 引用链扩展仍可运行，但速度慢 3 倍（3 秒/请求）。建议先运行 `/setup` 配置 key 以加速 init。"然后继续执行 — fetch_s2.py 无 key 也可用。
+
+对 `local_papers` 中有 arXiv ID 的论文（选 importance 最高的 3–5 篇）：
+
+```bash
+python tools/fetch_s2.py references <arxiv_id>
+python tools/fetch_s2.py citations <arxiv_id>
+```
+
+从合并结果中：
+1. 过滤掉已在 `local_papers` 中的论文（按 arxiv_id 或标题匹配）
+2. 按 `引用量 × 与 topic 的相关度` 排序（相关度通过标题/摘要与 `<topic>` 的语义重叠判断）
+3. 选出 **top 3–5** 篇明显属于该领域核心但用户未收录的论文
+4. 这些通常是用户默认了解的奠基性工作，或其遗漏的重要后续研究
+
+#### Phase C — 关键词搜索补充（填补覆盖空白）
+
+仅当 Phase B 选出不足 3 篇、或存在明显未覆盖的子方向时执行：
+
+```bash
+python tools/fetch_s2.py search "<topic>" 20
+```
+
+可选（若 DeepXiv 可用）：
+```bash
+python tools/fetch_deepxiv.py search "<topic>" --mode hybrid --limit 10
+```
+
+从合并结果中：
+1. 与 `local_papers` + Phase B 已选结果去重
+2. 选出 **1–3 篇** 能填补空白的论文（例如：不同方法路线、综述、或非常新的论文）
+3. **如果头部结果都与已有论文重叠，则不添加**——不凑数
+
+**若 DeepXiv 不可用**：仅依赖 S2 搜索。
+
+#### Phase D — 下载已选论文（只新增，不覆盖）
+
+对 Phase B + C 选出的每篇论文：
+
+**已存在则跳过（强制规则）**——下载前先检查 `raw/papers/<slug>/` 或 `raw/papers/<slug>.pdf` 是否已经存在。任一存在，则**完全跳过**本次下载。`/init` 严禁覆盖 `raw/` 下任何已有内容（见 Constraints 段）；用户本地已有的素材是权威。
+
+```bash
+if [ -d "raw/papers/<slug>" ] || [ -f "raw/papers/<slug>.pdf" ]; then
+  echo "skip: raw/papers/<slug> already exists"
+else
+  # 优先下载 tex source（arXiv e-print）
+  curl -sL -o raw/papers/<slug>.tar.gz "https://arxiv.org/e-print/<arxiv_id>"
+  if [ -s raw/papers/<slug>.tar.gz ]; then
+    mkdir -p raw/papers/<slug> && tar -xzf raw/papers/<slug>.tar.gz -C raw/papers/<slug>/
+    rm raw/papers/<slug>.tar.gz
+  else
+    rm -f raw/papers/<slug>.tar.gz
+    # 回退到 PDF
+    curl -sL -o raw/papers/<slug>.pdf "https://arxiv.org/pdf/<arxiv_id>"
+    [ -s raw/papers/<slug>.pdf ] || { rm -f raw/papers/<slug>.pdf; echo "download failed: <slug>"; }
+  fi
 fi
+```
 
-if   [ -x "$PROJECT_ROOT/.venv/bin/python" ];         then PYTHON_BIN="$PROJECT_ROOT/.venv/bin/python"
-elif [ -x "$PROJECT_ROOT/.venv/Scripts/python.exe" ]; then PYTHON_BIN="$PROJECT_ROOT/.venv/Scripts/python.exe"
-elif [ -x .venv/bin/python ];                         then PYTHON_BIN=.venv/bin/python
-elif [ -x .venv/Scripts/python.exe ];                 then PYTHON_BIN=.venv/Scripts/python.exe
-else                                                       PYTHON_BIN=python3
+每次下载后验证文件非空（`test -s`）、类型正确；若校验失败，立即删除残留文件并记录失败——永远不要在 `raw/papers/` 里留下 0 字节的空壳。
+
+#### Phase E — 汇总最终来源列表
+
+合并 `local_papers` + 已下载论文为 `raw_source_list`（内存中，不写文件）。
+
+记录扩展情况：
+```bash
+python tools/research_wiki.py log wiki/ "init | source expansion: <N> local + <M> discovered via citation chains and search"
+```
+
+**透明度**：Phase D 下载的论文会永久成为用户 `raw/papers/` 的一部分。Step 8 的最终报告**必须**把它们单独列在"我们发现并下载的论文"一节里（与"用户提供的论文"分开），方便用户检视并 `git rm` 自己不要的那几篇。
+
+### Step 3: 领域分析
+
+1. LLM 阅读 `raw_source_list`，提取核心主题
+2. 识别 3-8 个子方向（concepts）→ 将在 /ingest 中创建
+3. 识别 2-5 个核心研究方向（topics）
+4. 识别关键人物（people）→ 将在 /ingest 中创建
+5. 提取领域全景信息用于 Summary 页面
+
+### Step 4: 创建骨架页面
+
+按 CLAUDE.md 模板创建以下页面（/ingest 不负责的部分）：
+
+**4a — Summary 页面：**
+- 按领域分析结果创建 `wiki/Summary/{area}.md`
+- 按 CLAUDE.md Summary 模板填写 frontmatter 和正文各节
+
+**4b — Topics 页面：**
+- 按领域分析结果创建 `wiki/topics/{topic}.md`
+- 按 CLAUDE.md topics 模板填写，含 open_problems 和 research_gaps 初始内容
+- 将在 Step 5 的 /ingest 过程中逐步填充 seminal_works 和 key_people
+
+**4c — 更新 index.md：**
+- 将 Summary 和 topics 页面条目写入 index.md 对应分类
+
+### Step 4.5: 提交骨架 + stash 无关脏文件（fan-out 前强制）
+
+在 spawn 任何子代理之前，工作树必须处于这样的状态：(a) `/init` 至此产生的一切都已 commit；(b) `/init` 没有产生的任何文件全部离开工作树。这是 Phase B 顺序合并的硬性前提 — git 拒绝在 dirty 工作树上合并，而 `git stash` 是把无关用户改动临时挪开的唯一安全方式。
+
+#### 4.5.a — 检查工作树
+
+```bash
+git status --short
+```
+
+把看到的内容分成两类：
+
+- **骨架文件** — 一切位于 `wiki/` 或 `raw/papers/` 下的文件。它们要么是 Step 1（`research_wiki.py init`）或 Step 4（Summary / topics / 初始 index.md）创建的，要么是用户放在 `raw/papers/` 下的论文源。它们**必须**进入骨架 commit，这样 worktree branch 才会继承这些文件。
+- **无关脏文件** — 一切位于 `wiki/` 和 `raw/papers/` 之外的文件。常见情况：上一个 session 没改完的 SKILL.md、`tools/`/`i18n/`/`tests/` 中正在改的内容。它们与 `/init` 毫无关系，**绝不可**被包含进骨架 commit，但也**不能**留在工作树中，否则 Phase B 合并会被它们阻塞。
+
+#### 4.5.b — stash 无关脏文件（如果有）
+
+如果 `git status --short` 显示 `wiki/` 和 `raw/papers/` 之外还有任何内容，先 stash 再继续：
+
+```bash
+UNRELATED=$(git status --short | awk '{print $2}' | grep -Ev '^(wiki/|raw/papers/)' || true)
+
+if [ -n "$UNRELATED" ]; then
+  echo "检测到无关脏文件 — 在 /init 前先 stash："
+  echo "$UNRELATED"
+  git stash push -u -m "init-unrelated-dirty-$(date +%Y%m%d-%H%M%S)" -- $UNRELATED
 fi
-export PYTHON_BIN
 ```
 
-### Step 1: 初始化 wiki 结构
+**记录 stash ref** 到 `init-session` checkpoint 的 metadata，这样即使 `/init` 中途被中断、之后重启，Step 8 也能读回并 pop：
 
 ```bash
-"$PYTHON_BIN" tools/research_wiki.py init wiki/
+STASH_REF=$(git stash list | head -1 | cut -d: -f1)
+python tools/research_wiki.py checkpoint-set-meta wiki/ init-session stash_ref "$STASH_REF"
 ```
 
-创建标准目录、`graph/`、`outputs/`、`index.md` 与 `log.md`。这里不要重复写第二条 init 日志。
+这会把 `{"metadata": {"stash_ref": "stash@{0}"}}` 写入 `.checkpoints/init-session.json`；Step 8 在 `checkpoint-clear` 之前通过 `checkpoint-get-meta` 读回。若 4.5.b 的 stash 没有产生任何 entry（没有无关脏文件），跳过本条命令即可——Step 8 读到空字符串时会跳过 pop。
 
-### Step 2: 把本地输入 prepare 到 `raw/tmp/`
+**为什么是 stash 而不是"问用户"**：上一个版本曾要求问用户，而不是自动 stash。那会把脏文件留在工作树里，Phase B 第一次 `git merge` 就会报 `your local changes ... would be overwritten by merge` — 即使那些文件跟合并毫无关系，git 的安全检查也会拒绝在 dirty 工作树上合并。stash → init → pop 才是标准工作流，用户的修改不会丢失。
+
+#### 4.5.c — commit 骨架
+
+4.5.b 之后，剩下的脏文件应当全部位于 `wiki/` 和 `raw/papers/` 下。验证，然后 commit：
 
 ```bash
-"$PYTHON_BIN" tools/init_discovery.py prepare --raw-root raw --pdf-titles-json .checkpoints/init-pdf-titles.json --output-manifest .checkpoints/init-prepare.json
+git status --short
+git add wiki/ raw/papers/
+git commit -m "init: scaffold wiki skeleton (Summary, topics, index, graph stubs)" --no-gpg-sign
 ```
 
-- 在运行 `prepare` 前，先读取每个本地 PDF，并把恢复 handoff 写入 `.checkpoints/init-pdf-titles.json`。格式既可以是 `{ "raw/papers/foo.pdf": "Recovered Paper Title" }`，也可以是在已知可信 arXiv ID 时写成 `{ "raw/papers/foo.pdf": { "title": "Recovered Paper Title", "arxiv_id": "2401.00001" } }`
-- 使用 `"$PYTHON_BIN" tools/prepare_paper_source.py --raw-root raw --source <local-path> [--title "<recovered-title>"] [--arxiv-id "<recovered-arxiv-id>"]` 做本地论文规范化
-- 本地 PDF 的恢复顺序必须严格遵守：handoff 进来的 arXiv ID 或 filename/path 中的 arXiv ID -> agent 恢复出的标题经 Semantic Scholar 搜索 -> 抓取到的 arXiv 源码 -> synthetic `.tex`
-- 如果 agent 已经提供了 PDF 标题，就把这个标题当作 prepared manifest 的 authoritative title；抓取源码里提取出的标题只能作为经过清洗后的 fallback metadata，不能反过来覆盖 agent 标题
-- prepare 阶段不得把 PDF metadata 或正文文本当作 arXiv-ID hint
-- metadata 或 filename 中的标题最多只是 provisional display label，不能当作可信 identity，也不能作为标题检索输入
-- notes/web 保持原始来源路径，`/init` 在 planning 阶段直接读取
-- 本地论文若存在 usable 的 prepared 结果，其 `canonical_ingest_path` 必须指向 `raw/tmp/`；否则回退到原始 `raw/papers/...`
-- decode / 标题恢复 / arXiv 源码抓取失败时记录 warning，而不是中止 `/init`
-- prepare 的细化决策树与来源优先级见 `references/prepare-and-discovery.md`
+如果 `git status --short` 仍显示 `wiki/` / `raw/papers/` 以外的文件，说明 4.5.b 的 stash 不完整 — 先排查再重新 stash 后再 commit。**绝对不要**在这里用 `git add -A`；那会让前面的 stash 步骤完全失去意义。
 
-### Step 3: 生成 discovery plan、裁剪最终论文集，并写出 source manifest
+commit 之后，每个子代理的 worktree 都会从一个"骨架已就绪"的干净基底分叉，因此 agent 只会新增文件（`wiki/papers/{slug}.md`、新的 concepts/claims/people），Phase B 合并时也只会在真正重叠的 concept/claim 上出现冲突（Phase B 用 union 策略处理）。
+
+#### 4.5.d — 确认 `.gitattributes` 已就绪
+
+仓库在项目根附带了一个 `.gitattributes` 文件，声明 `wiki/log.md`、`wiki/graph/edges.jsonl`、`wiki/index.md` 使用 `merge=union`。这些是每个并行 agent 都会追加写入的只追加文件；没有 `merge=union`，每次 Phase B 合并都会在它们上面冲突。核查文件是否存在且包含全部三条：
 
 ```bash
-"$PYTHON_BIN" tools/init_discovery.py plan [--topic "<topic>"] --mode auto --raw-root raw --wiki-root wiki --prepared-manifest .checkpoints/init-prepare.json --allow-introduction <true|false> --output-plan .checkpoints/init-plan.json
+test -f .gitattributes && grep -E '^wiki/(log\.md|graph/edges\.jsonl|index\.md)' .gitattributes
 ```
 
-- `mode=seeded` 取决于 prepare manifest 中是否存在可解析本地论文；否则为 `bootstrap`
-- `plan` 必须读取 `.checkpoints/init-prepare.json`，而不是重新扫描 `raw/`
-- skill 层只保留定性 planner 策略：优先 relevance、freshness、connectivity 与 survey coverage
-- 在 seeded 模式且 introduced 容量有限时，不要让偏旧且 citation 很高的 anchor 抢走太多名额
-- 在 bootstrap 模式下，如果确实有助于覆盖面，可以保留一篇偏旧 canonical anchor
-- 若 DeepXiv search 可用，要在工具打分里使用返回的 `relevance_score`，而不是只在文字里提一句
-- 精确 ranking weights、shortlist 常量与 threshold 计算都属于 `tools/init_discovery.py`；把工具视为实现层唯一权威，不要在 LLM 推理里重述或覆盖这些常量
-- 在 `fetch` 前读取 `.checkpoints/init-plan.json`，并把 over-picked 的 `shortlist` 明确裁成最终 **8-10** 篇
-- 在 `fetch` 前必须给出明确的最终选择结果，至少包含 `shortlist_count`、`final_count` 与按 shortlist 顺序排列的最终 `candidate_id` 列表
-- 若 `final_count` 不在 **8-10** 范围内，则必须先停止并修正最终选择，再执行 `fetch`；`--no-introduction` 或“用户已提供超过 10 篇可解析论文”除外
-- 若传入 `--no-introduction`，只有在用户明确要求只使用本地论文时，才走这一分支；即便如此也仍要执行 `fetch`（不给外部 ID），以写出 `.checkpoints/init-sources.json`
-- planner 行为、trim 期望与 source-of-truth 边界详见 `references/planner-policy.md`
+若文件缺失或任一条目缺失，**停止**并在继续之前补齐 — 否则 Phase B 必失败。期望内容：
 
-然后执行：
+```
+wiki/log.md             merge=union
+wiki/graph/edges.jsonl  merge=union
+wiki/index.md           merge=union
+```
+
+### Step 5: 通过并行子代理 Ingest 论文（Worktree 隔离）
+
+所有论文 ingest agent **同时运行**，通过 git worktree 实现文件系统隔离。总耗时 ≈ 最慢的单篇论文耗时（而非所有论文之和）。
+
+**加载 checkpoint**（支持 `--resume`）：
+```bash
+python tools/research_wiki.py checkpoint-load wiki/ "init-session"
+```
+若 checkpoint 存在，从剩余未完成的论文继续并行处理。
+
+**合并顺序**：将 `raw_source_list` 按预估 importance 降序排列（高引用量、顶会优先）。重要性最高的论文最先合并，其 concept 定义成为后续合并的"标准基底"。
+
+#### 🚨 关键：Prompt 构造规则（Phase A 之前必读）
+
+构造每个子代理的 prompt 时，**主流程绝不可在 prompt 中包含项目根目录的绝对路径**。worktree 隔离的工作原理是给子代理分配其专属 cwd（worktree 目录），但如果 prompt 里出现类似 `Working directory: /home/user/project/...` 这样的行，子代理就会把这个绝对路径用于所有 `Read`/`Write`/`Edit` 操作，**悄无声息地绕过 worktree**，直接写入主仓库。这是已经发生过的真实生产 bug — 并行 ingest 全部写入 main，Phase B 无 branch 可合，concept/claim 冲突完全未被解决。
+
+**反模式（绝不要这样写）**：
+```
+prompt: "对 ... 执行 /ingest
+    Working directory: /home/user/project/OmegaWiki    ← BUG: 绕过 worktree
+    ..."
+```
+
+**正确模式**：
+- prompt 中只使用相对路径（如 `raw/papers/...`、`wiki/`、`tools/`）
+- 显式提醒子代理当前在独立 worktree 中运行
+- 信任 Claude Code worktree 机制已正确设置了子代理的 cwd
+
+#### Phase A — Fan-out：后台 agent
+
+spawn 前读取一次当前 wiki 状态（已创建的 topics）：
+```bash
+python tools/research_wiki.py find wiki/ --entity topic --field title
+```
+
+对 `raw_source_list` 中的每篇论文，spawn 一个**后台** agent（带 worktree 隔离）：
+
+```
+Agent({
+  description: "ingest <论文简称>",
+  isolation: "worktree",
+  run_in_background: true,
+  prompt: "🚨 ISOLATION NOTICE：你正运行在项目的临时 git worktree 中 —
+    你的 cwd 是你自己的 worktree 目录，而不是主仓库。
+    在每一次 Read/Write/Edit 调用中只能使用相对路径（如 wiki/papers/foo.md、
+    raw/papers/<slug>/main.tex、tools/fetch_s2.py）。绝对不要在任何路径前
+    拼接 /home/... 这类绝对路径 — 那会绕过 worktree 隔离、破坏并行合并流程。
+    如果你正准备用一个绝对路径，立即停下，把它重写为相对 cwd 的路径。
+
+    对位于 raw/papers/<相对路径> 的论文执行 /ingest。
+
+    INIT 模式 — 以快速批量引导模式运行 ingest。
+    引用发现已在 /init Step 2 完成，因此跳过对应 API 调用。
+
+    1. 读取 .claude/skills/ingest/SKILL.md 获取完整工作流
+    2. 按以下 INIT 模式覆盖执行工作流：
+         跳过 — fetch_s2.py citations <arxiv_id>            （引用链扩展已在 /init Step 2 完成）
+         跳过 — fetch_s2.py references <arxiv_id>           （同上）
+         跳过 — fetch_deepxiv.py head <arxiv_id>            （批量引导不需要章节结构）
+         跳过 — 更新 wiki/index.md                           （主流程合并后执行 rebuild-index）
+         跳过 — 更新 wiki/topics/*.md                        （主流程在合并后依次执行 `topic-backfill` 和 `lint --fix` 修复所有 xref）
+         跳过 — research_wiki.py rebuild-context-brief       （graph/ 文件是派生的；由主流程在所有合并完成后统一重建一次。在 worktree 中并行重建必然导致 context_brief.md / open_questions.md 的合并冲突。）
+         跳过 — research_wiki.py rebuild-open-questions      （同上 — 子代理绝不可写 wiki/graph/*.md）
+         执行 — 完整阅读 .tex/.pdf 来源
+         执行 — fetch_s2.py paper <arxiv_id>                 （元数据：venue, year, 引用量, s2_id）
+         执行 — fetch_deepxiv.py brief <arxiv_id>            （快速 TLDR，用于草拟 Key idea）
+         执行 — 创建 paper 页面、在硬上限内创建 claims/concepts、关键 people（importance >= 4）
+         执行 — 对每个候选 concept/claim 强制调用 find-similar-concept 和 find-similar-claim（见 /ingest Step 4 / Step 5 Part A；同时扫描 concepts/ 和 foundations/）
+         执行 — 通过 add-edge 添加所有 graph edges，追加 log.md
+    3. Wiki 根目录：wiki/   工具目录：tools/   （均为相对 cwd 的路径）
+    4. 先激活 venv：source .venv/bin/activate
+    5. 已创建的 topics（不要重复创建）：<逗号分隔的 topic slugs>
+    6. **强制最后一步 — 在汇报前把工作 commit 到 worktree branch**：
+       ```bash
+       git add wiki/
+       git status --short
+       git commit -m \"ingest: <paper-slug>\" --no-gpg-sign
+       ```
+       没有这个 commit，主流程 Phase B 合并时就没有东西可合 — 你的全部 ingest 成果都会丢失。
+       如果 `git status --short` 在 wiki/ 下显示为空，说明出了问题（你可能使用了绝对路径绕过
+       worktree），此时应在汇报中说明，不要 commit 一个空结果。
+    7. commit 后汇报：
+       - 创建的页面（papers, concepts, people, claims）
+       - 添加的 graph edges
+       - 第 6 步的 commit hash
+       - 遇到的任何问题"
+})
+```
+
+**并行的实现方式**：逐一 spawn 每个 agent，但 `run_in_background: true` 使每个 agent 立即开始运行而无需等待前一个完成。所有 N 个 agent 并发运行。spawn 完所有 N 个 agent 后，等待收到每个 agent 的完成通知，再进入 Phase B。
+
+#### Phase B — Fan-in：顺序合并
+
+所有 agent 完成后，按 importance 顺序（高引用量优先）逐一将各自的 worktree branch 合并到 main。
+
+**合并前的 sanity check**：确认 worktree branch 确实存在，并且每个 branch 都至少有一个超出 `HEAD` 的 commit：
+```bash
+git branch -a | grep worktree
+git worktree list
+# 对每个 branch，验证确实有 ingest commit（而非空）：
+for b in $(git branch --list 'worktree-agent-*' | tr -d ' *+'); do
+  echo "=== $b ==="
+  git log --oneline "$(git merge-base HEAD "$b")".."$b" | head -5
+done
+```
+
+**需要在此处检测的两种失败模式：**
+
+1. **根本没有 worktree branch**，但 `wiki/` 已经被写入 → 子代理绕过了 worktree 隔离（很可能是 prompt 里含有绝对路径，见上面 🚨 关键 区块）。立即停止，不要进入合并循环。
+2. **有 worktree branch 但 0 commit**（超出 `HEAD`）→ 子代理写了文件但没 commit。直接进入 Phase B 合并会"成功"但什么都没带入。立即停止 — 要么重新 spawn 受影响的 agent，要么手工 commit 每个 worktree 再合并：`for w in .claude/worktrees/agent-*; do (cd "$w" && git add wiki/ && git commit -m "ingest: recovered" --no-gpg-sign); done`。
+
+只有两项检查都通过后才能进入合并循环。
+
+对每个已完成的 agent branch：
+```bash
+git merge --no-ff <worktree-branch> --no-edit 2>&1
+```
+
+**当 git 报告合并冲突时**（多篇论文引用同一 concept/claim 文件时属预期行为）：
+- **concept 文件**：union `key_papers`、`aliases`、`related_concepts`；取更完整的 `## Definition` 和 `## Intuition` 正文段落
+- **claim 文件**：union `evidence` 列表；对 `confidence` 取平均；union `source_papers`
+- 解决每个文件冲突后：`git add <file> && git merge --continue`
+
+每成功合并一篇论文后记录 checkpoint：
+```bash
+python tools/research_wiki.py checkpoint-save wiki/ "init-session" "<paper-slug>"
+```
+
+若合并彻底失败，放弃该 branch：
+```bash
+git merge --abort
+python tools/research_wiki.py checkpoint-save wiki/ "init-session" "<paper-slug>" --failed
+```
+
+#### Phase C — 合并后清理
+
+所有 branch 合并完成后：
+```bash
+# 删除并行 agent 写入的重复 edges
+python tools/research_wiki.py dedup-edges wiki/
+```
+
+**全部完成后清理 checkpoint**：
+```bash
+python tools/research_wiki.py checkpoint-clear wiki/ "init-session"
+```
+
+**重要约束**：
+- **每个 agent 必须设置 `run_in_background: true`** — 并行执行的前提；可以逐一 spawn，但所有 agent 必须并发运行
+- **每个 agent 使用 `isolation: "worktree"`** — 防止并行执行期间的文件系统冲突
+- **prompt 中只能使用相对路径** — 绝不可在子代理 prompt 中写项目根绝对路径；绝对路径会悄然绕过 worktree 隔离，破坏合并阶段（见上面 🚨 关键 区块）
+- **子代理必须在汇报前 commit** — 每个 agent prompt 都强制要求最后一步 `git add wiki/ && git commit`，否则 Phase B 会合入空结果。Phase B sanity check 必须验证每个 branch 都有 commit。
+- **spawn 完所有 N 个 agent 后，等待所有 N 个完成通知**，再进入 Phase B
+- **绝不绕过子代理** — 所有论文 ingest 必须通过子代理运行 /ingest 工作流
+- **强制执行 init 模式跳过项** — SKIP 列表不得移除。Step 7 先跑 `topic-backfill`（把已合并的论文按 tag 重叠 + importance 阈值回填到 topic 的 seminal_works / SOTA tracker），再跑 `lint --fix`（修复 concept↔paper、claim↔paper、idea↔claim、experiment↔claim 的反向链接）。两者合起来覆盖子代理跳过的全部 xref。
+
+### Step 6: 生成初始 Ideas（可选）
+
+在所有论文 ingest 完成后：
+
+1. 读取 gap_map：
+   ```bash
+   python tools/research_wiki.py rebuild-open-questions wiki/
+   ```
+2. 若 `wiki/graph/open_questions.md` 中有明确的知识缺口，为最突出的 1-3 个 gap 创建 `wiki/ideas/{idea}.md`：
+   - status: proposed
+   - origin: 自动从 gap_map 提取
+   - origin_gaps: 关联的 claim/topic slugs
+3. 更新 index.md 中的 ideas 分类
+4. 添加 graph edges：
+   ```bash
+   python tools/research_wiki.py add-edge wiki/ --from ideas/<idea-slug> --to claims/<claim-slug> --type addresses_gap
+   ```
+
+### Step 7: 最终 Graph 重建与验证
+
+1. 重建全部派生文件：
+   ```bash
+   # 从 entity frontmatter 重建 index.md（子代理已跳过此步骤）
+   python tools/research_wiki.py rebuild-index wiki/
+   # 把已合并的论文按 tag 重叠 + importance 阈值回填到 topic 页面
+   #（INIT MODE 下子代理跳过了 wiki/topics/*.md 的更新）
+   python tools/research_wiki.py topic-backfill wiki/
+   # 重建 graph 上下文与开放问题
+   python tools/research_wiki.py rebuild-context-brief wiki/
+   python tools/research_wiki.py rebuild-open-questions wiki/
+   ```
+2. 自动修复子代理跳过的确定性 xref，再跑一次裸 lint 看最终健康状态：
+   ```bash
+   # --fix 修复 concept↔paper、claim↔paper、idea↔claim、experiment↔claim
+   # 的反向链接（CLAUDE.md 里那张双向规则表）。topic 相关的 xref
+   # 不在此列 —— 那些由上面的 topic-backfill 处理。
+   python tools/lint.py --wiki-dir wiki/ --fix
+   python tools/lint.py --wiki-dir wiki/
+   ```
+3. 获取统计信息：
+   ```bash
+   python tools/research_wiki.py stats wiki/
+   ```
+4. 记录完成日志：
+   ```bash
+   python tools/research_wiki.py log wiki/ "init | completed: N papers, M concepts, K claims, L topics"
+   ```
+
+### Step 8: 恢复 stash、报告给用户
+
+**在报告之前，先把 4.5.b 存起来的 stash 恢复到工作树**。从 checkpoint metadata 读回 stash ref 并 pop：
 
 ```bash
-"$PYTHON_BIN" tools/init_discovery.py fetch --raw-root raw --plan-json .checkpoints/init-plan.json --prepared-manifest .checkpoints/init-prepare.json --output-sources .checkpoints/init-sources.json --id <candidate-id> --id <candidate-id>
+STASH_REF=$(python tools/research_wiki.py checkpoint-get-meta wiki/ init-session stash_ref)
+if [ -z "$STASH_REF" ]; then
+  # 4.5.b 没有 stash 任何东西（工作树本来就干净）——直接清理 checkpoint。
+  python tools/research_wiki.py checkpoint-clear wiki/ init-session
+elif git stash pop "$STASH_REF"; then
+  python tools/research_wiki.py checkpoint-clear wiki/ init-session
+else
+  echo "⚠ stash pop 失败 — checkpoint 已保留在 .checkpoints/init-session.json"
+  echo "  请运行 'git stash list' 查看并手工处理，然后再："
+  echo "    python tools/research_wiki.py checkpoint-clear wiki/ init-session"
+fi
 ```
 
-- `/init` 下载的论文只允许写入 `raw/discovered/`，绝不写入 `raw/papers/`
-- 若某篇候选已经由 prepared local source 覆盖，则禁止重复抓取
-- `.checkpoints/init-sources.json` 是下游 ingest 顺序的唯一真相源
+`checkpoint-get-meta` 带 key 时会直接把原始值写到 stdout（不存在时写空字符串），因此 `[ -z "$STASH_REF" ]` 能干净地区分"无需 pop"、"pop 成功"、"pop 失败"三种情况。**仅在** pop 成功后才清理 checkpoint——pop 失败**必须**保留 checkpoint（含 `stash_ref` metadata），以便用户手工恢复。不要把这段压缩成 `pop || echo`：`echo` 永远返回 0，会把 pop 的非零退出码吞掉，导致 `checkpoint-clear` 无条件执行并丢失 stash ref。
 
-### Step 4: 在论文 ingest 前建立 scaffold 页面
-
-创建一篇 `wiki/Summary/{area}.md`、若干 `wiki/topics/{slug}.md`，以及来自 notes/web 的 provisional `ideas/`、`concepts/`，必要时还包括 `methods/`。
-
-规则：
-
-- notes/web 对“用户意图”是权威，对“文献置信度”不是权威
-- 每个 notes/web 派生页面都必须在 frontmatter 后立即写入这一行：
-
-```markdown
-Provisional note: seeded from raw/notes or raw/web during /init; pending validation from ingested papers.
-```
-
-- `topics/`：方向被明确提到或反复出现时创建
-- `ideas/`：用户明确提出或强烈暗示研究方向 / 假设时创建
-- `concepts/`：技术机制在 notes/web 中反复出现，或在 notes/web 与最终论文集中各出现至少一次时创建
-- `methods/`：除非用户在 notes/web 中显式命名了一项可复用、可被引用的 method，否则 `/init` 不创建 `methods/`；把论文中的 method 推升为可复用 method 实体是 ingest 的职责
-- `/prefill` 只是可选背景预填充，不属于 `/init`
-- `/init` 不得直接创建 `people/` 页面，也不得自动创建 foundations
-
-### Step 5: 通过 worktree 隔离并行 ingest 论文
-
-本步骤的论文来源只能来自 `.checkpoints/init-sources.json`：
-
-- `origin=user_local`：优先 ingest `raw/tmp/` 中的 canonical prepared `.tex`；prepare 失败时回退到原始 `raw/papers/...`
-- `origin=introduced`：ingest `raw/discovered/` 中抓取到的目录或 PDF
-
-并行 ingest 合同：
-
-- fan-out 前先 stash 无关脏文件，再把 `stash_ref`、`base_branch`、`base_commit` 写入 checkpoint metadata
-- fan-out 前必须先提交刚创建的 scaffold 与 init manifests，确保 `BASE_COMMIT` 真的包含后续子代理要继承的页面、manifest 与 handoff metadata
-- 创建 worktree 前先验证 `.gitattributes` 对 `wiki/log.md`、`wiki/graph/edges.jsonl`、`wiki/graph/citations.jsonl`、`wiki/index.md` 使用了 `merge=union`
-- `/init` 的 worktree 模式必须运行在一个命名分支上，不能处于 detached HEAD
-- 每个 worktree 都必须从 `BASE_COMMIT` 拉出，而不是复用已经签出的 `BASE_BRANCH`
-- 子代理 prompt 只能使用**相对路径**，且子代理的 shell 工作目录必须是 worktree 路径（`$WT_PATH`），不能是主仓库根目录
-- 只对一个 handoff 进来的 source path 执行 `/ingest`，不得绕过 `/ingest`
-- 在 INIT MODE 下，必须原样消费 handoff 给它的 canonical path
-- 跳过 `fetch_s2.py citations`
-- 跳过 `fetch_s2.py references`
-- 跳过每个子代理自己的 `rebuild-index`
-- 跳过每个子代理自己的 `rebuild-context-brief`
-- 跳过每个子代理自己的 `rebuild-open-questions`
-- 跳过易冲突 topic 写入
-- 子代理退出前必须在各自 worktree 内提交 ingest 结果，避免 fan-in 时 merge 到空 branch
-- worktree 命令、merge 顺序、fan-in 与清理见 `references/parallel-ingest.md`
-
-### Step 6: fan-in、rebuild 与最终报告
-
-全部子代理完成后：
-
-- 在 `BASE_BRANCH` 上按顺序 merge worktree branches
-- concept / method 冲突默认保守合并，不要扩散 near-duplicate 页面
-- 执行：
-
-```bash
-"$PYTHON_BIN" tools/research_wiki.py dedup-edges wiki/
-"$PYTHON_BIN" tools/research_wiki.py dedup-citations wiki/
-"$PYTHON_BIN" tools/research_wiki.py rebuild-index wiki/
-"$PYTHON_BIN" tools/research_wiki.py rebuild-context-brief wiki/
-"$PYTHON_BIN" tools/research_wiki.py rebuild-open-questions wiki/
-"$PYTHON_BIN" tools/lint.py --wiki-dir wiki/ --fix
-```
-
-随后重新生成可视化产物（best-effort；visualize 失败不可阻塞 `/init`）。`generate-obsidian-config` 会从 `config/visualize.json` 重写 `wiki/.obsidian/graph.json`，让按实体类型的 colorGroups 与运行时配置保持同步 —— Obsidian 的图谱视图在 `colorGroups` 为空时显示为无色节点，所以这一步保证图谱在每次重建后仍然可读。交互式网页 Graph 视图是 SPA 的 `#/graph` 路由（由 `tools/serve.py` 服务）；本阶段不生成单独的 HTML 文件。
-
-```bash
-"$PYTHON_BIN" tools/visualize.py generate-obsidian-config wiki/ \
-  || echo "WARN: visualize generate-obsidian-config failed; run /visualize manually" >&2
-"$PYTHON_BIN" tools/visualize.py generate-canvas wiki/ \
-  || echo "WARN: visualize generate-canvas failed; run /visualize manually" >&2
-```
-
-报告中必须分开列出：
-
-- 通过 `raw/tmp/` prepared path ingest 的用户论文
-- 因 prepare 失败而回退到原始 `raw/papers/` 的用户论文
-- `raw/discovered/` 中的 introduced 论文
-- 由 notes/web 种下的 provisional 页面
-- `/ingest` 新建的页面
-- `/ingest` 更新过的页面
-- 被跳过或失败的论文
-
-若 `stash_ref` 存在，在最后再 pop。若 stash pop 失败，保留 checkpoint 并在报告中说明。
+然后输出摘要，包含：
+- 创建的页面统计（按 8 种 entity 分类）
+- 领域概况（topics 和 Summary 摘要）
+- 提取的 claims 总览
+- graph edges 数量
+- lint 发现的问题（若有）
+- 生成的初始 ideas（若有）
+- **Step 2 Phase D 新发现并下载的论文**（单独列出，与用户自己提供的论文区分，方便用户 `git rm` 自己不要的那几篇）
+- stash 是否成功 pop（以及 pop 失败时的恢复方式）
+- 建议下一步：
+  - 手动 `/ingest` 更多论文
+  - 阅读 `wiki/Summary/` 查看领域全景
+  - 运行 `/lint` 查看详细健康报告
+  - 运行 `/ideate` 生成更多研究想法
 
 ## Constraints
 
-- 不得仅根据仓库状态推断 `--no-introduction`。只有当用户明确要求禁用外部发现时，才可使用它。
-- `raw/papers/`、`raw/notes/`、`raw/web/` 是用户自有输入
-- `raw/tmp/` 与 `raw/discovered/` 是生成型 handoff 区；直接本地 `/ingest` 也可以在 `raw/tmp/` 下准备可复用的 local sidecar
-- `/init` 只能把外部论文写到 `raw/discovered/`；`/init` 与直接本地 `/ingest` 可以把生成的 prepared local source 写到 `raw/tmp/`
-- `/prefill` 是可选背景预填充，不属于 `/init`
-- 只有 `/prefill` 可以自动创建 foundations
-- `/init` 不得直接创建 `people/` 页面
-- notes/web 派生页面必须包含上面的 exact provisional notice
-- 对 concept 合并与 method 抽取，论文证据永远高于 notes/web
-- 所有论文 ingest 必须通过并行 `/ingest` 子代理执行
-- Step 5 必须读取 `.checkpoints/init-sources.json`，不得临时扫描目录
-- 精确的 planner 常量属于 `tools/init_discovery.py`，不属于重复写在 skill 文档中的常量
+- **raw/ 对 `/init` 是追加写的，其它 skill 只读**：Step 2 Phase D 是 `raw/papers/` 接收新文件的唯一合法入口（通过引用链/关键词搜索发现的论文）。只允许新增，绝不覆盖或删除 `raw/papers/*` 下已有的条目。Step 5 派生出的所有 `/ingest` subagent 都必须把 `raw/` 当成严格只读（只消费 `raw/papers/<slug>/`，绝不回写）
+- **graph/ 仅通过 tools 维护**：不得手动编辑 `graph/` 下的文件
+- **双向链接**：写正向链接时同步写反向链接（参照 CLAUDE.md Cross Reference 规则表）
+- **tex 优先**：.tex > .pdf > vision API fallback
+- **slug 通过工具生成**：必须使用 `python tools/research_wiki.py slug` 生成 slug
+- **页面模板遵循 CLAUDE.md**：所有页面严格按照产品 CLAUDE.md 中的模板创建
+- **importance 评分标准**：1=niche, 2=useful, 3=field-standard, 4=influential, 5=seminal
+- **idea 初始状态为 proposed**：init 阶段只创建 proposed 状态的 ideas
+- **不创建空 experiments**：experiments 由 /exp-design 创建，init 不生成
 
 ## Error Handling
 
-- **`raw/papers/` 无可解析论文**：自动切换到 bootstrap 模式
-- **`raw/notes/` 与 `raw/web/` 为空**：跳过 provisional seeding，继续
-- **prepare 阶段的 PDF decode 失败**：保留本地来源，把 warning 记入 `.checkpoints/init-prepare.json`，必要时回退到原始路径
-- **没有恢复出可信 PDF 标题**：省略 `--title`，只允许走 filename/path arXiv-ID 恢复，然后直接回退到 synthetic `.tex`；metadata 或 filename 标题只用于显示
-- **`raw/notes/` 或 `raw/web/` 中检测到中文内容**：继续执行，但要保留 planner warning，说明 note/web 提取与排序可能更不可靠，并把 rankings 与 provisional 页面视为较低置信度
-- **S2 或 DeepXiv 不可用**：planner 使用剩余来源并继续执行；把 warning 保留在 checkpoint plan 中，并在最终报告里注明 discovery 降级
-- **某篇外部论文下载失败**：保留其余最终论文集，报告失败项
-- **单篇 ingest 失败**：写 checkpoint，跳过该篇，继续其他论文，并在最终报告中列出
-- **当前 checkout 处于 detached HEAD**：在 worktree fan-out 前停止，并要求用户先切换到或创建一个命名分支
-- **stash pop 失败**：保留 checkpoint metadata，并给出手动恢复提示
-- **可视化重生成失败**：警告并继续，绝不让 `/init` 失败。用户可单独跑 `/visualize --canvas` 排查，或直接通过 `python tools/serve.py` 浏览 SPA Graph 视图
+- **raw/ 为空**：仅通过 arXiv/S2 搜索获取论文，在报告中注明
+- **arXiv/S2/DeepXiv 搜索失败**：跳过失败的外部搜索源，使用其余可用源 + raw/ 中已有文件
+- **单篇论文 ingest 失败**：记录到 checkpoint（`--failed`），跳过该论文继续处理，在最终报告中列出失败项
+- **中途中断**：下次运行 `/init` 时自动检测 checkpoint，从断点继续（跳过已完成的论文）。4.5.b 记录的 `stash_ref` 保存在 checkpoint metadata 里、可跨重启保留，因此**续跑的那次**到 Step 8 仍然会 pop——续跑开始时**不要**先 pop，只在最后 Step 8 pop。
+- **wiki/ 已存在内容**：检测已有页面，跳过已存在的 entity，仅补充新内容（幂等性）
+- **topic 生成不确定**：优先少而准，2-3 个高质量 topic 优于 5 个模糊 topic
+- **worktree 隔离明显失效**（Phase A 后没有 worktree branch 但 `wiki/` 已被写入）：子代理 prompt 很可能含有绝对路径。停止、审计 prompt、修正主流程行为，从干净的 checkpoint 重跑。**绝不可**在缺少 Phase B 合并的情况下进入 Phase C — 这会导致 wiki 含大量重复 concept 和 claim。
+- **worktree branch 存在但无 commit**（Phase B sanity check 显示超出 merge-base 0 commit）：子代理跳过了强制最后一步 commit。要么重新 spawn 受影响的 agent（若支持 resume 则成本低），要么手工 commit 每个 worktree 再合并：`for w in .claude/worktrees/agent-*; do (cd "$w" && git add wiki/ && git commit -m "ingest: recovered" --no-gpg-sign); done`。之后按正常流程进入 Phase B。
 
 ## Dependencies
 
 ### Tools（via Bash）
+- `python tools/research_wiki.py init wiki/` — 初始化目录结构
+- `python tools/research_wiki.py slug "<title>"` — slug 生成
+- `python tools/research_wiki.py add-edge wiki/ ...` — 添加 graph edge
+- `python tools/research_wiki.py dedup-edges wiki/` — 删除并行 ingest 合并后的重复 edges（Step 5，Phase C）
+- `python tools/research_wiki.py rebuild-index wiki/` — 从 entity frontmatter 重建 index.md（Step 7，所有子代理完成后）
+- `python tools/research_wiki.py topic-backfill wiki/` — 把已合并的论文按 tag 重叠 + importance 阈值回填到 topic 的 seminal_works / SOTA tracker（Step 7，修复子代理在 INIT MODE 下跳过的 wiki/topics/*.md 更新）
+- `python tools/research_wiki.py rebuild-context-brief wiki/` — 重建压缩上下文
+- `python tools/research_wiki.py rebuild-open-questions wiki/` — 重建知识缺口地图
+- `python tools/research_wiki.py stats wiki/` — wiki 统计
+- `python tools/research_wiki.py log wiki/ "<message>"` — 追加日志
+- `python tools/research_wiki.py checkpoint-save/load/clear wiki/ init-session ...` — Step 5 并行 ingest 的 resume 支持
+- `python tools/research_wiki.py checkpoint-set-meta wiki/ init-session <key> <value>` — 把跨步骤状态（例如 4.5.b 的 stash ref）持久化到 checkpoint metadata
+- `python tools/research_wiki.py checkpoint-get-meta wiki/ init-session [<key>]` — Step 8 读回单个 metadata 值（原始字符串）或整个 metadata dict（JSON）
+- `python tools/fetch_s2.py search "<topic>" 20` — Semantic Scholar 关键词搜索
+- `python tools/fetch_s2.py references <arxiv_id>` — 引用链扩展（参考文献）
+- `python tools/fetch_s2.py citations <arxiv_id>` — 引用链扩展（被引用）
+- `python tools/fetch_deepxiv.py search "<topic>" --mode hybrid --limit 10` — DeepXiv 语义搜索（可选）
+- `python tools/lint.py --wiki-dir wiki/ --fix` — 结构检查 + 自动修复（Step 7，修复子代理跳过的 concept↔paper、claim↔paper、idea↔claim、experiment↔claim 反向链接）
+- `curl` — 下载 arXiv e-print（tex）或 PDF 到 raw/papers/
 
-- `"$PYTHON_BIN" tools/research_wiki.py init wiki/`
-- `"$PYTHON_BIN" tools/research_wiki.py checkpoint-set-meta wiki/ init-session <key> <value>`
-- `"$PYTHON_BIN" tools/research_wiki.py checkpoint-save/load/clear wiki/ init-session ...`
-- `"$PYTHON_BIN" tools/research_wiki.py dedup-edges wiki/`
-- `"$PYTHON_BIN" tools/research_wiki.py dedup-citations wiki/`
-- `"$PYTHON_BIN" tools/research_wiki.py rebuild-index wiki/`
-- `"$PYTHON_BIN" tools/research_wiki.py rebuild-context-brief wiki/`
-- `"$PYTHON_BIN" tools/research_wiki.py rebuild-open-questions wiki/`
-- `"$PYTHON_BIN" tools/research_wiki.py log wiki/ "<message>"`
-- `"$PYTHON_BIN" tools/visualize.py generate-obsidian-config wiki/`
-- `"$PYTHON_BIN" tools/visualize.py generate-canvas wiki/`
-- `"$PYTHON_BIN" tools/prepare_paper_source.py --raw-root raw --source <local-path> [--title "<recovered-title>"]`
-- `"$PYTHON_BIN" tools/init_discovery.py prepare --raw-root raw --pdf-titles-json .checkpoints/init-pdf-titles.json --output-manifest .checkpoints/init-prepare.json`
-- `"$PYTHON_BIN" tools/init_discovery.py plan [--topic "<topic>"] --mode auto --raw-root raw --wiki-root wiki --prepared-manifest .checkpoints/init-prepare.json --allow-introduction <true|false> --output-plan .checkpoints/init-plan.json`
-- `"$PYTHON_BIN" tools/init_discovery.py fetch --raw-root raw --plan-json .checkpoints/init-plan.json --prepared-manifest .checkpoints/init-prepare.json --output-sources .checkpoints/init-sources.json --id <candidate-id>`
-- `"$PYTHON_BIN" tools/lint.py --wiki-dir wiki/ --fix`
+### Skills（via Agent 子代理）
+- `/ingest` — 每篇论文由独立 Agent 子代理执行 ingest（Step 5）
 
-### Skills
-
-- `/ingest` — 每个子代理只 ingest 一篇论文，且运行在 INIT MODE
-- `/visualize` — Step 6 fan-in 直接调用 `tools/visualize.py` 重新生成 Obsidian 颜色组与 Canvas（best-effort）；用户也可以稍后手动调用 `/visualize` 做 `--focus` 视图，或在改了 `config/visualize.json` 后重新渲染
-
-### `init_discovery.py` 内部使用的外部 API
-
-- Semantic Scholar
-- DeepXiv（可选）
-- arXiv 下载端点
+### External APIs
+- arXiv（通过 curl 下载 e-print）
+- Semantic Scholar API（via tools/fetch_s2.py — 搜索、references、citations）
+- DeepXiv API（via tools/fetch_deepxiv.py，可选，不可用时 graceful fallback）

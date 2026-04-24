@@ -1,11 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Remote GPU Server Operations.
 
 Unified SSH tool for remote experiment execution: server status, GPU
 monitoring, code sync, environment setup, job launch/monitor, and result
 retrieval.
 
-Called by skills via:  Bash: python3 tools/remote.py <command> [args]
+Called by skills via:  Bash: python tools/remote.py <command> [args]
 
 Commands:
     status                              Server connectivity + GPU overview

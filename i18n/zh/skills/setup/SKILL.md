@@ -40,7 +40,7 @@ description: 交互式 API key 配置引导 — 检测当前 .env 状态，逐�
 运行以下命令检查已配置的内容：
 
 ```bash
-python3 -c "
+python -c "
 import sys, os
 sys.path.insert(0, 'tools')
 try:
@@ -63,7 +63,7 @@ for k, label in keys.items():
 同时检测 Python 环境和 `.venv` 状态：
 ```bash
 ls .venv/ 2>/dev/null && echo "venv:present" || echo "venv:absent"
-python3 --version
+python --version
 ```
 
 ### Step 3：展示配置状态
@@ -124,7 +124,7 @@ python3 --version
 
 **选项 1 — 自动注册**，运行：
 ```bash
-python3 -c "
+python -c "
 import sys, json
 from uuid import uuid4
 try:
@@ -206,7 +206,7 @@ stdout → token 值；stderr → 人类可读状态（直接透传，不要抑�
 用户完成配置后，运行验证检查：
 
 ```bash
-python3 -c "
+python -c "
 import sys, os
 sys.path.insert(0, 'tools')
 try:
@@ -266,8 +266,8 @@ for k in keys:
 ## Dependencies
 
 ### Tools（via Bash）
-- `python3 -c "import _env; ..."` — 读取当前 `.env` 状态
-- `python3 -c "import requests; ..."` — DeepXiv 自动注册 HTTP 请求
+- `python -c "import _env; ..."` — 读取当前 `.env` 状态
+- `python -c "import requests; ..."` — DeepXiv 自动注册 HTTP 请求
 
 ### Files Read
 - `config/setup-guide.md` — 所有可配置 key 的完整参考

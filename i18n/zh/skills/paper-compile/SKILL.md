@@ -102,7 +102,7 @@ cd paper/ && latexmk -pdf -interaction=nonstopmode main.tex 2>&1
 **3a. 页数检查**：
 ```bash
 # 获取 PDF 页数
-python3 -c "
+python -c "
 import subprocess
 result = subprocess.run(['pdfinfo', 'paper/main.pdf'], capture_output=True, text=True)
 for line in result.stdout.splitlines():
@@ -194,7 +194,7 @@ pdffonts paper/main.pdf
 
 追加日志：
 ```bash
-python3 tools/research_wiki.py log wiki/ \
+python tools/research_wiki.py log wiki/ \
   "paper-compile | {SUCCESS/FAILED} | {pages} pages, {errors} errors, {verify_count} [UNCONFIRMED], {checks_passed}/{checks_total} checks passed"
 ```
 
@@ -223,7 +223,7 @@ python3 tools/research_wiki.py log wiki/ \
 - `latexmk` — LaTeX 编译
 - `pdfinfo` — PDF 页数检查（poppler-utils）
 - `pdffonts` — 字体嵌入检查（poppler-utils）
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — 追加日志
+- `python tools/research_wiki.py log wiki/ "<message>"` — 追加日志
 
 ### MCP Servers
 - 无

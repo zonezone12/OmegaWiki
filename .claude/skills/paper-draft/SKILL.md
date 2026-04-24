@@ -125,7 +125,7 @@ For each entry in the Figure Plan from PAPER_PLAN:
      - Clear legend
    - Execute script to generate PDF:
      ```bash
-     python3 paper/figures/plot_{name}.py
+     python paper/figures/plot_{name}.py
      ```
    - Save to `paper/figures/{figure-name}.pdf`
 
@@ -253,7 +253,7 @@ Make final adjustments based on Review LLM feedback.
    - all `\ref{label}` have a corresponding `\label{label}`
 3. Append log:
    ```bash
-   python3 tools/research_wiki.py log wiki/ \
+   python tools/research_wiki.py log wiki/ \
      "paper-draft | drafted {venue} paper '{title}' | {N} sections, {M} figures, {K} citations ({V} verified)"
    ```
 4. Print to terminal:
@@ -306,9 +306,9 @@ Make final adjustments based on Review LLM feedback.
 ## Dependencies
 
 ### Tools（via Bash）
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — append log
-- `python3 tools/fetch_s2.py search "<title>"` — BibTeX fallback (S2 search)
-- `python3` — execute matplotlib figure scripts
+- `python tools/research_wiki.py log wiki/ "<message>"` — append log
+- `python tools/fetch_s2.py search "<title>"` — BibTeX fallback (S2 search)
+- `python` — execute matplotlib figure scripts
 
 ### MCP Servers
 - `mcp__llm-review__chat` — per-section review (optional, --review) + full-paper cross-review (Step 5)

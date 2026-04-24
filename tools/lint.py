@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Wiki lint helper — structural checks for ΩmegaWiki.
 
 Checks performed:
@@ -13,12 +13,12 @@ Checks performed:
   8. Graph edge and citation consistency: from/to nodes exist as wiki pages
 
 Usage:
-    python3 tools/lint.py                      # lint wiki/ in current dir
-    python3 tools/lint.py --wiki-dir wiki/     # specify wiki directory
-    python3 tools/lint.py --json               # output as JSON
-    python3 tools/lint.py --fix                # auto-fix deterministic issues
-    python3 tools/lint.py --fix --dry-run      # preview fixes without applying
-    python3 tools/lint.py --suggest            # output actionable suggestions for non-auto-fixable issues
+    python tools/lint.py                      # lint wiki/ in current dir
+    python tools/lint.py --wiki-dir wiki/     # specify wiki directory
+    python tools/lint.py --json               # output as JSON
+    python tools/lint.py --fix                # auto-fix deterministic issues
+    python tools/lint.py --fix --dry-run      # preview fixes without applying
+    python tools/lint.py --suggest            # output actionable suggestions for non-auto-fixable issues
 """
 
 from __future__ import annotations

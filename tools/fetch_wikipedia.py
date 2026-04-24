@@ -1,14 +1,14 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Fetch summary and section content from Wikipedia for /prefill.
 
 Uses the MediaWiki action=parse API exclusively (the REST mobile-sections
 endpoint is deprecated). All output is JSON on stdout.
 
 Usage:
-    python3 tools/fetch_wikipedia.py summary "Transformer (machine learning model)"
-    python3 tools/fetch_wikipedia.py sections "Gradient descent"
-    python3 tools/fetch_wikipedia.py section "Gradient descent" --index 3
-    python3 tools/fetch_wikipedia.py wikitext "Backpropagation"
+    python tools/fetch_wikipedia.py summary "Transformer (machine learning model)"
+    python tools/fetch_wikipedia.py sections "Gradient descent"
+    python tools/fetch_wikipedia.py section "Gradient descent" --index 3
+    python tools/fetch_wikipedia.py wikitext "Backpropagation"
 
 Exit codes:
     0  success

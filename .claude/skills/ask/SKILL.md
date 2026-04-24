@@ -68,8 +68,8 @@ Set `WIKI_ROOT=wiki/`.
 2. Read `wiki/graph/open_questions.md` — understand known open questions and knowledge gaps
 3. If both are missing, rebuild first:
    ```bash
-   python3 tools/research_wiki.py rebuild-context-brief wiki/
-   python3 tools/research_wiki.py rebuild-open-questions wiki/
+   python tools/research_wiki.py rebuild-context-brief wiki/
+   python tools/research_wiki.py rebuild-open-questions wiki/
    ```
 
 ### Step 2: Retrieve Relevant Pages
@@ -115,7 +115,7 @@ Set `WIKI_ROOT=wiki/`.
 Choose the crystallize target based on answer content:
 
 **Case A — Write to outputs/ (default):**
-1. Generate slug: `python3 tools/research_wiki.py slug "<query-summary>"`
+1. Generate slug: `python tools/research_wiki.py slug "<query-summary>"`
 2. Create `wiki/outputs/{query-slug}.md`:
    ```yaml
    ---
@@ -129,7 +129,7 @@ Choose the crystallize target based on answer content:
    Body is the answer content (preserve wikilinks)
 3. Add a graph edge for each cited source page:
    ```bash
-   python3 tools/research_wiki.py add-edge wiki/ --from outputs/<slug> --to papers/<source-slug> --type derived_from --evidence "query answer"
+   python tools/research_wiki.py add-edge wiki/ --from outputs/<slug> --to papers/<source-slug> --type derived_from --evidence "query answer"
    ```
 
 **Case B — Create new concept:**
@@ -152,16 +152,16 @@ Choose the crystallize target based on answer content:
 1. **index.md**: append new page entries under the appropriate category
 2. **log.md**:
    ```bash
-   python3 tools/research_wiki.py log wiki/ "ask | <question-summary> | crystallized: <target-path>"
+   python tools/research_wiki.py log wiki/ "ask | <question-summary> | crystallized: <target-path>"
    ```
    If not crystallized:
    ```bash
-   python3 tools/research_wiki.py log wiki/ "ask | <question-summary> | answer-only"
+   python tools/research_wiki.py log wiki/ "ask | <question-summary> | answer-only"
    ```
 3. **Rebuild derived graph files** (only if crystallize created new pages):
    ```bash
-   python3 tools/research_wiki.py rebuild-context-brief wiki/
-   python3 tools/research_wiki.py rebuild-open-questions wiki/
+   python tools/research_wiki.py rebuild-context-brief wiki/
+   python tools/research_wiki.py rebuild-open-questions wiki/
    ```
 
 ### Step 7: Report to User
@@ -187,21 +187,21 @@ Output a summary including:
 
 ## Error Handling
 
-- **context_brief.md missing**: run `python3 tools/research_wiki.py rebuild-context-brief wiki/` to rebuild, then retry
+- **context_brief.md missing**: run `python tools/research_wiki.py rebuild-context-brief wiki/` to rebuild, then retry
 - **wiki is empty**: inform the user to first run `/init` or `/ingest` to build the knowledge base
 - **no matching pages**: honestly report that no relevant content exists in the wiki, suggest search and ingest directions
 - **crystallize slug conflict**: append a numeric suffix (e.g. `query-result-2`)
-- **index.md missing**: run `python3 tools/research_wiki.py init wiki/` to initialize, then retry
+- **index.md missing**: run `python tools/research_wiki.py init wiki/` to initialize, then retry
 
 ## Dependencies
 
 ### Tools（via Bash）
-- `python3 tools/research_wiki.py slug "<title>"` — slug generation
-- `python3 tools/research_wiki.py add-edge wiki/ --from <id> --to <id> --type <type> --evidence "<text>"` — add graph edge
-- `python3 tools/research_wiki.py rebuild-context-brief wiki/` — rebuild compressed context
-- `python3 tools/research_wiki.py rebuild-open-questions wiki/` — rebuild knowledge gap map
-- `python3 tools/research_wiki.py log wiki/ "<message>"` — append log entry
-- `python3 tools/research_wiki.py init wiki/` — initialize wiki (fallback)
+- `python tools/research_wiki.py slug "<title>"` — slug generation
+- `python tools/research_wiki.py add-edge wiki/ --from <id> --to <id> --type <type> --evidence "<text>"` — add graph edge
+- `python tools/research_wiki.py rebuild-context-brief wiki/` — rebuild compressed context
+- `python tools/research_wiki.py rebuild-open-questions wiki/` — rebuild knowledge gap map
+- `python tools/research_wiki.py log wiki/ "<message>"` — append log entry
+- `python tools/research_wiki.py init wiki/` — initialize wiki (fallback)
 
 ### Skills（via Skill tool）
 - `/ingest` — referenced when suggesting the user supplement knowledge

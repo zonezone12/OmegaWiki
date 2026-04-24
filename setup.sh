@@ -48,11 +48,9 @@ for i in "${!_ARGS[@]}"; do
     --lang)   LANG_CODE="${_ARGS[$((i+1))]}" ;;
   esac
 done
-PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
 [[ "$LANG_CODE" == "en" || "$LANG_CODE" == "zh" ]] || { fail "Unknown lang: $LANG_CODE (use 'en' or 'zh')"; exit 1; }
-I18N_DIR="$PROJECT_ROOT/i18n/$LANG_CODE"
+I18N_DIR="$(cd "$(dirname "$0")" && pwd)/i18n/$LANG_CODE"
 [ -d "$I18N_DIR" ] || { fail "i18n/$LANG_CODE not found — run from the project root"; exit 1; }
-cd "$PROJECT_ROOT"
 
 echo ""
 echo "============================================"
@@ -65,9 +63,8 @@ echo ""
 info "Checking prerequisites..."
 
 # Python
-if command -v python3 &>/dev/null; then
-    PYTHON_CMD="python3"
-    PY_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
+if command -v python &>/dev/null; then
+    PY_VERSION=$(python --version 2>&1 | awk '{print $2}')
     PY_MAJOR=$(echo "$PY_VERSION" | cut -d. -f1)
     PY_MINOR=$(echo "$PY_VERSION" | cut -d. -f2)
     if [ "$PY_MAJOR" -ge 3 ] && [ "$PY_MINOR" -ge 9 ]; then
@@ -77,15 +74,15 @@ if command -v python3 &>/dev/null; then
         exit 1
     fi
 else
-    fail "Python3 not found. Install Python 3.9+ first."
+    fail "python not found. Install Python 3.9+ first."
     exit 1
 fi
 
 # pip
-if "$PYTHON_CMD" -m pip --version &>/dev/null; then
+if python -m pip --version &>/dev/null; then
     ok "pip available"
 else
-    fail "pip not found. Install with: $PYTHON_CMD -m ensurepip"
+    fail "pip not found. Install with: python -m ensurepip"
     exit 1
 fi
 
@@ -112,27 +109,29 @@ fi
 echo ""
 info "Setting up Python environment..."
 
-if [ -n "$VIRTUAL_ENV" ] || { [ -n "$CONDA_DEFAULT_ENV" ] && [ "$CONDA_DEFAULT_ENV" != "base" ]; }; then
-    warn "Active environment detected; setup always installs OmegaWiki into .venv"
-fi
-
-if [ -d ".venv" ]; then
-    warn ".venv already exists, using it"
+# Detect if user is already in a virtual environment (venv or conda)
+if [ -n "$VIRTUAL_ENV" ]; then
+    ok "Using active venv: $VIRTUAL_ENV"
+    USING_VENV="$VIRTUAL_ENV"
+elif [ -n "$CONDA_DEFAULT_ENV" ] && [ "$CONDA_DEFAULT_ENV" != "base" ]; then
+    ok "Using active conda env: $CONDA_DEFAULT_ENV"
+    USING_VENV="conda:$CONDA_DEFAULT_ENV"
 else
-    "$PYTHON_CMD" -m venv .venv
-    ok "Created .venv"
+    # No active env — create .venv
+    if [ -d ".venv" ]; then
+        warn ".venv already exists, using it"
+    else
+        python -m venv .venv
+        ok "Created .venv"
+    fi
+    source .venv/bin/activate
+    ok "Activated .venv"
+    USING_VENV=".venv"
 fi
 
-VENV_PYTHON="$PROJECT_ROOT/.venv/bin/python"
-if [ ! -x "$VENV_PYTHON" ]; then
-    fail "Expected $VENV_PYTHON but it does not exist"
-    exit 1
-fi
-ok "Using $VENV_PYTHON"
-
-info "Installing dependencies into .venv..."
-"$VENV_PYTHON" -m pip install -r requirements.txt -q
-ok "Dependencies installed into .venv"
+info "Installing dependencies..."
+pip install -r requirements.txt -q
+ok "Dependencies installed"
 
 # ── Step 3: Configuration files ─────────────────────────────────────────
 
@@ -164,7 +163,15 @@ for src in "$I18N_DIR/skills"/*/SKILL.md; do
     skill_dir=$(dirname "$src")
     name=$(basename "$skill_dir")
     mkdir -p ".claude/skills/$name"
-    cp -R "$skill_dir"/. ".claude/skills/$name/"
+    cp "$src" ".claude/skills/$name/SKILL.md"
+    # Copy any sibling resource files (e.g. prefill/foundations-catalog.yaml)
+    for extra in "$skill_dir"/*; do
+        [ -f "$extra" ] || continue
+        case "$(basename "$extra")" in
+            SKILL.md) ;;
+            *) cp "$extra" ".claude/skills/$name/" ;;
+        esac
+    done
 done
 mkdir -p ".claude/skills/shared-references"
 cp "$I18N_DIR/shared-references"/*.md ".claude/skills/shared-references/"
@@ -177,67 +184,32 @@ echo ""
 info "Verifying installation..."
 
 ERRORS=0
-WARNINGS=0
 
-check_python_snippet() {
-    local label="$1"
-    local snippet="$2"
-    if "$VENV_PYTHON" -c "$snippet" >/dev/null 2>&1; then
-        ok "$label"
+# Check tools import (run from tools/ so _env.py resolves correctly)
+for tool_check in \
+    "fetch_arxiv:from fetch_arxiv import fetch_recent" \
+    "fetch_s2:from fetch_s2 import search" \
+    "fetch_deepxiv:from fetch_deepxiv import search" \
+    "research_wiki:from research_wiki import slugify" \
+    "lint:from lint import check_missing_fields"; do
+    tool_name="${tool_check%%:*}"
+    tool_import="${tool_check#*:}"
+    if (cd tools && python -c "$tool_import") 2>/dev/null; then
+        ok "tools/${tool_name}.py"
     else
-        fail "$label missing"
+        fail "tools/${tool_name}.py import error"
         ERRORS=$((ERRORS+1))
     fi
-}
-
-check_tool_import() {
-    local label="$1"
-    local import_stmt="$2"
-    if (cd tools && "$VENV_PYTHON" -c "$import_stmt") >/dev/null 2>&1; then
-        ok "$label"
-    else
-        fail "$label import error"
-        ERRORS=$((ERRORS+1))
-    fi
-}
-
-# Check real runtime dependencies first.
-check_python_snippet "PyMuPDF (fitz)" "import fitz"
-check_python_snippet "requests" "import requests"
-check_python_snippet "feedparser" "import feedparser"
-
-# Then check the current-stage tools with the same interpreter.
-check_tool_import "tools/init_discovery.py" "from init_discovery import prepare_inputs"
-check_tool_import "tools/fetch_s2.py" "from fetch_s2 import search"
-check_tool_import "tools/fetch_arxiv.py" "from fetch_arxiv import fetch_recent"
-check_tool_import "tools/research_wiki.py" "from research_wiki import slugify"
-check_tool_import "tools/lint.py" "from lint import check_missing_fields"
-check_tool_import "tools/wiki2dag.py" "from wiki2dag import build_dag"
-check_tool_import "tools/poster.py" "from poster import build_poster"
-
-# DeepXiv is optional; surface it as a warning-only diagnostic.
-if "$VENV_PYTHON" -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else 1)" >/dev/null 2>&1; then
-    if "$VENV_PYTHON" -c "import deepxiv_sdk" >/dev/null 2>&1; then
-        ok "deepxiv-sdk (optional)"
-    else
-        warn "deepxiv-sdk unavailable; DeepXiv features will degrade but setup can continue"
-        WARNINGS=$((WARNINGS+1))
-    fi
-else
-    warn "Python < 3.10 detected inside .venv; deepxiv-sdk may be unavailable, so DeepXiv features may degrade"
-    WARNINGS=$((WARNINGS+1))
-fi
+done
 
 # ── Done ────────────────────────────────────────────────────────────────
 
 echo ""
 echo "============================================"
-if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
+if [ $ERRORS -eq 0 ]; then
     echo -e "  ${GREEN}Setup complete!${NC}"
-elif [ $ERRORS -eq 0 ]; then
-    echo -e "  ${YELLOW}Setup complete with $WARNINGS warning(s)${NC}"
 else
-    echo -e "  ${YELLOW}Setup complete with $ERRORS error(s) and $WARNINGS warning(s)${NC}"
+    echo -e "  ${YELLOW}Setup complete with $ERRORS warning(s)${NC}"
 fi
 echo "============================================"
 echo ""
@@ -246,21 +218,16 @@ echo ""
 echo "  1. Authenticate Claude Code (if not already):"
 echo "     claude login"
 echo ""
-echo "  2. Optional: activate .venv for manual Python tool use:"
-echo "     source .venv/bin/activate"
-echo "     setup.sh does not activate your current shell permanently."
-echo "     /init will use .venv/bin/python automatically when it exists."
-echo ""
-echo "  3. Start Claude Code:"
+echo "  2. Start Claude Code:"
 echo "     claude"
 echo ""
-echo "  4. Complete API key configuration (guided):"
+echo "  3. Complete API key configuration (guided):"
 echo "     /setup"
 echo "     Claude Code will walk you through Semantic Scholar,"
 echo "     DeepXiv, and Review LLM — skip any you don't have yet."
 echo ""
-echo "  5. Then initialize your wiki:"
-echo "     /init [your-research-topic]"
+echo "  4. Then initialize your wiki:"
+echo "     /init <your-research-topic>"
 echo ""
 echo "  For more, see README.md"
 echo ""
