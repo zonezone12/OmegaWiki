@@ -1,0 +1,41 @@
+# WT-MetaD PIMD FAD Baseline Reproduction
+# Fan et al. 2025 (arXiv 2503.23728) - Section 3.1
+
+system:
+  name: formic_acid_dimer
+  n_atoms: 10
+
+pimd:
+  n_beads: 32
+  temperature: 200.0       # K
+  timestep: 0.5            # fs
+  n_steps: 600000          # 300 ps; v3: exp(-bias/kT) reweighting, 3 seeds (42,123,7)
+  thermostat: PILE-L
+  friction: 1.0            # ps^-1
+  seed: 42
+
+wt_metad:
+  cv: CVdimer              # d_O1H1 - d_O2H1 + d_O4H3 - d_O3H3
+  height: 1.0              # kJ/mol
+  sigma: 0.05              # Angstrom
+  biasfactor: 10
+  stride: 100              # deposit every N steps
+  cv_min: -1.5
+  cv_max: 1.5
+  cv_bins: 300
+
+output:
+  colvar_stride: 10
+  colvar_file: results/colvar.dat
+  hills_file: results/hills.dat
+  traj_stride: 500
+  checkpoint_stride: 10000
+
+model:
+  checkpoint: checkpoints/gfn_fad.pt
+  cutoff: 5.0
+  n_interactions: 3
+
+sanity:
+  n_steps: 100
+  check_cv: true

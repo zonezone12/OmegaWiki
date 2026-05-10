@@ -450,12 +450,20 @@ After all papers are ingested:
    ```bash
    # Rebuild index.md from entity frontmatter (subagents skipped this step)
    python tools/research_wiki.py rebuild-index wiki/
+   # Backfill topic seminal_works / SOTA tracker from merged papers
+   # (subagents skipped wiki/topics/*.md updates in INIT MODE)
+   python tools/research_wiki.py topic-backfill wiki/
    # Rebuild graph context and open questions
    python tools/research_wiki.py rebuild-context-brief wiki/
    python tools/research_wiki.py rebuild-open-questions wiki/
    ```
-2. Run lint for a basic health check:
+2. Auto-repair the deterministic xrefs the subagents skipped, then re-run lint
+   for a clean health report:
    ```bash
+   # --fix repairs concept↔paper, claim↔paper, idea↔claim, experiment↔claim
+   # reverse links (the bidirectional rules from CLAUDE.md). Topic xrefs are
+   # NOT in this set — those are handled by `topic-backfill` in step 1.
+   python tools/lint.py --wiki-dir wiki/ --fix
    python tools/lint.py --wiki-dir wiki/
    ```
 3. Get statistics:
@@ -533,6 +541,7 @@ Then output a summary including:
 - `python tools/research_wiki.py add-edge wiki/ ...` — add graph edge
 - `python tools/research_wiki.py dedup-edges wiki/` — remove duplicate edges after parallel ingest merge (Step 5, Phase C)
 - `python tools/research_wiki.py rebuild-index wiki/` — regenerate index.md from entity frontmatter (Step 7, after all subagents complete)
+- `python tools/research_wiki.py topic-backfill wiki/` — append matching papers to topic seminal_works / SOTA tracker (Step 7, repairs the wiki/topics/*.md updates that subagents skipped in INIT MODE)
 - `python tools/research_wiki.py rebuild-context-brief wiki/` — rebuild compressed context
 - `python tools/research_wiki.py rebuild-open-questions wiki/` — rebuild knowledge gap map
 - `python tools/research_wiki.py stats wiki/` — wiki statistics
@@ -544,7 +553,8 @@ Then output a summary including:
 - `python tools/fetch_s2.py references <arxiv_id>` — citation-chain expansion (references)
 - `python tools/fetch_s2.py citations <arxiv_id>` — citation-chain expansion (citations)
 - `python tools/fetch_deepxiv.py search "<topic>" --mode hybrid --limit 10` — DeepXiv semantic search (optional)
-- `python tools/lint.py --wiki-dir wiki/` — structural check
+- `python tools/lint.py --wiki-dir wiki/ --fix` — structural check + auto-repair (Step 7, repairs concept↔paper, claim↔paper, idea↔claim, experiment↔claim reverse links that subagents skipped)
+- `python tools/lint.py --wiki-dir wiki/` — final structural check (report)
 - `curl` — download arXiv e-print (tex) or PDF to raw/papers/
 
 ### Skills (via Agent subagent)
