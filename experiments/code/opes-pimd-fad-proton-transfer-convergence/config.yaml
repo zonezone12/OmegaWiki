@@ -1,0 +1,49 @@
+# OPES-PIMD FAD proton transfer - Stage 9 (FES sign fix, PACE=100)
+# Fan et al. 2025 baseline: 150 ps WT-MetaD, barrier ~1.52 kcal/mol
+
+system:
+  name: formic_acid_dimer
+  n_atoms: 10
+
+pimd:
+  n_beads: 32
+  temperature: 200.0
+  timestep: 0.5            # fs
+  n_steps: 600000          # 300 ps; v9: FES sign fix (exp-bias/kT), PACE=100 (5x faster bias buildup)
+  thermostat: PILE-L
+  friction: 1.0            # ps^-1
+  seeds: [42, 123, 7]      # 3 independent runs
+
+opes:
+  cv: CVdimer
+  pace: 100                # update KDE every PACE steps
+  sigma: 0.15              # fixed kernel bandwidth (Ang); v5: sweet spot between v3(0.20, smearing)
+                           # and v4(0.10, stalling). K(0,-1.3,bw=0.15)=exp(-37.5)~7e-17: no smearing.
+                           # ~3x faster exploration than v2(0.05) and ~1.5x faster than v4(0.10).
+                           # v4 stalled at cv=-0.84 after 200ps: sigma=0.10 too narrow for the steep
+                           # barrier shoulder near cv=-0.45; each PACE update covered only 0.10 Ang.
+  barrier: 60.0            # kJ/mol; v6 fix: BARRIER=30 kJ/mol (7.17 kcal/mol, gamma=19) still stalled.
+                           # Root: FallbackFF quantum barrier ~3-4 kcal/mol, effective_barrier=barrier/gamma
+                           # = 7.17/19 = 0.38 kcal/mol. Physical restoring force at frontier cv=-0.726
+                           # ~9 kcal/(mol·Ang) >> OPES bias gradient ~2.8 kcal/(mol·Ang). 0 TS crossings
+                           # after 158 ps. Fix: 60 kJ/mol = 14.34 kcal/mol, gamma=37.
+                           # effective_barrier = 14.34/37 = 0.39 kcal/mol. BUT the key change is that
+                           # gamma=37 means bias clamping is less aggressive: max bias = BARRIER×(γ-1)/γ
+                           # = 14.34×36/37 = 13.95 kcal/mol >> FallbackFF barrier. TS crossing rate
+                           # proportional to exp(-F_barrier/kT) should be ~74% efficient at 200K.
+  cv_min: -2.0
+  cv_max:  2.0
+  cv_bins: 400
+
+output:
+  colvar_stride: 10
+  colvar_file: results_v9/colvar.dat
+  fes_stride: 20000        # reconstruct FES every 20000 steps (10 ps)
+  fes_dir: results_v9/fes_snapshots
+
+model:
+  method: fallback         # FallbackFF GPU double-well (Run 9); set to GFN2-xTB for xTB (CPU-only, slow)
+
+sanity:
+  n_steps: 100
+  check_cv: true

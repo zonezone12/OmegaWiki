@@ -1,0 +1,70 @@
+=== ANI-2x seed 123: Sun, May 10, 2026  7:49:20 PM ===
+[ANI2xFF] ANI-2x on cuda
+[init] FF=ani2x  CV0=-1.4624 Ang  n_steps=300000  T=200.0K
+[ANI2xFF] ANI-2x on cuda
+[init] FF=ani2x  CV0=-1.4624 Ang  n_steps=300000  T=200.0K
+step    5000  t=2.5ps  cv=-1.600  barrier=42.72 kcal/mol  0.3M steps/day
+step   10000  t=5.0ps  cv=-1.621  barrier=42.72 kcal/mol  0.3M steps/day
+step   15000  t=7.5ps  cv=-1.410  barrier=38.68 kcal/mol  0.3M steps/day
+step   20000  t=10.0ps  cv=-1.457  barrier=38.68 kcal/mol  0.3M steps/day
+step   25000  t=12.5ps  cv=-1.396  barrier=38.68 kcal/mol  0.3M steps/day
+step   30000  t=15.0ps  cv=-1.556  barrier=38.68 kcal/mol  0.3M steps/day
+step   35000  t=17.5ps  cv=-1.578  barrier=38.68 kcal/mol  0.3M steps/day
+step   40000  t=20.0ps  cv=-1.477  barrier=38.68 kcal/mol  0.3M steps/day
+step   45000  t=22.5ps  cv=-1.528  barrier=38.68 kcal/mol  0.3M steps/day
+step   50000  t=25.0ps  cv=-1.537  barrier=38.68 kcal/mol  0.3M steps/day
+step   55000  t=27.5ps  cv=-1.411  barrier=38.68 kcal/mol  0.3M steps/day
+step   60000  t=30.0ps  cv=-1.618  barrier=37.73 kcal/mol  0.3M steps/day
+step   65000  t=32.5ps  cv=-1.510  barrier=37.73 kcal/mol  0.4M steps/day
+step   70000  t=35.0ps  cv=-1.398  barrier=37.73 kcal/mol  0.4M steps/day
+step   75000  t=37.5ps  cv=-1.516  barrier=37.73 kcal/mol  0.4M steps/day
+step   80000  t=40.0ps  cv=-1.537  barrier=37.73 kcal/mol  0.4M steps/day
+step   85000  t=42.5ps  cv=-1.602  barrier=37.73 kcal/mol  0.4M steps/day
+step   90000  t=45.0ps  cv=-1.600  barrier=37.73 kcal/mol  0.4M steps/day
+step   95000  t=47.5ps  cv=-1.463  barrier=37.73 kcal/mol  0.4M steps/day
+step  100000  t=50.0ps  cv=-1.536  barrier=37.73 kcal/mol  0.4M steps/day
+step  105000  t=52.5ps  cv=-1.670  barrier=37.73 kcal/mol  0.4M steps/day
+step  110000  t=55.0ps  cv=-1.447  barrier=37.73 kcal/mol  0.4M steps/day
+step  115000  t=57.5ps  cv=-1.517  barrier=37.73 kcal/mol  0.4M steps/day
+step  120000  t=60.0ps  cv=-1.555  barrier=37.73 kcal/mol  0.4M steps/day
+step  125000  t=62.5ps  cv=-1.435  barrier=37.73 kcal/mol  0.4M steps/day
+step  130000  t=65.0ps  cv=-1.603  barrier=37.73 kcal/mol  0.4M steps/day
+step  135000  t=67.5ps  cv=-1.557  barrier=37.73 kcal/mol  0.4M steps/day
+step  140000  t=70.0ps  cv=-1.371  barrier=37.73 kcal/mol  0.4M steps/day
+step  145000  t=72.5ps  cv=-1.534  barrier=37.73 kcal/mol  0.4M steps/day
+step  150000  t=75.0ps  cv=-1.526  barrier=37.73 kcal/mol  0.4M steps/day
+step  155000  t=77.5ps  cv=-1.461  barrier=37.73 kcal/mol  0.4M steps/day
+step  160000  t=80.0ps  cv=-1.465  barrier=37.73 kcal/mol  0.4M steps/day
+step  165000  t=82.5ps  cv=-1.542  barrier=37.73 kcal/mol  0.4M steps/day
+step  170000  t=85.0ps  cv=-1.567  barrier=37.73 kcal/mol  0.4M steps/day
+step  175000  t=87.5ps  cv=-1.486  barrier=37.73 kcal/mol  0.4M steps/day
+step  180000  t=90.0ps  cv=-1.358  barrier=37.73 kcal/mol  0.4M steps/day
+step  185000  t=92.5ps  cv=-1.575  barrier=37.73 kcal/mol  0.4M steps/day
+step  190000  t=95.0ps  cv=-1.554  barrier=37.73 kcal/mol  0.4M steps/day
+step  195000  t=97.5ps  cv=-1.567  barrier=37.73 kcal/mol  0.4M steps/day
+step  200000  t=100.0ps  cv=-1.636  barrier=37.73 kcal/mol  0.4M steps/day
+step  205000  t=102.5ps  cv=-1.582  barrier=37.73 kcal/mol  0.4M steps/day
+step  210000  t=105.0ps  cv=-1.691  barrier=37.73 kcal/mol  0.4M steps/day
+step  215000  t=107.5ps  cv=-1.599  barrier=37.73 kcal/mol  0.4M steps/day
+step  220000  t=110.0ps  cv=-1.493  barrier=37.73 kcal/mol  0.4M steps/day
+step  225000  t=112.5ps  cv=-1.545  barrier=37.73 kcal/mol  0.4M steps/day
+step  230000  t=115.0ps  cv=-1.509  barrier=37.73 kcal/mol  0.4M steps/day
+step  235000  t=117.5ps  cv=-1.429  barrier=37.73 kcal/mol  0.4M steps/day
+step  240000  t=120.0ps  cv=-1.441  barrier=37.24 kcal/mol  0.4M steps/day
+step  245000  t=122.5ps  cv=-1.437  barrier=37.24 kcal/mol  0.4M steps/day
+step  250000  t=125.0ps  cv=-1.544  barrier=37.24 kcal/mol  0.4M steps/day
+step  255000  t=127.5ps  cv=-1.436  barrier=37.24 kcal/mol  0.4M steps/day
+step  260000  t=130.0ps  cv=-1.482  barrier=37.24 kcal/mol  0.4M steps/day
+step  265000  t=132.5ps  cv=-1.521  barrier=37.24 kcal/mol  0.4M steps/day
+step  270000  t=135.0ps  cv=-1.567  barrier=37.24 kcal/mol  0.4M steps/day
+step  275000  t=137.5ps  cv=-1.619  barrier=37.24 kcal/mol  0.4M steps/day
+step  280000  t=140.0ps  cv=-1.498  barrier=37.24 kcal/mol  0.5M steps/day
+step  285000  t=142.5ps  cv=-1.495  barrier=37.24 kcal/mol  0.5M steps/day
+step  290000  t=145.0ps  cv=-1.645  barrier=37.24 kcal/mol  0.5M steps/day
+step  295000  t=147.5ps  cv=-1.473  barrier=37.24 kcal/mol  0.5M steps/day
+
+=== RESULTS (ANI2X) ===
+Barrier : 37.2405 kcal/mol  (target: 1.52 +/- 0.15)
+Speed   : 0.47 M steps/day
+pass_barrier = False
+Saved: results_ani2x\seed_123.json

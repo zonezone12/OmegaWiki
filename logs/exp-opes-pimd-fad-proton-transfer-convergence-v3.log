@@ -1,0 +1,63 @@
+[run.sh] OPES-PIMD Stage 2 starting: Fri, May  8, 2026  9:42:23 PM
+[run.sh] Python: python
+[run.sh] Output: /c/Users/zonezone/Desktop/YCU_research/MetaDynamics/OmegaWiki/experiments/code/opes-pimd-fad-proton-transfer-convergence/results
+
+[run.sh] === Seed 42 starting: Fri, May  8, 2026  9:42:23 PM ===
+
+============================================================
+[OPES-PIMD] seed=42  n_steps=300000  T=200.0K
+[GFN] checkpoint not found (checkpoints/gfn_fad.pt), using fallback FF
+[PIMD] device=GPU (CUDA)
+[init] CV0=-1.4833 Ang  gamma=10.02
+step   20000  t=10.0ps  cv=-1.335  barrier=9.69 kcal/mol  9.4M steps/day
+step   40000  t=20.0ps  cv=-1.322  barrier=9.27 kcal/mol  9.3M steps/day
+step   60000  t=30.0ps  cv=-1.350  barrier=8.63 kcal/mol  9.3M steps/day
+step   80000  t=40.0ps  cv=-1.335  barrier=8.47 kcal/mol  9.3M steps/day
+step  100000  t=50.0ps  cv=-1.118  barrier=7.33 kcal/mol  9.3M steps/day
+step  120000  t=60.0ps  cv=-1.024  barrier=6.45 kcal/mol  9.3M steps/day
+step  140000  t=70.0ps  cv=-0.979  barrier=5.47 kcal/mol  9.3M steps/day
+step  160000  t=80.0ps  cv=-0.719  barrier=3.32 kcal/mol  9.2M steps/day
+step  180000  t=90.0ps  cv=-0.634  barrier=2.35 kcal/mol  9.2M steps/day
+step  200000  t=100.0ps  cv=-0.445  barrier=1.81 kcal/mol  9.2M steps/day
+step  220000  t=110.0ps  cv=-0.613  barrier=1.70 kcal/mol  9.2M steps/day
+step  240000  t=120.0ps  cv=-0.553  barrier=1.57 kcal/mol  9.2M steps/day
+step  260000  t=130.0ps  cv=-0.420  barrier=1.46 kcal/mol  9.2M steps/day
+step  280000  t=140.0ps  cv=-0.326  barrier=1.08 kcal/mol  9.2M steps/day
+
+--- seed 42 RESULTS ---
+Barrier : 0.9365 kcal/mol  (target: 1.52 +/- 0.15)
+Speed   : 9.19 M steps/day  (target: > 5)
+pass_barrier = False
+pass_speed   = True
+Saved: results\seed_42.json
+[run.sh] === Seed 42 done: Fri, May  8, 2026 10:29:26 PM ===
+
+[run.sh] === Seed 123 starting: Fri, May  8, 2026 10:29:26 PM ===
+
+============================================================
+[OPES-PIMD] seed=123  n_steps=300000  T=200.0K
+[GFN] checkpoint not found (checkpoints/gfn_fad.pt), using fallback FF
+[PIMD] device=GPU (CUDA)
+[init] CV0=-1.4624 Ang  gamma=10.02
+step   20000  t=10.0ps  cv=-1.288  barrier=9.40 kcal/mol  8.7M steps/day
+step   40000  t=20.0ps  cv=-1.259  barrier=7.73 kcal/mol  8.0M steps/day
+step   60000  t=30.0ps  cv=-1.154  barrier=6.93 kcal/mol  7.9M steps/day
+step   80000  t=40.0ps  cv=-1.154  barrier=6.49 kcal/mol  7.4M steps/day
+step  100000  t=50.0ps  cv=-1.167  barrier=6.50 kcal/mol  6.5M steps/day
+Traceback (most recent call last):
+  File "C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\train.py", line 605, in <module>
+    main()
+  File "C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\train.py", line 551, in main
+    np.savez(snap, cv=g, fes=fv, step=np.array(step))
+  File "C:\Users\zonezone\miniforge3\envs\zong-test\Lib\site-packages\numpy\lib\_npyio_impl.py", line 673, in savez
+    _savez(file, args, kwds, False, allow_pickle=allow_pickle)
+  File "C:\Users\zonezone\miniforge3\envs\zong-test\Lib\site-packages\numpy\lib\_npyio_impl.py", line 779, in _savez
+    zipf = zipfile_factory(file, mode="w", compression=compression)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zonezone\miniforge3\envs\zong-test\Lib\site-packages\numpy\lib\_npyio_impl.py", line 112, in zipfile_factory
+    return zipfile.ZipFile(file, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zonezone\miniforge3\envs\zong-test\Lib\zipfile.py", line 1311, in __init__
+    self.fp = io.open(file, filemode)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'results/fes_snapshots\\seed_123\\fes_step0120000.npz'

@@ -1,0 +1,102 @@
+[run.sh] OPES-PIMD Stage 2 starting: Fri, May  8, 2026  4:41:56 PM
+[run.sh] Python: python
+[run.sh] Output: /c/Users/zonezone/Desktop/YCU_research/MetaDynamics/OmegaWiki/experiments/code/opes-pimd-fad-proton-transfer-convergence/results
+
+[run.sh] === Seed 42 starting: Fri, May  8, 2026  4:41:56 PM ===
+C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\train.py:456: RuntimeWarning: divide by zero encountered in log
+  fval = np.where(fval > 0, -self.kT * np.log(fval), np.nan)
+
+============================================================
+[OPES-PIMD] seed=42  n_steps=300000  T=200.0K
+[GFN] checkpoint not found (checkpoints/gfn_fad.pt), using fallback FF
+[PIMD] device=GPU (CUDA)
+[init] CV0=-1.4833 Ang  gamma=10.02
+step   20000  t=10.0ps  cv=-1.405  barrier=294.69 kcal/mol  9.2M steps/day
+step   40000  t=20.0ps  cv=-1.419  barrier=295.89 kcal/mol  9.2M steps/day
+step   60000  t=30.0ps  cv=-1.345  barrier=296.58 kcal/mol  9.2M steps/day
+step   80000  t=40.0ps  cv=-1.258  barrier=296.61 kcal/mol  9.2M steps/day
+step  100000  t=50.0ps  cv=-1.316  barrier=294.03 kcal/mol  9.2M steps/day
+step  120000  t=60.0ps  cv=-1.345  barrier=295.43 kcal/mol  9.2M steps/day
+step  140000  t=70.0ps  cv=-1.314  barrier=295.50 kcal/mol  9.2M steps/day
+step  160000  t=80.0ps  cv=-1.254  barrier=295.65 kcal/mol  9.2M steps/day
+step  180000  t=90.0ps  cv=-1.212  barrier=296.00 kcal/mol  9.2M steps/day
+step  200000  t=100.0ps  cv=-1.166  barrier=295.36 kcal/mol  9.2M steps/day
+step  220000  t=110.0ps  cv=-1.244  barrier=296.00 kcal/mol  9.2M steps/day
+step  240000  t=120.0ps  cv=-1.174  barrier=296.14 kcal/mol  9.2M steps/day
+step  260000  t=130.0ps  cv=-1.107  barrier=294.28 kcal/mol  9.2M steps/day
+step  280000  t=140.0ps  cv=-1.159  barrier=296.07 kcal/mol  9.2M steps/day
+
+--- seed 42 RESULTS ---
+Barrier : 294.8332 kcal/mol  (target: 1.52 +/- 0.15)
+Speed   : 9.18 M steps/day  (target: > 5)
+pass_barrier = False
+pass_speed   = True
+Saved: results\seed_42.json
+[run.sh] === Seed 42 done: Fri, May  8, 2026  5:29:05 PM ===
+
+[run.sh] === Seed 123 starting: Fri, May  8, 2026  5:29:05 PM ===
+C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\train.py:456: RuntimeWarning: divide by zero encountered in log
+  fval = np.where(fval > 0, -self.kT * np.log(fval), np.nan)
+
+============================================================
+[OPES-PIMD] seed=123  n_steps=300000  T=200.0K
+[GFN] checkpoint not found (checkpoints/gfn_fad.pt), using fallback FF
+[PIMD] device=GPU (CUDA)
+[init] CV0=-1.4624 Ang  gamma=10.02
+step   20000  t=10.0ps  cv=-1.343  barrier=293.89 kcal/mol  9.1M steps/day
+step   40000  t=20.0ps  cv=-1.291  barrier=295.89 kcal/mol  9.1M steps/day
+step   60000  t=30.0ps  cv=-1.203  barrier=294.90 kcal/mol  9.2M steps/day
+step   80000  t=40.0ps  cv=-1.171  barrier=295.60 kcal/mol  9.1M steps/day
+step  100000  t=50.0ps  cv=-1.239  barrier=294.31 kcal/mol  9.2M steps/day
+step  120000  t=60.0ps  cv=-1.165  barrier=294.46 kcal/mol  9.2M steps/day
+step  140000  t=70.0ps  cv=-0.941  barrier=296.15 kcal/mol  9.3M steps/day
+step  160000  t=80.0ps  cv=-0.968  barrier=295.21 kcal/mol  9.2M steps/day
+step  180000  t=90.0ps  cv=-0.955  barrier=295.03 kcal/mol  9.2M steps/day
+step  200000  t=100.0ps  cv=-0.835  barrier=294.17 kcal/mol  9.2M steps/day
+step  220000  t=110.0ps  cv=-0.907  barrier=294.16 kcal/mol  9.2M steps/day
+step  240000  t=120.0ps  cv=-0.861  barrier=295.59 kcal/mol  9.2M steps/day
+step  260000  t=130.0ps  cv=-0.861  barrier=295.61 kcal/mol  9.2M steps/day
+step  280000  t=140.0ps  cv=-0.818  barrier=294.76 kcal/mol  9.2M steps/day
+
+--- seed 123 RESULTS ---
+Barrier : 294.3819 kcal/mol  (target: 1.52 +/- 0.15)
+Speed   : 9.19 M steps/day  (target: > 5)
+pass_barrier = False
+pass_speed   = True
+Saved: results\seed_123.json
+[run.sh] === Seed 123 done: Fri, May  8, 2026  6:16:09 PM ===
+
+[run.sh] === Seed 7 starting: Fri, May  8, 2026  6:16:09 PM ===
+C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\train.py:456: RuntimeWarning: divide by zero encountered in log
+  fval = np.where(fval > 0, -self.kT * np.log(fval), np.nan)
+
+============================================================
+[OPES-PIMD] seed=7  n_steps=300000  T=200.0K
+[GFN] checkpoint not found (checkpoints/gfn_fad.pt), using fallback FF
+[PIMD] device=GPU (CUDA)
+[init] CV0=-1.4556 Ang  gamma=10.02
+step   20000  t=10.0ps  cv=-1.369  barrier=296.40 kcal/mol  9.2M steps/day
+step   40000  t=20.0ps  cv=-1.067  barrier=295.30 kcal/mol  9.3M steps/day
+step   60000  t=30.0ps  cv=-0.972  barrier=294.85 kcal/mol  9.2M steps/day
+step   80000  t=40.0ps  cv=-0.884  barrier=294.18 kcal/mol  9.2M steps/day
+step  100000  t=50.0ps  cv=-0.902  barrier=294.43 kcal/mol  9.2M steps/day
+step  120000  t=60.0ps  cv=-0.837  barrier=296.09 kcal/mol  9.3M steps/day
+step  140000  t=70.0ps  cv=-0.930  barrier=295.22 kcal/mol  9.2M steps/day
+step  160000  t=80.0ps  cv=-0.988  barrier=294.27 kcal/mol  9.3M steps/day
+step  180000  t=90.0ps  cv=-0.919  barrier=294.27 kcal/mol  9.2M steps/day
+step  200000  t=100.0ps  cv=-0.918  barrier=296.32 kcal/mol  9.2M steps/day
+step  220000  t=110.0ps  cv=-0.805  barrier=295.26 kcal/mol  9.2M steps/day
+step  240000  t=120.0ps  cv=-0.766  barrier=294.16 kcal/mol  9.2M steps/day
+step  260000  t=130.0ps  cv=-0.910  barrier=293.98 kcal/mol  9.2M steps/day
+step  280000  t=140.0ps  cv=-0.819  barrier=293.95 kcal/mol  9.2M steps/day
+
+--- seed 7 RESULTS ---
+Barrier : 293.9852 kcal/mol  (target: 1.52 +/- 0.15)
+Speed   : 9.23 M steps/day  (target: > 5)
+pass_barrier = False
+pass_speed   = True
+Saved: results\seed_7.json
+[run.sh] === Seed 7 done: Fri, May  8, 2026  7:03:01 PM ===
+
+[run.sh] All seeds complete: Fri, May  8, 2026  7:03:01 PM
+[run.sh] Results in /c/Users/zonezone/Desktop/YCU_research/MetaDynamics/OmegaWiki/experiments/code/opes-pimd-fad-proton-transfer-convergence/results/seed_*.json

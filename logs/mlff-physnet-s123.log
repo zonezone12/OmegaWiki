@@ -1,0 +1,73 @@
+C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Physnet_v2\layers\NeuronLayer.py:12: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super(NeuronLayer, self).__init__(input_dim=n_in)
+WARNING:tensorflow:From C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Physnet_v2\layers\DenseLayer.py:32: The name tf.add_to_collection is deprecated. Please use tf.compat.v1.add_to_collection instead.
+
+C:\Users\zonezone\miniforge3\envs\zong-test\Lib\site-packages\tensorflow\python\util\numpy_compat.py:47: RuntimeWarning: overflow encountered in cast
+  return np.array(values, copy=copy, order=order).astype(dtype)
+[PhysNetFF] loaded: C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Final_Fit\best\best_model
+[init] FF=physnet  CV0=-1.4624 Ang  n_steps=300000  T=200.0K
+step    5000  t=2.5ps  cv=-1.306  barrier=32.35 kcal/mol  0.5M steps/day
+step   10000  t=5.0ps  cv=-1.564  barrier=32.37 kcal/mol  0.5M steps/day
+step   15000  t=7.5ps  cv=-1.321  barrier=32.37 kcal/mol  0.5M steps/day
+step   20000  t=10.0ps  cv=-1.415  barrier=32.37 kcal/mol  0.5M steps/day
+step   25000  t=12.5ps  cv=-1.343  barrier=32.37 kcal/mol  0.5M steps/day
+step   30000  t=15.0ps  cv=-1.280  barrier=31.22 kcal/mol  0.5M steps/day
+step   35000  t=17.5ps  cv=-1.428  barrier=31.22 kcal/mol  0.5M steps/day
+step   40000  t=20.0ps  cv=-1.380  barrier=31.22 kcal/mol  0.5M steps/day
+step   45000  t=22.5ps  cv=-1.497  barrier=31.22 kcal/mol  0.5M steps/day
+step   50000  t=25.0ps  cv=-1.543  barrier=31.22 kcal/mol  0.5M steps/day
+step   55000  t=27.5ps  cv=-1.512  barrier=31.22 kcal/mol  0.5M steps/day
+step   60000  t=30.0ps  cv=-1.287  barrier=31.22 kcal/mol  0.5M steps/day
+step   65000  t=32.5ps  cv=-1.205  barrier=31.19 kcal/mol  0.5M steps/day
+step   70000  t=35.0ps  cv=-1.157  barrier=29.33 kcal/mol  0.5M steps/day
+step   75000  t=37.5ps  cv=-1.382  barrier=29.32 kcal/mol  0.5M steps/day
+step   80000  t=40.0ps  cv=-1.414  barrier=29.32 kcal/mol  0.5M steps/day
+step   85000  t=42.5ps  cv=-1.483  barrier=29.32 kcal/mol  0.5M steps/day
+step   90000  t=45.0ps  cv=-1.409  barrier=29.32 kcal/mol  0.5M steps/day
+step   95000  t=47.5ps  cv=-1.331  barrier=29.32 kcal/mol  0.5M steps/day
+step  100000  t=50.0ps  cv=-1.380  barrier=29.32 kcal/mol  0.5M steps/day
+step  105000  t=52.5ps  cv=-1.553  barrier=29.32 kcal/mol  0.5M steps/day
+step  110000  t=55.0ps  cv=-1.549  barrier=29.32 kcal/mol  0.5M steps/day
+step  115000  t=57.5ps  cv=-1.409  barrier=29.32 kcal/mol  0.5M steps/day
+step  120000  t=60.0ps  cv=-1.369  barrier=29.32 kcal/mol  0.5M steps/day
+step  125000  t=62.5ps  cv=-1.261  barrier=29.32 kcal/mol  0.5M steps/day
+step  130000  t=65.0ps  cv=-1.491  barrier=29.32 kcal/mol  0.5M steps/day
+step  135000  t=67.5ps  cv=-1.416  barrier=29.32 kcal/mol  0.5M steps/day
+step  140000  t=70.0ps  cv=-1.291  barrier=29.32 kcal/mol  0.5M steps/day
+step  145000  t=72.5ps  cv=-1.438  barrier=29.32 kcal/mol  0.5M steps/day
+step  150000  t=75.0ps  cv=-1.477  barrier=29.32 kcal/mol  0.5M steps/day
+step  155000  t=77.5ps  cv=-1.380  barrier=29.32 kcal/mol  0.5M steps/day
+step  160000  t=80.0ps  cv=-1.259  barrier=29.32 kcal/mol  0.5M steps/day
+step  165000  t=82.5ps  cv=-1.380  barrier=29.32 kcal/mol  0.5M steps/day
+step  170000  t=85.0ps  cv=-1.473  barrier=29.32 kcal/mol  0.5M steps/day
+step  175000  t=87.5ps  cv=-1.342  barrier=29.32 kcal/mol  0.5M steps/day
+step  180000  t=90.0ps  cv=-1.256  barrier=29.32 kcal/mol  0.5M steps/day
+step  185000  t=92.5ps  cv=-1.377  barrier=29.32 kcal/mol  0.5M steps/day
+step  190000  t=95.0ps  cv=-1.383  barrier=29.32 kcal/mol  0.5M steps/day
+step  195000  t=97.5ps  cv=-1.386  barrier=29.32 kcal/mol  0.5M steps/day
+step  200000  t=100.0ps  cv=-1.436  barrier=29.32 kcal/mol  0.5M steps/day
+step  205000  t=102.5ps  cv=-1.412  barrier=29.32 kcal/mol  0.5M steps/day
+step  210000  t=105.0ps  cv=-1.529  barrier=29.32 kcal/mol  0.5M steps/day
+step  215000  t=107.5ps  cv=-1.481  barrier=29.32 kcal/mol  0.5M steps/day
+step  220000  t=110.0ps  cv=-1.508  barrier=29.32 kcal/mol  0.5M steps/day
+step  225000  t=112.5ps  cv=-1.453  barrier=29.32 kcal/mol  0.5M steps/day
+step  230000  t=115.0ps  cv=-1.510  barrier=29.32 kcal/mol  0.5M steps/day
+step  235000  t=117.5ps  cv=-1.298  barrier=29.32 kcal/mol  0.5M steps/day
+step  240000  t=120.0ps  cv=-1.186  barrier=27.29 kcal/mol  0.5M steps/day
+step  245000  t=122.5ps  cv=-1.247  barrier=27.29 kcal/mol  0.5M steps/day
+step  250000  t=125.0ps  cv=-1.409  barrier=27.29 kcal/mol  0.5M steps/day
+step  255000  t=127.5ps  cv=-1.286  barrier=27.29 kcal/mol  0.5M steps/day
+step  260000  t=130.0ps  cv=-1.311  barrier=27.29 kcal/mol  0.5M steps/day
+step  265000  t=132.5ps  cv=-1.384  barrier=27.29 kcal/mol  0.5M steps/day
+step  270000  t=135.0ps  cv=-1.381  barrier=27.29 kcal/mol  0.5M steps/day
+step  275000  t=137.5ps  cv=-1.540  barrier=27.29 kcal/mol  0.5M steps/day
+step  280000  t=140.0ps  cv=-1.629  barrier=27.29 kcal/mol  0.5M steps/day
+step  285000  t=142.5ps  cv=-1.601  barrier=27.29 kcal/mol  0.5M steps/day
+step  290000  t=145.0ps  cv=-1.491  barrier=27.29 kcal/mol  0.5M steps/day
+step  295000  t=147.5ps  cv=-1.265  barrier=27.29 kcal/mol  0.5M steps/day
+
+=== RESULTS (PHYSNET) ===
+Barrier : 27.2919 kcal/mol  (target: 1.52 +/- 0.15)
+Speed   : 0.55 M steps/day
+pass_barrier = False
+Saved: results_physnet\seed_123.json

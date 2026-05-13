@@ -1,0 +1,41 @@
+[run.sh] OPES-PIMD Stage 6 starting: Sat, May  9, 2026  1:38:20 AM
+[run.sh] Python: python
+[run.sh] Output: /c/Users/zonezone/Desktop/YCU_research/MetaDynamics/OmegaWiki/experiments/code/opes-pimd-fad-proton-transfer-convergence/results_v6
+
+[run.sh] === Seed 42 starting: Sat, May  9, 2026  1:38:20 AM ===
+
+============================================================
+[OPES-PIMD] seed=42  n_steps=400000  T=200.0K
+[GFN] checkpoint not found (checkpoints/gfn_fad.pt), using fallback FF
+[PIMD] device=GPU (CUDA)
+[init] CV0=-1.4833 Ang  gamma=37.08
+step   20000  t=10.0ps  cv=-1.211  barrier=14.09 kcal/mol  6.9M steps/day
+step   40000  t=20.0ps  cv=-1.189  barrier=11.79 kcal/mol  6.8M steps/day
+step   60000  t=30.0ps  cv=-1.101  barrier=11.38 kcal/mol  6.8M steps/day
+step   80000  t=40.0ps  cv=-1.014  barrier=9.31 kcal/mol  6.7M steps/day
+step  100000  t=50.0ps  cv=-0.964  barrier=7.19 kcal/mol  6.7M steps/day
+step  120000  t=60.0ps  cv=-0.917  barrier=7.04 kcal/mol  6.7M steps/day
+step  140000  t=70.0ps  cv=-0.805  barrier=6.10 kcal/mol  6.7M steps/day
+step  160000  t=80.0ps  cv=-0.786  barrier=5.93 kcal/mol  6.7M steps/day
+step  180000  t=90.0ps  cv=-0.792  barrier=5.88 kcal/mol  6.7M steps/day
+step  200000  t=100.0ps  cv=-0.698  barrier=5.32 kcal/mol  6.7M steps/day
+step  220000  t=110.0ps  cv=-0.743  barrier=5.05 kcal/mol  6.7M steps/day
+step  240000  t=120.0ps  cv=-0.633  barrier=4.40 kcal/mol  6.7M steps/day
+step  260000  t=130.0ps  cv=-0.520  barrier=3.44 kcal/mol  6.7M steps/day
+step  280000  t=140.0ps  cv=-0.609  barrier=3.11 kcal/mol  6.7M steps/day
+step  300000  t=150.0ps  cv=-0.560  barrier=2.90 kcal/mol  6.7M steps/day
+step  320000  t=160.0ps  cv=-0.597  barrier=2.71 kcal/mol  6.8M steps/day
+step  340000  t=170.0ps  cv=-0.363  barrier=2.18 kcal/mol  6.7M steps/day
+step  360000  t=180.0ps  cv=-0.319  barrier=1.64 kcal/mol  6.7M steps/day
+step  380000  t=190.0ps  cv=-0.307  barrier=1.33 kcal/mol  6.7M steps/day
+
+--- seed 42 RESULTS ---
+Barrier : 1.2378 kcal/mol  (target: 1.52 +/- 0.15)
+Speed   : 6.74 M steps/day  (target: > 5)
+pass_barrier = False
+pass_speed   = True
+Saved: results_v6\seed_42.json
+[run.sh] === Seed 42 done: Sat, May  9, 2026  3:03:50 AM ===
+
+[run.sh] === Seed 123 starting: Sat, May  9, 2026  3:03:50 AM ===
+Terminated

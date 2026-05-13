@@ -1,0 +1,35 @@
+# MLFF comparison: MACE-OFF23 small (B3LYP-D3BJ/def2-TZVPD, SPICE dataset)
+system:
+  name: formic_acid_dimer
+  n_atoms: 10
+
+pimd:
+  n_beads: 32
+  temperature: 200.0
+  timestep: 0.5
+  n_steps: 100000          # 50 ps x 3 seeds (speed ~0.24 M/day)
+  thermostat: PILE-L
+  friction: 1.0
+  seed: 42
+
+wt_metad:
+  cv: CVdimer
+  height: 1.0              # kJ/mol
+  sigma: 0.05
+  biasfactor: 10
+  stride: 100
+  cv_min: -1.5
+  cv_max: 1.5
+  cv_bins: 300
+
+output:
+  colvar_stride: 10
+  hills_file: results_mace/hills_seed42.dat
+
+model:
+  method: mace
+  mace_size: small
+
+sanity:
+  n_steps: 100
+  check_cv: true

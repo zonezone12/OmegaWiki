@@ -1,0 +1,46 @@
+[run.sh] OPES-PIMD Stage 7 starting: Sat, May  9, 2026  3:49:23 AM
+[run.sh] Python: python
+[run.sh] Output: /c/Users/zonezone/Desktop/YCU_research/MetaDynamics/OmegaWiki/experiments/code/opes-pimd-fad-proton-transfer-convergence/results_v7
+
+[run.sh] === Seed 42 starting: Sat, May  9, 2026  3:49:23 AM ===
+
+============================================================
+[OPES-PIMD] seed=42  n_steps=500000  T=200.0K
+[GFN] checkpoint not found (checkpoints/gfn_fad.pt), using fallback FF
+[PIMD] device=GPU (CUDA)
+[init] CV0=-1.4833 Ang  gamma=37.08
+step   20000  t=10.0ps  cv=-1.462  barrier=16.46 kcal/mol  6.9M steps/day
+step   40000  t=20.0ps  cv=-1.323  barrier=15.72 kcal/mol  6.9M steps/day
+step   60000  t=30.0ps  cv=-1.273  barrier=14.12 kcal/mol  6.9M steps/day
+step   80000  t=40.0ps  cv=-1.280  barrier=13.79 kcal/mol  6.9M steps/day
+step  100000  t=50.0ps  cv=-1.044  barrier=11.15 kcal/mol  6.9M steps/day
+step  120000  t=60.0ps  cv=-1.098  barrier=8.03 kcal/mol  6.9M steps/day
+step  140000  t=70.0ps  cv=-1.195  barrier=8.09 kcal/mol  6.9M steps/day
+step  160000  t=80.0ps  cv=-1.238  barrier=8.14 kcal/mol  6.9M steps/day
+step  180000  t=90.0ps  cv=-1.006  barrier=8.19 kcal/mol  6.9M steps/day
+step  200000  t=100.0ps  cv=-0.841  barrier=5.85 kcal/mol  6.8M steps/day
+step  220000  t=110.0ps  cv=-0.846  barrier=5.52 kcal/mol  6.8M steps/day
+step  240000  t=120.0ps  cv=-0.812  barrier=5.42 kcal/mol  6.8M steps/day
+step  260000  t=130.0ps  cv=-0.760  barrier=5.37 kcal/mol  6.8M steps/day
+step  280000  t=140.0ps  cv=-0.720  barrier=5.15 kcal/mol  6.8M steps/day
+step  300000  t=150.0ps  cv=-0.720  barrier=4.59 kcal/mol  6.8M steps/day
+step  320000  t=160.0ps  cv=-0.811  barrier=4.55 kcal/mol  6.8M steps/day
+step  340000  t=170.0ps  cv=-0.702  barrier=4.52 kcal/mol  6.8M steps/day
+step  360000  t=180.0ps  cv=-0.702  barrier=4.42 kcal/mol  6.8M steps/day
+step  380000  t=190.0ps  cv=-0.651  barrier=4.33 kcal/mol  6.8M steps/day
+step  400000  t=200.0ps  cv=-0.682  barrier=3.73 kcal/mol  6.8M steps/day
+step  420000  t=210.0ps  cv=-0.738  barrier=3.71 kcal/mol  6.8M steps/day
+step  440000  t=220.0ps  cv=-0.542  barrier=3.57 kcal/mol  6.8M steps/day
+step  460000  t=230.0ps  cv=-0.592  barrier=3.18 kcal/mol  6.8M steps/day
+step  480000  t=240.0ps  cv=-0.439  barrier=2.88 kcal/mol  6.8M steps/day
+
+--- seed 42 RESULTS ---
+Barrier : 2.7607 kcal/mol  (target: 1.52 +/- 0.15)
+Speed   : 6.78 M steps/day  (target: > 5)
+pass_barrier = False
+pass_speed   = True
+Saved: results_v7\seed_42.json
+[run.sh] === Seed 42 done: Sat, May  9, 2026  5:35:35 AM ===
+
+[run.sh] === Seed 123 starting: Sat, May  9, 2026  5:35:35 AM ===
+Terminated

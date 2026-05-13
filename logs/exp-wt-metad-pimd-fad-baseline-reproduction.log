@@ -1,0 +1,69 @@
+=== Fri, May  8, 2026  2:30:29 PM === v2 (corrected double-well FF)
+[GFN] checkpoint not found (checkpoints/gfn_fad.pt), using fallback FF
+[init] CV0=-1.4833 Ang  n_steps=300000  T=200.0K
+step    5000  t=2.5ps  cv=-1.343  barrier=0.08 kcal/mol  8.3M steps/day
+step   10000  t=5.0ps  cv=-1.288  barrier=0.14 kcal/mol  8.9M steps/day
+step   15000  t=7.5ps  cv=-1.204  barrier=4.76 kcal/mol  8.8M steps/day
+step   20000  t=10.0ps  cv=-1.009  barrier=6.10 kcal/mol  9.1M steps/day
+step   25000  t=12.5ps  cv=-0.893  barrier=6.32 kcal/mol  9.4M steps/day
+step   30000  t=15.0ps  cv=-0.784  barrier=6.40 kcal/mol  9.6M steps/day
+step   35000  t=17.5ps  cv=-0.745  barrier=7.20 kcal/mol  9.7M steps/day
+step   40000  t=20.0ps  cv=-0.620  barrier=7.60 kcal/mol  9.8M steps/day
+step   45000  t=22.5ps  cv=-0.562  barrier=7.62 kcal/mol  9.9M steps/day
+step   50000  t=25.0ps  cv=-0.495  barrier=7.62 kcal/mol  10.0M steps/day
+step   55000  t=27.5ps  cv=-0.346  barrier=7.62 kcal/mol  10.1M steps/day
+step   60000  t=30.0ps  cv=-0.313  barrier=7.62 kcal/mol  10.1M steps/day
+step   65000  t=32.5ps  cv=-0.117  barrier=7.62 kcal/mol  10.2M steps/day
+step   70000  t=35.0ps  cv=-0.101  barrier=7.62 kcal/mol  10.2M steps/day
+step   75000  t=37.5ps  cv=-0.151  barrier=7.62 kcal/mol  10.3M steps/day
+step   80000  t=40.0ps  cv=-0.140  barrier=7.58 kcal/mol  10.3M steps/day
+step   85000  t=42.5ps  cv=+0.106  barrier=6.72 kcal/mol  10.4M steps/day
+step   90000  t=45.0ps  cv=+0.144  barrier=4.76 kcal/mol  10.4M steps/day
+step   95000  t=47.5ps  cv=+0.292  barrier=1.68 kcal/mol  10.4M steps/day
+step  100000  t=50.0ps  cv=+0.306  barrier=0.60 kcal/mol  10.4M steps/day
+step  105000  t=52.5ps  cv=+0.530  barrier=0.60 kcal/mol  10.4M steps/day
+step  110000  t=55.0ps  cv=+0.448  barrier=0.60 kcal/mol  10.5M steps/day
+step  115000  t=57.5ps  cv=+0.437  barrier=0.60 kcal/mol  10.5M steps/day
+step  120000  t=60.0ps  cv=+0.575  barrier=0.70 kcal/mol  10.5M steps/day
+step  125000  t=62.5ps  cv=+0.757  barrier=0.88 kcal/mol  10.5M steps/day
+step  130000  t=65.0ps  cv=+0.658  barrier=1.12 kcal/mol  10.5M steps/day
+step  135000  t=67.5ps  cv=+0.504  barrier=2.30 kcal/mol  10.5M steps/day
+step  140000  t=70.0ps  cv=+0.640  barrier=2.99 kcal/mol  10.5M steps/day
+step  145000  t=72.5ps  cv=+0.504  barrier=3.64 kcal/mol  10.5M steps/day
+step  150000  t=75.0ps  cv=+0.509  barrier=4.27 kcal/mol  10.5M steps/day
+step  155000  t=77.5ps  cv=+0.837  barrier=4.45 kcal/mol  10.5M steps/day
+step  160000  t=80.0ps  cv=+0.965  barrier=4.45 kcal/mol  10.5M steps/day
+step  165000  t=82.5ps  cv=+0.994  barrier=4.45 kcal/mol  10.5M steps/day
+step  170000  t=85.0ps  cv=+0.893  barrier=4.45 kcal/mol  10.5M steps/day
+step  175000  t=87.5ps  cv=+0.801  barrier=4.45 kcal/mol  10.5M steps/day
+step  180000  t=90.0ps  cv=+0.975  barrier=4.45 kcal/mol  10.5M steps/day
+step  185000  t=92.5ps  cv=+0.952  barrier=4.45 kcal/mol  10.5M steps/day
+step  190000  t=95.0ps  cv=+0.941  barrier=4.45 kcal/mol  10.5M steps/day
+step  195000  t=97.5ps  cv=+1.040  barrier=4.45 kcal/mol  10.5M steps/day
+step  200000  t=100.0ps  cv=+1.149  barrier=4.45 kcal/mol  10.5M steps/day
+step  205000  t=102.5ps  cv=+1.176  barrier=4.45 kcal/mol  10.5M steps/day
+step  210000  t=105.0ps  cv=+1.205  barrier=4.45 kcal/mol  10.5M steps/day
+step  215000  t=107.5ps  cv=+1.268  barrier=4.45 kcal/mol  10.5M steps/day
+step  220000  t=110.0ps  cv=+1.079  barrier=4.45 kcal/mol  10.5M steps/day
+step  225000  t=112.5ps  cv=+1.096  barrier=4.45 kcal/mol  10.5M steps/day
+step  230000  t=115.0ps  cv=+1.059  barrier=4.45 kcal/mol  10.5M steps/day
+step  235000  t=117.5ps  cv=+0.980  barrier=4.45 kcal/mol  10.5M steps/day
+step  240000  t=120.0ps  cv=+0.969  barrier=4.84 kcal/mol  10.5M steps/day
+step  245000  t=122.5ps  cv=+0.876  barrier=5.25 kcal/mol  10.5M steps/day
+step  250000  t=125.0ps  cv=+0.869  barrier=5.62 kcal/mol  10.5M steps/day
+step  255000  t=127.5ps  cv=+0.796  barrier=5.84 kcal/mol  10.5M steps/day
+step  260000  t=130.0ps  cv=+0.731  barrier=5.86 kcal/mol  10.5M steps/day
+step  265000  t=132.5ps  cv=+0.732  barrier=5.87 kcal/mol  10.4M steps/day
+step  270000  t=135.0ps  cv=+0.637  barrier=5.87 kcal/mol  10.4M steps/day
+step  275000  t=137.5ps  cv=+0.679  barrier=5.88 kcal/mol  10.4M steps/day
+step  280000  t=140.0ps  cv=+0.652  barrier=5.88 kcal/mol  10.4M steps/day
+step  285000  t=142.5ps  cv=+0.652  barrier=5.89 kcal/mol  10.4M steps/day
+step  290000  t=145.0ps  cv=+0.525  barrier=6.11 kcal/mol  10.4M steps/day
+step  295000  t=147.5ps  cv=+0.465  barrier=6.13 kcal/mol  10.4M steps/day
+
+=== RESULTS ===
+Barrier : 6.1354 kcal/mol  (target: 1.52 +/- 0.15)
+Speed   : 10.40 M steps/day  (target: > 5)
+pass_barrier = False
+pass_speed   = True
+Saved: C:/Users/zonezone/Desktop/YCU_research/MetaDynamics/OmegaWiki/experiments/code/wt-metad-pimd-fad-baseline-reproduction/results_v2\seed_42.json

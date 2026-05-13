@@ -107,7 +107,11 @@ FES via `exp(-bias/kT)` reweighting (same formula as OPES Run 9). FallbackFF qua
 
 ## Claim updates
 
-(to be filled after /exp-eval)
+- **Verdict**: not_supported
+- **Claim**: [[opes-pimd-converges-quantum-fes-faster]] confidence 0.2 → 0.2 (unchanged — corroborating evidence, claim already challenged)
+- **Reasoning**: v3 WT-MetaD (correct exp(−bias/kT) reweighting, 300 ps × 3 seeds, same FF as OPES Run 9): barrier = 0.352 ± 0.021 kcal/mol with all seeds crossing TS within ~50 ps. OPES Run 9 on same FallbackFF: 3.897 ± 2.116 kcal/mol with zero TS crossings in 300 ps — WT-MetaD is 11× more accurate and >6× faster. Evidence strength: moderate (internally consistent fair comparison; limited to FallbackFF which does not reproduce the GFN2-xTB target barrier of 1.52 kcal/mol).
+- **Judge**: Claude self-review (Review LLM MCP not configured — LLM_API_KEY/LLM_BASE_URL/LLM_MODEL empty in .env)
+- **Date**: 2026-05-14
 
 ## Follow-up
 

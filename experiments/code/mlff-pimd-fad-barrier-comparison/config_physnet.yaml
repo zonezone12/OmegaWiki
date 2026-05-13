@@ -1,0 +1,35 @@
+# MLFF comparison: PhysNet (MP2/aug-cc-pVTZ, 58069 FAD structures)
+system:
+  name: formic_acid_dimer
+  n_atoms: 10
+
+pimd:
+  n_beads: 32
+  temperature: 200.0
+  timestep: 0.5
+  n_steps: 300000          # 150 ps x 3 seeds
+  thermostat: PILE-L
+  friction: 1.0
+  seed: 42
+
+wt_metad:
+  cv: CVdimer
+  height: 1.0              # kJ/mol
+  sigma: 0.05
+  biasfactor: 10
+  stride: 100
+  cv_min: -1.5
+  cv_max: 1.5
+  cv_bins: 300
+
+output:
+  colvar_stride: 10
+  hills_file: results_physnet/hills_seed42.dat
+
+model:
+  method: physnet
+  physnet_base: ../opes-pimd-fad-proton-transfer-convergence
+
+sanity:
+  n_steps: 100
+  check_cv: true
