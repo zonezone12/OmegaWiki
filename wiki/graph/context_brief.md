@@ -5,11 +5,11 @@ _Auto-generated compressed context. Do not edit._
 ## Claims (7 total)
 - [challenged] OPES converges quantum-corrected free energy surfaces faster and with fewer hyperparameters than WT-MetaD in PIMD simulations (conf: 0.2)
 - [weakly_supported] ML-PIMD with GFN force field achieves quantum-accurate nuclear dynamics at ~1200x speedup over first-principles PIMD (conf: 0.65)
+- [proposed] OPES kernel density estimation overhead does not eliminate convergence speed gains in PIMD (conf: 0.5)
 - [supported] The target distribution perspective unifies CV-based and tempering enhanced sampling methods (conf: 0.8)
 - [proposed] Centroid CV biasing is an accurate strategy for OPES-enhanced PIMD free energy calculations (conf: 0.4)
 - [supported] CV-based bias potentials can sample expanded ensembles without requiring multiple parallel replicas (conf: 0.85)
 - [proposed] OPES hyperparameter sensitivity is lower than WT-MetaD in PIMD enhanced sampling (conf: 0.5)
-- [proposed] OPES kernel density estimation overhead does not eliminate convergence speed gains in PIMD (conf: 0.5)
 ## Open Gaps
 _Auto-generated open questions. Do not edit._
 - [paper/performing-path-integral-molecular-dynamics-using] Can GFN + energy distillation maintain accuracy for free energy perturbation?
@@ -30,14 +30,14 @@ _Auto-generated open questions. Do not edit._
 ## Papers (2 total)
 - [5] A Unified Approach to Enhanced Sampling (Computational Chemistry / ML Systems)
 - [3] Performing Path Integral Molecular Dynamics Using Artificial Intelligence Enhanced Molecular Simulation Framework (ML Systems)
-## Recent Relationships (28 total)
-  papers/unified-approach-enhanced-sampling --supports--> claims/cv-based-bias-potential-sampling-expanded
-  papers/unified-approach-enhanced-sampling --supports--> claims/opes-unified-enhanced-sampling-framework
-  concepts/opes-enhanced-sampling --supports--> concepts/expanded-ensemble-target-distribution
+## Recent Relationships (31 total)
   concepts/expansion-collective-variables --supports--> concepts/expanded-ensemble-target-distribution
   papers/performing-path-integral-molecular-dynamics-using --supports--> concepts/graph-field-network
   papers/performing-path-integral-molecular-dynamics-using --supports--> claims/ml-pimd-aims-framework-achieves-quantum
   papers/performing-path-integral-molecular-dynamics-using --supports--> concepts/opes-enhanced-sampling
   ideas/opes-pimd-quantum-free-energy-enhanced --addresses_gap--> claims/ml-pimd-aims-framework-achieves-quantum
   ideas/opes-pimd-quantum-free-energy-enhanced --addresses_gap--> claims/opes-unified-enhanced-sampling-framework
-  ideas/opes-pimd-quantum-free-ener
+  ideas/opes-pimd-quantum-free-energy-enhanced --inspired_by--> papers/performing-path-integral-molecular-dynamics-using
+  ideas/opes-pimd-quantum-free-energy-enhanced --inspired_by--> papers/unified-approach-enhanced-sampling
+  ideas/gfn-instanton-ring-polymer-tunneling-rate --addresses_gap--> claims/ml-pimd-aims-framework-achieves-quantum
+

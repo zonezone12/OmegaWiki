@@ -46,3 +46,4 @@ _None — no score-3 papers found today. No direct advances in OPES+PIMD combina
 - DeepXiv token expired — trending section omitted; scoring used raw RSS abstracts only.
 - Physics categories fetched: physics.chem-ph (17), physics.comp-ph (25), cond-mat.mtrl-sci (54) in addition to default CS/AI (1910).
 ## [2026-05-14] exp-eval | wt-metad-pimd-fad-baseline-reproduction -> opes-pimd-converges-quantum-fes-faster | verdict: not_supported (moderate) | confidence: 0.2->0.2 | Claude self-review only
+## [2026-05-14] exp-design | 2 experiments designed for PhysNet OPES vs WT-MetaD comparison | claims: opes-pimd-converges-quantum-fes-faster (tested_by x2), opes-per-step-kde-overhead-does (tested_by x1)
