@@ -1,0 +1,11 @@
+=== Experiment wt-metad-pimd-fad-physnet-baseline launched 05/14/2026 14:48:55 ===
+=== SEED 42 started 2026/05/14 ¶g¥| 14:48:56.05 === 
+C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Physnet_v2\layers\NeuronLayer.py:12: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super(NeuronLayer, self).__init__(input_dim=n_in)
+WARNING:tensorflow:From C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Physnet_v2\layers\DenseLayer.py:32: The name tf.add_to_collection is deprecated. Please use tf.compat.v1.add_to_collection instead.
+
+C:\Users\zonezone\miniforge3\envs\zong-test\Lib\site-packages\tensorflow\python\util\numpy_compat.py:47: RuntimeWarning: overflow encountered in cast
+  return np.array(values, copy=copy, order=order).astype(dtype)
+[PhysNetFF] loaded: C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Final_Fit\best\best_model
+[init] seed=42  CV0=-1.4833 Ang  n_steps=600000  T=200.0K
+[init] h=3.0 kJ/mol  biasfactor=50  sigma=0.05  PACE=200

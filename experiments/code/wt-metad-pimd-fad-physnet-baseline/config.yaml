@@ -1,0 +1,38 @@
+﻿# WT-MetaD PIMD baseline on PhysNet FAD: aggressive settings
+# h=3 kJ/mol, biasfactor=50, PACE=200, 300 ps x 3 seeds
+# Establishes reference barrier for OPES comparison
+
+system:
+  name: formic_acid_dimer
+  n_atoms: 10
+
+pimd:
+  n_beads: 32
+  temperature: 200.0
+  timestep: 0.5          # fs
+  n_steps: 600000        # 300 ps at 0.5 fs/step
+  thermostat: PILE-L
+  friction: 1.0
+  seed: 42               # overridden per seed in run.sh
+
+wt_metad:
+  cv: CVdimer
+  height: 3.0            # kJ/mol (3x prior experiment)
+  sigma: 0.05            # Ang
+  biasfactor: 50         # gamma=50; handles unknown barriers up to ~30 kcal/mol
+  stride: 200            # PACE=200 steps
+  cv_min: -2.0
+  cv_max: 2.0
+  cv_bins: 400
+
+output:
+  colvar_stride: 10
+  hills_file: results_physnet/hills_seed42.dat   # overridden per seed in train.py
+
+model:
+  method: physnet
+  physnet_base: ../opes-pimd-fad-proton-transfer-convergence
+
+sanity:
+  n_steps: 200           # smoke test only (PhysNet too slow for full 10 ps sanity)
+  check_cv: true

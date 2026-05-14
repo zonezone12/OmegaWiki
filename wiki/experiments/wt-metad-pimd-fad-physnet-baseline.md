@@ -1,7 +1,7 @@
 ---
 title: "WT-MetaD-PIMD PhysNet Baseline: FAD Proton Transfer with Aggressive Settings"
 slug: "wt-metad-pimd-fad-physnet-baseline"
-status: planned
+status: running
 target_claim: "opes-pimd-converges-quantum-fes-faster"
 hypothesis: "Well-tempered MetaD-PIMD with BIASFACTOR=50 and height=3 kJ/mol can overcome the PhysNet FAD proton-transfer barrier within 300 ps (3 seeds), establishing a converged quantum FES barrier reference for the OPES comparison."
 tags: [pimd, metadynamics, formic-acid-dimer, physnet, mlff, nuclear-quantum-effects, baseline]
@@ -22,7 +22,9 @@ key_result: ""
 linked_idea: ""
 date_planned: 2026-05-14
 date_completed: ""
-run_log: ""
+run_log: "logs/exp-wt-metad-pimd-fad-physnet-baseline.log"
+started: "2026-05-14T14:49"
+estimated_hours: 92
 ---
 
 ## Objective

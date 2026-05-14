@@ -84,7 +84,7 @@ experiments:
     target_claim: opes-pimd-converges-quantum-fes-faster
     domain: ML Systems
   - slug: wt-metad-pimd-fad-physnet-baseline
-    status: planned
+    status: running
     target_claim: opes-pimd-converges-quantum-fes-faster
     domain: ML Systems
   - slug: opes-pimd-fad-physnet-validation

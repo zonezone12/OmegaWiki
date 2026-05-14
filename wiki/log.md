@@ -47,3 +47,5 @@ _None — no score-3 papers found today. No direct advances in OPES+PIMD combina
 - Physics categories fetched: physics.chem-ph (17), physics.comp-ph (25), cond-mat.mtrl-sci (54) in addition to default CS/AI (1910).
 ## [2026-05-14] exp-eval | wt-metad-pimd-fad-baseline-reproduction -> opes-pimd-converges-quantum-fes-faster | verdict: not_supported (moderate) | confidence: 0.2->0.2 | Claude self-review only
 ## [2026-05-14] exp-design | 2 experiments designed for PhysNet OPES vs WT-MetaD comparison | claims: opes-pimd-converges-quantum-fes-faster (tested_by x2), opes-per-step-kde-overhead-does (tested_by x1)
+## [2026-05-14] exp-run | deployed wt-metad-pimd-fad-physnet-baseline | env: local | PID: 11416 | seeds: [42,123,7] | PhysNet FF | h=3 kJ/mol gamma=50 PACE=200 300ps | speed=0.47M/day | log: logs/exp-wt-metad-pimd-fad-physnet-baseline.log | eta: ~92h (~2026-05-18)
+## [2026-05-14] exp-run | confirmed wt-metad-pimd-fad-physnet-baseline | Python PID: 15196 | cmd PID: 8772 | PhysNet loaded OK | CV0=-1.4833 | n_steps=600000 (300ps) | seed_42 running

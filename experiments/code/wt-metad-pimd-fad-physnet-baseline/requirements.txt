@@ -1,0 +1,6 @@
+﻿# Dependencies for wt-metad-pimd-fad-physnet-baseline
+# Same environment as mlff-pimd-fad-barrier-comparison (PhysNet requires TensorFlow)
+numpy
+ase
+pyyaml
+tensorflow>=2.10
