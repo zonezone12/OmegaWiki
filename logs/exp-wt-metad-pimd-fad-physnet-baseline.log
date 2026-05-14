@@ -9,3 +9,4 @@ C:\Users\zonezone\miniforge3\envs\zong-test\Lib\site-packages\tensorflow\python\
 [PhysNetFF] loaded: C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Final_Fit\best\best_model
 [init] seed=42  CV0=-1.4833 Ang  n_steps=600000  T=200.0K
 [init] h=3.0 kJ/mol  biasfactor=50  sigma=0.05  PACE=200
+step   10000  t=5.0ps  cv=-1.601  cv_max=-1.191  barrier=30.83 kcal/mol  0.67M/day
