@@ -15,22 +15,18 @@ Use these local references on demand:
 
 ## Inputs
 
-- `topic` (optional): research direction keywords; omit it when `raw/papers/` already defines the seed set or when notes/web already capture the intent
-- `--no-introduction` (optional): disable external paper discovery; use only user-owned `raw/papers/`, `raw/notes/`, and `raw/web/`
-- parameter guardrail: treat `topic` and `--no-introduction` as user inputs, not agent strategy knobs. Do not infer `--no-introduction` from repository state alone. Use it only when the user explicitly asked to disable external discovery.
-- `raw/papers/`: user-owned paper sources (`.tex`, `.pdf`, archives)
-- `raw/notes/`: user-owned notes that express goals, hypotheses, exclusions, and preferred sub-directions
-- `raw/web/`: user-owned saved web pages that express goals, hypotheses, exclusions, and preferred sub-directions
+- `topic` (optional): research direction keywords; omit when `raw/` already defines the seed set
+- `--no-introduction` (optional): disable external discovery; use only when the user explicitly requests it
+- User-owned sources under `raw/papers/`, `raw/notes/`, `raw/web/`
 
 ## Outputs
 
-- `wiki/` scaffold via `tools/research_wiki.py init`
-- `raw/tmp/` — generated prepared local sources reused by `/init` and direct local `/ingest`
-- `raw/discovered/` — newly downloaded papers selected by `/init` when discovery is enabled
-- `wiki/Summary/{area}.md`, `wiki/topics/{topic}.md`, provisional `wiki/ideas/{slug}.md`, `wiki/concepts/{slug}.md`, `wiki/claims/{slug}.md`
-- `wiki/papers/*.md` plus paper-derived concepts / claims / people via parallel `/ingest`
-- updated `wiki/index.md`, `wiki/log.md`, `wiki/graph/edges.jsonl`, `wiki/graph/context_brief.md`, `wiki/graph/open_questions.md`
-- `.checkpoints/init-prepare.json`, `.checkpoints/init-plan.json`, `.checkpoints/init-sources.json`
+- `wiki/` scaffold and provisional pages (Summary, topics, ideas, concepts)
+- `raw/tmp/` and `raw/discovered/` prepared sources
+- Final paper pages via parallel `/ingest` subagents
+- `.checkpoints/init-*.json` manifests for resume and replay
+- Updated `wiki/index.md`, `wiki/log.md`, `wiki/graph/*`
+- Refreshed visualization artifacts: `wiki/.obsidian/graph.json` (per-entity-type color groups) and `wiki/canvases/*.canvas` (best-effort, see Step 6). The interactive web Graph view is served by `tools/serve.py` (SPA), not regenerated as a standalone file.
 
 ## Wiki Interaction
 
@@ -38,7 +34,7 @@ Use these local references on demand:
 
 - `raw/papers/`, `raw/notes/`, `raw/web/`
 - `.checkpoints/init-prepare.json` and `.checkpoints/init-sources.json` for resume, planning, and fan-out
-- `wiki/index.md` plus existing `wiki/topics/`, `wiki/ideas/`, `wiki/concepts/`, `wiki/claims/` for duplicate avoidance and scaffold alignment
+- `wiki/index.md` plus existing `wiki/topics/`, `wiki/ideas/`, `wiki/concepts/`, `wiki/methods/` for duplicate avoidance and scaffold alignment
 
 ### Writes
 
@@ -57,12 +53,23 @@ Use these local references on demand:
 **Pre-condition**: working directory is the project root containing `wiki/`, `raw/`, and `tools/`. Set `WIKI_ROOT=wiki/`. Resolve `PYTHON_BIN` once and reuse it for every Python command during `/init` so the workflow stays on the interpreter that `setup.sh` prepared:
 
 ```bash
-if [ -x .venv/bin/python ]; then
-  PYTHON_BIN=.venv/bin/python
-elif [ -x .venv/Scripts/python.exe ]; then
-  PYTHON_BIN=.venv/Scripts/python.exe
-else
-  PYTHON_BIN=python3
+# Find the project root via git so worktree subagents can still locate .venv.
+# .venv is gitignored, so a subagent whose cwd is ../.worktrees/<branch>/
+# doesn't have one — without this lookup it falls back to system python3 and
+# misses the .env-loaded API keys plus the installed deps (deepxiv-sdk etc.).
+# git rev-parse --git-common-dir returns the main repo's .git regardless of
+# which worktree the shell is in; its parent is the project root.
+GIT_COMMON_DIR=$(git rev-parse --git-common-dir 2>/dev/null || true)
+PROJECT_ROOT=""
+if [ -n "$GIT_COMMON_DIR" ]; then
+  PROJECT_ROOT=$(cd "$(dirname "$GIT_COMMON_DIR")" 2>/dev/null && pwd)
+fi
+
+if   [ -x "$PROJECT_ROOT/.venv/bin/python" ];         then PYTHON_BIN="$PROJECT_ROOT/.venv/bin/python"
+elif [ -x "$PROJECT_ROOT/.venv/Scripts/python.exe" ]; then PYTHON_BIN="$PROJECT_ROOT/.venv/Scripts/python.exe"
+elif [ -x .venv/bin/python ];                         then PYTHON_BIN=.venv/bin/python
+elif [ -x .venv/Scripts/python.exe ];                 then PYTHON_BIN=.venv/Scripts/python.exe
+else                                                       PYTHON_BIN=python3
 fi
 export PYTHON_BIN
 ```
@@ -123,7 +130,7 @@ Then run:
 
 ### Step 4: Create scaffold pages before paper ingest
 
-Create one `wiki/Summary/{area}.md`, the needed `wiki/topics/{slug}.md`, and provisional `ideas/`, `concepts/`, and `claims/` from notes/web when warranted.
+Create one `wiki/Summary/{area}.md`, the needed `wiki/topics/{slug}.md`, and provisional `ideas/`, `concepts/`, and (optionally) `methods/` from notes/web when warranted.
 
 Rules:
 
@@ -137,8 +144,7 @@ Provisional note: seeded from raw/notes or raw/web during /init; pending validat
 - `topics/`: create when a direction is explicit or repeated
 - `ideas/`: create when the user states or strongly implies a research direction or hypothesis
 - `concepts/`: create only when the mechanism recurs across notes/web, or appears once in notes/web and once in the final paper set
-- `claims/`: create only from explicit assertive statements, never by inference
-- for notes/web-derived claims, use `status: proposed`, `confidence: 0.2`, `source_papers: []`, and `evidence: []`
+- `methods/`: do not create from `/init` unless the user explicitly names a reusable, citable method in notes/web; ingest is responsible for promoting paper methods into reusable method entities
 - `/prefill` is optional background seeding and is not part of `/init`
 - `/init` must not create `people/` pages directly and must not auto-create foundations
 
@@ -153,10 +159,10 @@ Parallel ingest contract:
 
 - stash unrelated dirty files before fan-out, then record `stash_ref`, `base_branch`, and `base_commit` in checkpoint metadata
 - commit the freshly created scaffold and init manifests before fan-out so `BASE_COMMIT` actually contains the pages, manifests, and handoff metadata that subagents must branch from
-- verify `.gitattributes` contains `merge=union` for `wiki/log.md`, `wiki/graph/edges.jsonl`, and `wiki/index.md` before creating worktrees
+- verify `.gitattributes` contains `merge=union` for `wiki/log.md`, `wiki/graph/edges.jsonl`, `wiki/graph/citations.jsonl`, and `wiki/index.md` before creating worktrees
 - `/init` worktree mode must run from a named branch, not detached HEAD
 - create each worktree from `BASE_COMMIT`, not from the already checked-out `BASE_BRANCH`
-- subagent prompts must use **relative paths only**
+- subagent prompts must use **relative paths only**, and the subagent's shell working directory must be the worktree path (`$WT_PATH`), not the main repository root
 - execute `/ingest` for exactly one handed-off source path; do not bypass `/ingest`
 - in INIT MODE, consume the handed-off canonical path exactly as provided
 - skip `fetch_s2.py citations`
@@ -173,15 +179,25 @@ Parallel ingest contract:
 After all subagents complete:
 
 - merge worktree branches sequentially on `BASE_BRANCH`
-- resolve true concept / claim conflicts conservatively: merge, do not multiply near-duplicates
+- resolve true concept / method conflicts conservatively: merge, do not multiply near-duplicates
 - run:
 
 ```bash
 "$PYTHON_BIN" tools/research_wiki.py dedup-edges wiki/
+"$PYTHON_BIN" tools/research_wiki.py dedup-citations wiki/
 "$PYTHON_BIN" tools/research_wiki.py rebuild-index wiki/
 "$PYTHON_BIN" tools/research_wiki.py rebuild-context-brief wiki/
 "$PYTHON_BIN" tools/research_wiki.py rebuild-open-questions wiki/
 "$PYTHON_BIN" tools/lint.py --wiki-dir wiki/ --fix
+```
+
+Then regenerate visualization artifacts (best-effort; visualize failure must not fail `/init`). `generate-obsidian-config` rewrites `wiki/.obsidian/graph.json` from `config/visualize.json` so the per-entity-type color groups stay in sync with the runtime config — Obsidian's graph view shows uncolored nodes when `colorGroups` is empty, so this step keeps the graph readable across rebuilds.
+
+```bash
+"$PYTHON_BIN" tools/visualize.py generate-obsidian-config wiki/ \
+  || echo "WARN: visualize generate-obsidian-config failed; run /visualize manually" >&2
+"$PYTHON_BIN" tools/visualize.py generate-canvas wiki/ \
+  || echo "WARN: visualize generate-canvas failed; run /visualize manually" >&2
 ```
 
 Report separately:
@@ -193,11 +209,13 @@ Report separately:
 - pages created by `/ingest`
 - pages updated by `/ingest`
 - any skipped or failed papers
+- visualization refresh status (Canvas + HTML succeeded, or which step warned)
 
 If `stash_ref` exists, pop it at the end. If stash pop fails, keep the checkpoint and report the failure.
 
 ## Constraints
 
+- Do not infer `--no-introduction` from repository state alone. Use it only when the user explicitly asked to disable external discovery.
 - `raw/papers/`, `raw/notes/`, and `raw/web/` are user-owned inputs
 - `raw/tmp/` and `raw/discovered/` are generated handoff areas; direct local `/ingest` may also prepare reusable local sidecars under `raw/tmp/`
 - `/init` may write external papers only to `raw/discovered/`; `/init` and direct local `/ingest` may write generated prepared local sources to `raw/tmp/`
@@ -205,7 +223,7 @@ If `stash_ref` exists, pop it at the end. If stash pop fails, keep the checkpoin
 - no skill other than `/prefill` may auto-create foundations
 - `/init` must not create `people/` pages directly
 - notes/web-derived pages are provisional and must carry the exact notice line above
-- paper evidence outranks notes/web for claim confidence and concept consolidation
+- paper evidence outranks notes/web for concept consolidation and method extraction
 - all paper ingest must run through parallel `/ingest` subagents with worktree isolation
 - Step 5 must read paper inputs from `.checkpoints/init-sources.json`, not by ad hoc folder scanning
 - exact deterministic planner policy belongs in `tools/init_discovery.py`, not in duplicated skill constants
@@ -222,6 +240,7 @@ If `stash_ref` exists, pop it at the end. If stash pop fails, keep the checkpoin
 - **Single paper ingest fails**: record it via checkpoint, skip it, continue the rest, and list it in the report
 - **Current checkout is detached HEAD**: stop before worktree fan-out and ask the user to switch to or create a named branch first
 - **stash pop fails**: keep checkpoint metadata and report the manual recovery step
+- **Visualization regeneration fails**: warn and continue; never fail `/init`. The user can rerun `/visualize --canvas --html` separately to diagnose
 
 ## Dependencies
 
@@ -231,6 +250,7 @@ If `stash_ref` exists, pop it at the end. If stash pop fails, keep the checkpoin
 - `"$PYTHON_BIN" tools/research_wiki.py checkpoint-set-meta wiki/ init-session <key> <value>`
 - `"$PYTHON_BIN" tools/research_wiki.py checkpoint-save/load/clear wiki/ init-session ...`
 - `"$PYTHON_BIN" tools/research_wiki.py dedup-edges wiki/`
+- `"$PYTHON_BIN" tools/research_wiki.py dedup-citations wiki/`
 - `"$PYTHON_BIN" tools/research_wiki.py rebuild-index wiki/`
 - `"$PYTHON_BIN" tools/research_wiki.py rebuild-context-brief wiki/`
 - `"$PYTHON_BIN" tools/research_wiki.py rebuild-open-questions wiki/`
@@ -240,10 +260,13 @@ If `stash_ref` exists, pop it at the end. If stash pop fails, keep the checkpoin
 - `"$PYTHON_BIN" tools/init_discovery.py plan [--topic "<topic>"] --mode auto --raw-root raw --wiki-root wiki --prepared-manifest .checkpoints/init-prepare.json --allow-introduction <true|false> --output-plan .checkpoints/init-plan.json`
 - `"$PYTHON_BIN" tools/init_discovery.py fetch --raw-root raw --plan-json .checkpoints/init-plan.json --prepared-manifest .checkpoints/init-prepare.json --output-sources .checkpoints/init-sources.json --id <candidate-id>`
 - `"$PYTHON_BIN" tools/lint.py --wiki-dir wiki/ --fix`
+- `"$PYTHON_BIN" tools/visualize.py generate-obsidian-config wiki/`
+- `"$PYTHON_BIN" tools/visualize.py generate-canvas wiki/`
 
 ### Skills
 
 - `/ingest` — one paper per subagent, in INIT MODE
+- `/visualize` — Step 6 fan-in regenerates Obsidian graph color groups, Canvas, and HTML by calling `tools/visualize.py` directly (best-effort); the user may also invoke `/visualize` manually later for `--focus` views or to re-render after editing `config/visualize.json`
 
 ### External APIs used by `init_discovery.py`
 

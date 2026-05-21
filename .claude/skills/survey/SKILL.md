@@ -1,6 +1,6 @@
 ---
 description: Generate a Related Work section for a paper from wiki knowledge — thematic grouping → narrative structure → LaTeX output, following citation-verification and academic-writing
-argument-hint: <research-question-or-claim-slugs> [--format latex|markdown] [--max-papers 30]
+argument-hint: <research-question-or-idea-slugs> [--format latex|markdown] [--max-papers 30]
 ---
 
 # /survey
@@ -15,7 +15,7 @@ argument-hint: <research-question-or-claim-slugs> [--format latex|markdown] [--m
 
 - `query`: one of:
   - research question description (free text, e.g. "parameter-efficient fine-tuning for LLMs")
-  - list of claim slugs (from wiki/claims/, used to organize related work around specific claims)
+  - list of idea slugs (from wiki/ideas/, used to organize related work around specific ideas)
   - path to PAPER_PLAN.md (extract Related Work section definition from it)
 - `--format` (optional, default `latex`): output format
   - `latex`: `\cite{key}` citations, embeddable directly in a paper
@@ -32,14 +32,14 @@ argument-hint: <research-question-or-claim-slugs> [--format latex|markdown] [--m
 ## Wiki Interaction
 
 ### Reads
-- `wiki/papers/*.md` — Problem, Key idea, Results, Related, My take
+- `wiki/papers/*.md` — Problem & Context, Key idea, Experiment & Results, Related, My take
 - `wiki/concepts/*.md` — Definition, Variants, Comparison, Known limitations
 - `wiki/topics/*.md` — Overview, Timeline, Open problems, Seminal works
-- `wiki/claims/*.md` — Statement, source_papers (if input is claim slugs)
-- `wiki/ideas/*.md` — Motivation (understand this paper's positioning)
+- `wiki/ideas/*.md` — Hypothesis, Motivation, origin_gaps (if input is idea slugs)
+- `wiki/methods/*.md` — Mechanism, Procedure, source_papers (when ideas reference methods)
 - `wiki/index.md` — content catalog, filtered by importance
 - `wiki/graph/context_brief.md` — global context
-- `wiki/graph/edges.jsonl` — inter-paper relationships (extends, contradicts, supersedes)
+- `wiki/graph/edges.jsonl` — inter-paper semantic relationships (same_problem_as, similar_method_to, complementary_to, builds_on, compares_against, improves_on, challenges, surveys)
 - `.claude/skills/shared-references/academic-writing.md` — Related Work writing rules
 - `.claude/skills/shared-references/citation-verification.md` — citation discipline
 
@@ -59,10 +59,10 @@ argument-hint: <research-question-or-claim-slugs> [--format latex|markdown] [--m
 
 1. **Parse input**:
    - If free text: extract keywords; match against tags and titles in wiki/index.md
-   - If claim slugs: read each claim's source_papers; collect related papers
+   - If idea slugs: read each idea's `origin_gaps` (concepts/topics) and walk to `concepts.key_papers` and topic seminal works to collect related papers; also read methods linked from the idea's `## Approach sketch` and pull their `source_papers`
    - If PAPER_PLAN path: read the Related Work section's groupings and citations
 2. **Read wiki/graph/context_brief.md** for global context
-3. **Read wiki/graph/edges.jsonl**: extract inter-paper relationships (extends, contradicts, supersedes)
+3. **Read wiki/graph/edges.jsonl**: extract inter-paper semantic relationships (same_problem_as, similar_method_to, complementary_to, builds_on, compares_against, improves_on, challenges, surveys)
 4. **Build candidate paper list**:
    - Sort by importance descending from index.md
    - Rank by tags and domain match
@@ -73,14 +73,14 @@ argument-hint: <research-question-or-claim-slugs> [--format latex|markdown] [--m
 
 For each paper in the candidate list:
 
-1. Read `wiki/papers/{slug}.md`: focus on Problem, Key idea, Results, My take
+1. Read `wiki/papers/{slug}.md`: focus on Problem & Context, Key idea, Experiment & Results, My take
 2. Read linked `wiki/concepts/*.md`: focus on Definition, Variants, Comparison
 3. Read related `wiki/topics/*.md`: focus on Timeline, Open problems
 
 Record for each paper:
 - core contribution (one sentence)
 - method category (which research direction it belongs to)
-- relationship to this work (extends / contradicts / orthogonal / baseline)
+- relationship to this work (same problem / similar method / complementary / builds on / compares against / improves on / challenges / surveys)
 - limitations (extracted from Limitations or My take)
 
 ### Step 3: Thematic Grouping
@@ -204,7 +204,7 @@ If output format is LaTeX, following `shared-references/citation-verification.md
 
 ### Claude Code Native
 - `Read` — read wiki pages
-- `Glob` — find wiki pages
+- `Glob` — find ideas, methods, concepts, topics, papers
 - `WebFetch` — DBLP / CrossRef BibTeX fetch (--format latex only)
 
 ### Shared References

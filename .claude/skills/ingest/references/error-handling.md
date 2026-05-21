@@ -19,7 +19,7 @@ Open this reference when a step fails. `/ingest` prefers to degrade gracefully: 
 
 - **Generated slug matches an existing page with a different arXiv ID or title**: stop and report. Do not append a numeric suffix silently — a collision between two different papers at the same slug is a signal the wiki has a naming problem that the user should resolve.
 - **Generated slug matches an existing page with the same paper**: the paper is already ingested. Report and exit.
-- **Within a single ingest, a generated concept or claim slug collides with a different existing page**: append a numeric suffix (`-2`, `-3`, ...) via the tool's built-in collision handling. This is the one case where suffixing is correct — it happens when two genuinely different ideas produce the same slug under the deterministic rule.
+- **Within a single ingest, a generated concept or method slug collides with a different existing page**: append a numeric suffix (`-2`, `-3`, ...) via the tool's built-in collision handling. This is the one case where suffixing is correct — it happens when two genuinely different ideas produce the same slug under the deterministic rule.
 
 ## Wiki not initialized
 
@@ -38,7 +38,7 @@ If an ingest fails after some writes have landed (paper page written, but concep
 - do not roll back the writes that succeeded
 - append a log entry via `tools/research_wiki.py log` describing which steps completed and which are incomplete
 - surface the incomplete steps in the user report so the user can run `/edit` or `/check --fix` to finish the job
-- in INIT MODE, let the parent `/init` fan-in merge catch the partial state; do not self-commit
+- in INIT MODE, if the ingest completed successfully, commit inside the worktree before exiting (see `references/init-mode.md`). If the ingest partially failed, do **not** commit the incomplete state; let the parent `/init` handle the failed worktree at fan-in
 
 ## When to stop vs. continue
 
@@ -52,6 +52,6 @@ Continue with a warning when:
 
 - one enrichment source (S2 or DeepXiv) is down
 - the reference list cannot be parsed (skip step 5; paper ingest still works)
-- a single concept or claim dedup call fails transiently (retry once; if it still fails, skip that candidate and note it)
+- a single concept or method dedup call fails transiently (retry once; if it still fails, skip that candidate and note it)
 
 The guiding principle: a partial ingest that preserves a well-shaped paper page is more useful than a clean abort that leaves the wiki unchanged. Partial state is recoverable via `/check` and `/edit`. Lost partial state is not.

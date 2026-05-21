@@ -1,12 +1,11 @@
 ---
-description: 扫描全 wiki 发现健康问题，生成修复建议报告（覆盖全 8 种 entity + graph 一致性）
+description: 扫描全 wiki 发现健康问题，生成分级修复建议报告（覆盖 runtime/schema/entities.yaml 中全部 entity 类型 + graph 一致性）
 ---
 
 # /check
 
 > 扫描全 wiki，发现结构、链接、字段、graph 的健康问题，生成分级修复建议。
-> 覆盖所有 8 种 entity 类型，包括 claims confidence 合理性、idea 失败原因完整性、
-> experiment-claim 链接有效性、graph edges 一致性。
+> 覆盖 `runtime/schema/entities.yaml` 中声明的所有 entity 类型（papers, concepts, topics, people, ideas, experiments, methods, Summary, foundations），以及 graph edge / citation 一致性。重点检查包括：idea novelty-score 合理性、idea 失败原因完整性、experiment `linked_idea` 有效性。
 
 ## Inputs
 
@@ -28,15 +27,17 @@ description: 扫描全 wiki 发现健康问题，生成修复建议报告（覆�
 - `wiki/concepts/*.md` — 概念页面字段和链接
 - `wiki/topics/*.md` — 方向页面字段和链接
 - `wiki/people/*.md` — 人物页面字段和链接
-- `wiki/ideas/*.md` — idea 状态、failure_reason、origin_gaps
-- `wiki/experiments/*.md` — experiment 状态、target_claim、outcome
-- `wiki/claims/*.md` — claim confidence、status、evidence、source_papers
+- `wiki/ideas/*.md` — idea status、novelty_score、failure_reason、origin_gaps、target_venue
+- `wiki/experiments/*.md` — experiment status、linked_idea、outcome
+- `wiki/methods/*.md` — method type、source_papers、parent/child 链
 - `wiki/Summary/*.md` — 综述页面字段
-- `wiki/graph/edges.jsonl` — graph edge 一致性检查
+- `wiki/foundations/*.md` — foundations(终端 — 仅检查入链)
+- `wiki/graph/edges.jsonl` — semantic graph edge 一致性检查
+- `wiki/graph/citations.jsonl` — bibliographic citation 一致性检查
 - `wiki/index.md` — 对照页面完整性
 
 ### Writes
-- 不直接修改 wiki 内容（只报告不修复）
+- 不直接修改 wiki 内容（仅报告，除非指定 `--fix`）
 - `wiki/log.md` — 通过 `tools/research_wiki.py log` 记录 lint 结果摘要
 
 ## Workflow
@@ -71,63 +72,72 @@ python3 tools/lint.py --wiki-dir wiki/ --fix --dry-run --json
 
 1. **Broken wikilinks**：`[[slug]]` 目标文件不存在
 2. **Orphan pages**：无任何入链的页面
-3. **必填字段缺失**（全 8 种 entity）：
+3. **必填字段缺失**（按 `runtime/schema/entities.yaml` 中声明的每种 entity）。权威源：`runtime.loader.REQUIRED_FIELDS`。当前集合：
    - papers: title, slug, tags, importance
    - concepts: title, tags, maturity, key_papers
    - topics: title, tags
-   - people: name, tags
+   - people: name
+   - methods: name, slug, type, tags
    - Summary: title, scope, key_topics
    - ideas: title, slug, status, origin, tags, priority
-   - experiments: title, slug, status, target_claim, hypothesis, tags
-   - claims: title, slug, status, confidence, tags, source_papers, evidence
+   - experiments: title, slug, status, linked_idea, hypothesis, tags
+   - foundations: title, slug, domain, status
 
 ### Step 3: 字段值验证（自动化覆盖）
 
-1. **Enum 值检查**：
+1. **Enum 值检查**（来源：`runtime.loader.VALID_VALUES`）：
    - papers.importance ∈ {1,2,3,4,5}
    - concepts.maturity ∈ {stable, active, emerging, deprecated}
    - ideas.status ∈ {proposed, in_progress, tested, validated, failed}
    - ideas.priority ∈ {1,2,3,4,5}
    - experiments.status ∈ {planned, running, completed, abandoned}
    - experiments.outcome ∈ {succeeded, failed, inconclusive}
-   - claims.status ∈ {proposed, weakly_supported, supported, challenged, deprecated}
-2. **Claim confidence** ∈ [0.0, 1.0]
+   - methods.type ∈ {architecture, training, inference, evaluation, data, benchmark, system, optimization, prompting, protocol, other}
+   - foundations.status ∈ {mainstream, historical}
+2. **Idea novelty_score**（若存在）∈ [1, 5]（整数）
 3. **Idea failure_reason**：status=failed 时必须非空（anti-repetition memory）
-4. **Experiment target_claim**：引用的 claim 必须存在
+4. **Experiment linked_idea**：引用的 idea 页面必须存在
 
 ### Step 4: Cross Reference 对称性（自动化覆盖）
 
-检查所有 CLAUDE.md 中定义的双向链接规则：
+检查 `runtime/schema/xref.yaml` 中定义的所有双向链接规则：
 
 | 正向链接 | 检查的反向链接 |
 |----------|---------------|
-| concepts.key_papers → papers | papers.Related 含 concept 链接 |
-| papers → people (wikilink) | people.Key papers 含 paper |
-| claims.source_papers → papers | papers.Related 含 claim 链接 |
-| ideas.origin_gaps → claims | claims.Linked ideas 含 idea |
-| experiments.target_claim → claims | claims.evidence 含 experiment |
+| `papers ## Related → concepts` | `concepts.key_papers` 含 paper slug |
+| `papers wikilink → people` | `people ## Recent work` 含 paper slug |
+| `topics.key_people → people` | `people ## Research areas` 含 topic slug |
+| `concepts.key_papers → papers` | `papers ## Related` 含 concept slug |
+| `ideas.origin_gaps → concepts` | `concepts.linked_ideas` 含 idea slug |
+| `ideas.origin_gaps → topics` | `topics.linked_ideas` 含 idea slug |
+| `experiments.linked_idea → ideas` | `ideas.linked_experiments` 含 experiment slug |
+| `methods.source_papers → papers` | `papers ## Related` 含 method slug |
+| `methods.parent_methods ↔ methods.child_methods` | 互逆 |
 
 ### Step 5: Graph Edge 一致性（自动化覆盖）
 
 1. **JSON 格式有效性**：每行都是合法 JSON
 2. **必填字段**：每条 edge 有 from, to, type
-3. **Edge type 合法性**：type ∈ {extends, contradicts, supports, inspired_by, tested_by, invalidates, supersedes, addresses_gap, derived_from}
-4. **Dangling nodes**：from/to 引用的 wiki 页面必须存在
+3. **Edge type 合法性**：semantic edges 使用当前 endpoint-aware type set；旧 paper-paper / paper-concept 类型给出迁移 warning
+4. **Edge confidence**：`/ingest` 写出的 paper-paper 与 paper-concept semantic edges 使用 `confidence: high|medium|low`
+5. **Citation layer**：`graph/citations.jsonl` 使用 `type: cites`、合法 source/date、paper endpoints，且不写 confidence 字段
+6. **Dangling nodes**：from/to 引用的 wiki 页面必须存在
 
 ### Step 6: 内容质量（LLM 辅助）
 
 自动化工具可检测的：
 1. importance=5 的论文无 concept 页引用
 2. maturity=stable 的 concept 只有 1 篇 key_paper
-3. topics 的 Open problems 为空
+3. topics 的 `## Open problems` 章节为空（同样标记空的 `### Known gaps` / `### Methodological gaps` 子章节）
 
 LLM 额外判断（需要阅读内容）：
 1. **Concept 近似重复检测**：扫描所有 concept 页面的 title + aliases，判断是否有语义相同/高度相似的概念对（如 "attention mechanism" 和 "self-attention"）。对疑似重复对输出合并建议。
-2. 矛盾表述检测（不同页面对同一事实的描述不一致）
-3. SOTA 记录超过 6 个月未更新
-4. people 的 Recent work 超过 6 个月未更新
-5. claim confidence 与 evidence 数量/强度不匹配
-6. 高 priority idea 长期停留在 proposed 状态
+2. **Method 近似重复检测**：在 `wiki/methods/*.md` 上做相同检测，对比 `name` + `tags` + `## Mechanism` 摘要。
+3. 矛盾表述检测（不同页面对同一事实的描述不一致）
+4. SOTA 记录超过 6 个月未更新
+5. people 的 `## Recent work` 超过 6 个月未更新
+6. Idea novelty_score 与 `## Novelty argument` 强度不匹配（低分 + 论证扎实，或高分 + 论证薄弱）
+7. 高 priority idea 长期停留在 proposed 状态且无 `linked_experiments`
 
 ### Step 7: 生成报告
 
@@ -149,8 +159,8 @@ LLM 额外判断（需要阅读内容）：
 ```
 
 分类标准：
-- **🔴 需立即修复**：broken links、missing required fields、invalid enum values、failed idea without failure_reason、invalid JSON in edges、confidence out of range
-- **🟡 建议修复**：xref asymmetry、dangling graph edges、broken claim references、unknown edge types
+- **🔴 需立即修复**：broken links、missing required fields、invalid enum values、failed idea without failure_reason、invalid JSON in edges、novelty_score 越界
+- **🟡 建议修复**：xref asymmetry、dangling graph edges、broken `linked_idea` 引用、unknown edge types
 - **🔵 可选优化**：orphan pages、quality suggestions、empty sections
 
 记录日志：
@@ -170,7 +180,7 @@ python3 tools/research_wiki.py log wiki/ "check | report: N 🔴, M 🟡, K 🔵
 ## Error Handling
 
 - **wiki/ 不存在**：报错并建议运行 `/init`
-- **graph/edges.jsonl 不存在**：跳过 graph 检查，在报告中注明
+- **graph 文件不存在**：跳过缺失 graph 文件的检查，在报告中注明
 - **部分目录缺失**：跳过缺失目录的检查，在报告中列出缺失目录
 
 ## Dependencies

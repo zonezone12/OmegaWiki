@@ -25,17 +25,16 @@ import shutil
 import sys
 from pathlib import Path
 
-ENTITY_DIRS = [
-    "papers", "concepts", "topics", "people",
-    "ideas", "experiments", "claims", "Summary",
-    "foundations",
-]
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from runtime.loader import ENTITIES  # noqa: E402
+
+ENTITY_DIRS = list(ENTITIES.keys())
 RAW_SUBDIRS = ["papers", "discovered", "tmp", "notes", "web"]
 ALL_SCOPES = ["wiki", "raw", "log", "checkpoints"]
 
 INDEX_TEMPLATE = "# Wiki Index\n\n" + "\n".join(f"{e}:" for e in ENTITY_DIRS) + "\n"
 LOG_TEMPLATE = "# OmegaWiki Log\n\n"
-GRAPH_FILES = ["edges.jsonl", "context_brief.md", "open_questions.md"]
+GRAPH_FILES = ["edges.jsonl", "citations.jsonl", "context_brief.md", "open_questions.md"]
 
 
 def _list_md(directory: Path) -> list[Path]:

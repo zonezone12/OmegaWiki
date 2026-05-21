@@ -19,7 +19,7 @@
 
 - **生成的 slug 与一个具有不同 arXiv ID 或 title 的已有页面撞名**：停机并报告。不得静默追加数字后缀 —— 两个不同论文落到同一 slug，是 wiki 命名问题的信号，应由用户解决。
 - **生成的 slug 与同一篇论文的已有页面撞名**：该论文已 ingest，报告并退出。
-- **单次 ingest 内，某个 concept / claim 生成的 slug 与另一不同页面撞名**：通过工具内置冲突处理追加数字后缀（`-2`、`-3`……）。这是唯一允许追加后缀的场景 —— 两种真正不同的想法在确定性规则下生成同一 slug。
+- **单次 ingest 内，某个 concept / method 生成的 slug 与另一不同页面撞名**：通过工具内置冲突处理追加数字后缀（`-2`、`-3`……）。这是唯一允许追加后缀的场景 —— 两种真正不同的想法在确定性规则下生成同一 slug。
 
 ## wiki 未初始化
 
@@ -38,7 +38,7 @@
 - 不得回滚已成功的写入
 - 通过 `tools/research_wiki.py log` 追加一条日志，说明哪些步骤完成、哪些未完成
 - 在用户报告中暴露未完成的步骤，让用户通过 `/edit` 或 `/check --fix` 收尾
-- INIT MODE 下由上层 `/init` 在 fan-in 时接管部分状态 —— 子代理不得自行 commit
+- INIT MODE 下，若 ingest 成功完成，子代理必须在退出前于 worktree 内 commit（见 `references/init-mode.md`）。若 ingest 部分失败，**不要** commit 不完整状态；让上层 `/init` 在 fan-in 时处理该失败的 worktree
 
 ## 停机 vs 继续
 
@@ -52,6 +52,6 @@
 
 - 某一项 enrichment 源（S2 或 DeepXiv）宕机
 - reference list 无法解析（跳过 Step 5；论文 ingest 主体仍可完成）
-- 单个 concept / claim 去重调用偶发失败（重试一次；仍失败就跳过该候选并记录）
+- 单个 concept / method 去重调用偶发失败（重试一次；仍失败就跳过该候选并记录）
 
 核心原则：保留了一个 well-shaped 论文页面的部分 ingest，比什么都没写的干净 abort 更有用。部分状态可以通过 `/check` 与 `/edit` 恢复；丢失的部分状态则不可恢复。

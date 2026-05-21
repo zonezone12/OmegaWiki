@@ -7,7 +7,7 @@
 - 运行 `git status --short`。
 - 将 `wiki/`、`raw/papers/`、`raw/tmp/`、`raw/discovered/` 与 `.checkpoints/init-*.json` 视作 scaffold 文件。
 - 先 stash 这些路径之外的无关脏文件。
-- 先验证 `.gitattributes` 对 `wiki/log.md`、`wiki/graph/edges.jsonl`、`wiki/index.md` 使用了 `merge=union`。
+- 先验证 `.gitattributes` 对 `wiki/log.md`、`wiki/graph/edges.jsonl`、`wiki/graph/citations.jsonl`、`wiki/index.md` 使用了 `merge=union`。
 - fan-out 前先提交 scaffold，确保 `BASE_COMMIT` 真的包含所有生成的页面与 manifests：
 
 ```bash
@@ -34,6 +34,7 @@ git worktree add -b "$WT_BRANCH" "$WT_PATH" "$BASE_COMMIT"
 
 ## 子代理 Prompt 合同
 
+- 子代理的 shell 工作目录必须是 worktree 路径（`$WT_PATH`），而不是主仓库根目录。所有相对路径均从该路径解析。
 - 只对一个相对路径执行 `/ingest`。
 - 不得绕过 `/ingest`。
 - 在 INIT MODE 下，必须原样消费 handoff 给它的 canonical path。
@@ -50,7 +51,7 @@ git worktree add -b "$WT_BRANCH" "$WT_PATH" "$BASE_COMMIT"
 全部子代理完成后：
 
 1. 如有需要先切回 `BASE_BRANCH`，再按 planner 顺序在该 branch 上逐个 merge worktree branch。
-2. concept / claim 冲突默认保守合并，不要扩散 near-duplicate 页面。
+2. concept / method 冲突默认保守合并，不要扩散 near-duplicate 页面。
 3. 只 merge 已经产生 ingest commit 的 worktree branch。若某个 branch 没有提交结果，应先停止并修复，而不是硬合并。
 4. 运行：
 
@@ -60,6 +61,7 @@ git merge --no-ff "$WT_BRANCH" --no-edit
 git worktree remove "$WT_PATH"
 git branch -d "$WT_BRANCH"
 "$PYTHON_BIN" tools/research_wiki.py dedup-edges wiki/
+"$PYTHON_BIN" tools/research_wiki.py dedup-citations wiki/
 "$PYTHON_BIN" tools/research_wiki.py rebuild-index wiki/
 "$PYTHON_BIN" tools/research_wiki.py rebuild-context-brief wiki/
 "$PYTHON_BIN" tools/research_wiki.py rebuild-open-questions wiki/

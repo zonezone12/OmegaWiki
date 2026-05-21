@@ -7,7 +7,7 @@ Use this reference when `/init` is handing sources to parallel `/ingest` subagen
 - Run `git status --short`.
 - Treat files under `wiki/`, `raw/papers/`, `raw/tmp/`, `raw/discovered/`, and `.checkpoints/init-*.json` as scaffold files.
 - Stash unrelated dirty files outside those paths.
-- Verify `.gitattributes` contains `merge=union` for `wiki/log.md`, `wiki/graph/edges.jsonl`, and `wiki/index.md`.
+- Verify `.gitattributes` contains `merge=union` for `wiki/log.md`, `wiki/graph/edges.jsonl`, `wiki/graph/citations.jsonl`, and `wiki/index.md`.
 - Commit the scaffold before fan-out so `BASE_COMMIT` contains the generated pages and manifests that every worktree must inherit:
 
 ```bash
@@ -34,6 +34,7 @@ git worktree add -b "$WT_BRANCH" "$WT_PATH" "$BASE_COMMIT"
 
 ## Subagent Prompt Contract
 
+- The subagent's shell working directory must be the worktree path (`$WT_PATH`), not the main repository root. All relative paths resolve from there.
 - Execute `/ingest` for exactly one relative source path.
 - Do not bypass `/ingest`.
 - In INIT MODE, consume the handed-off canonical path exactly as provided.
@@ -50,7 +51,7 @@ git worktree add -b "$WT_BRANCH" "$WT_PATH" "$BASE_COMMIT"
 After all agents complete:
 
 1. Switch the main workspace back to `BASE_BRANCH` if needed, then merge worktree branches sequentially there in planner order.
-2. Resolve true concept/claim conflicts conservatively: merge, do not multiply near-duplicates.
+2. Resolve true concept/method conflicts conservatively: merge, do not multiply near-duplicates.
 3. Merge only committed worktree branches. A branch with no ingest commit is an error to stop and fix, not something to merge through.
 3. Run:
 
@@ -60,6 +61,7 @@ git merge --no-ff "$WT_BRANCH" --no-edit
 git worktree remove "$WT_PATH"
 git branch -d "$WT_BRANCH"
 "$PYTHON_BIN" tools/research_wiki.py dedup-edges wiki/
+"$PYTHON_BIN" tools/research_wiki.py dedup-citations wiki/
 "$PYTHON_BIN" tools/research_wiki.py rebuild-index wiki/
 "$PYTHON_BIN" tools/research_wiki.py rebuild-context-brief wiki/
 "$PYTHON_BIN" tools/research_wiki.py rebuild-open-questions wiki/

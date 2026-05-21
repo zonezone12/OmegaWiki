@@ -15,22 +15,18 @@ argument-hint: "[topic] [--no-introduction]"
 
 ## Inputs
 
-- `topic`（可选）：研究方向关键词；如果 `raw/papers/` 已经给出了 seed set，或 notes/web 已经表达了意图，就可以省略
-- `--no-introduction`（可选）：禁用外部找论文；只使用用户自有的 `raw/papers/`、`raw/notes/`、`raw/web/`
-- 参数护栏：把 `topic` 与 `--no-introduction` 视为用户输入，而不是 agent 的策略开关。不得仅根据仓库状态推断 `--no-introduction`。只有当用户明确要求禁用外部发现时，才可使用它。
-- `raw/papers/`：用户自有论文来源（`.tex`、`.pdf`、压缩包）
-- `raw/notes/`：用户自有笔记，表达目标、假设、排除项与偏好方向
-- `raw/web/`：用户保存的网页存档
+- `topic`（可选）：研究方向关键词；当 `raw/` 已定义 seed set 时可省略
+- `--no-introduction`（可选）：禁用外部发现；仅在用户明确要求时使用
+- 用户自有素材：`raw/papers/`、`raw/notes/`、`raw/web/`
 
 ## Outputs
 
-- 通过 `tools/research_wiki.py init` 建立 `wiki/` scaffold
-- `raw/tmp/` — `/init` 与直接本地 `/ingest` 复用的生成型 prepared 来源
-- `raw/discovered/` — `/init` 选中的外部论文（启用外部发现时）
-- `wiki/Summary/{area}.md`、`wiki/topics/{topic}.md`、provisional `wiki/ideas/{slug}.md`、`wiki/concepts/{slug}.md`、`wiki/claims/{slug}.md`
-- 通过并行 `/ingest` 创建的 `wiki/papers/*.md` 与论文驱动的 concepts / claims / people
-- 更新后的 `wiki/index.md`、`wiki/log.md`、`wiki/graph/edges.jsonl`、`wiki/graph/context_brief.md`、`wiki/graph/open_questions.md`
-- `.checkpoints/init-prepare.json`、`.checkpoints/init-plan.json`、`.checkpoints/init-sources.json`
+- `wiki/` 骨架与 provisional 页面（Summary、topics、ideas、concepts）
+- `raw/tmp/` 与 `raw/discovered/` 预处理来源
+- 并行 `/ingest` 产出的最终论文页面
+- `.checkpoints/init-*.json` 清单，用于恢复与重放
+- 更新后的 `wiki/index.md`、`wiki/log.md`、`wiki/graph/*`
+- 重新生成的可视化产物：`wiki/.obsidian/graph.json`（按实体类型的 colorGroups）与 `wiki/canvases/*.canvas`（best-effort，见 Step 6）。交互式网页 Graph 视图由 `tools/serve.py`（SPA）提供服务，不再单独生成产物。
 
 ## Wiki Interaction
 
@@ -38,7 +34,7 @@ argument-hint: "[topic] [--no-introduction]"
 
 - `raw/papers/`、`raw/notes/`、`raw/web/`
 - `.checkpoints/init-prepare.json` 与 `.checkpoints/init-sources.json`，供 resume、planning 与 fan-out 使用
-- `wiki/index.md` 以及已有 `wiki/topics/`、`wiki/ideas/`、`wiki/concepts/`、`wiki/claims/`
+- `wiki/index.md` 以及已有 `wiki/topics/`、`wiki/ideas/`、`wiki/concepts/`、`wiki/methods/`，用于去重与 scaffold 对齐
 
 ### Writes
 
@@ -57,12 +53,23 @@ argument-hint: "[topic] [--no-introduction]"
 **前置条件**：当前目录为项目根，且包含 `wiki/`、`raw/`、`tools/`。设 `WIKI_ROOT=wiki/`。先解析一次 `PYTHON_BIN`，并在整个 `/init` 流程里复用它，确保运行时使用与 `setup.sh` 安装依赖时相同的解释器：
 
 ```bash
-if [ -x .venv/bin/python ]; then
-  PYTHON_BIN=.venv/bin/python
-elif [ -x .venv/Scripts/python.exe ]; then
-  PYTHON_BIN=.venv/Scripts/python.exe
-else
-  PYTHON_BIN=python3
+# 通过 git 找到项目根，让 worktree 中的 subagent 也能定位 .venv。
+# .venv 被 gitignore，subagent 的 cwd 在 ../.worktrees/<branch>/ 时本地没有
+# .venv——若不解析项目根，PYTHON_BIN 会回退到系统 python3，既丢失 .env 里的
+# API key，也丢失安装的依赖（deepxiv-sdk 等）。
+# git rev-parse --git-common-dir 无论 cwd 位于哪个 worktree 都返回主仓库的
+# .git 目录；其父目录即项目根。
+GIT_COMMON_DIR=$(git rev-parse --git-common-dir 2>/dev/null || true)
+PROJECT_ROOT=""
+if [ -n "$GIT_COMMON_DIR" ]; then
+  PROJECT_ROOT=$(cd "$(dirname "$GIT_COMMON_DIR")" 2>/dev/null && pwd)
+fi
+
+if   [ -x "$PROJECT_ROOT/.venv/bin/python" ];         then PYTHON_BIN="$PROJECT_ROOT/.venv/bin/python"
+elif [ -x "$PROJECT_ROOT/.venv/Scripts/python.exe" ]; then PYTHON_BIN="$PROJECT_ROOT/.venv/Scripts/python.exe"
+elif [ -x .venv/bin/python ];                         then PYTHON_BIN=.venv/bin/python
+elif [ -x .venv/Scripts/python.exe ];                 then PYTHON_BIN=.venv/Scripts/python.exe
+else                                                       PYTHON_BIN=python3
 fi
 export PYTHON_BIN
 ```
@@ -123,7 +130,7 @@ export PYTHON_BIN
 
 ### Step 4: 在论文 ingest 前建立 scaffold 页面
 
-创建一篇 `wiki/Summary/{area}.md`、若干 `wiki/topics/{slug}.md`，以及来自 notes/web 的 provisional `ideas/`、`concepts/`、`claims/`。
+创建一篇 `wiki/Summary/{area}.md`、若干 `wiki/topics/{slug}.md`，以及来自 notes/web 的 provisional `ideas/`、`concepts/`，必要时还包括 `methods/`。
 
 规则：
 
@@ -137,8 +144,7 @@ Provisional note: seeded from raw/notes or raw/web during /init; pending validat
 - `topics/`：方向被明确提到或反复出现时创建
 - `ideas/`：用户明确提出或强烈暗示研究方向 / 假设时创建
 - `concepts/`：技术机制在 notes/web 中反复出现，或在 notes/web 与最终论文集中各出现至少一次时创建
-- `claims/`：只允许从显式断言创建，禁止靠推断补全
-- notes/web 派生 claim 使用 `status: proposed`、`confidence: 0.2`、`source_papers: []`、`evidence: []`
+- `methods/`：除非用户在 notes/web 中显式命名了一项可复用、可被引用的 method，否则 `/init` 不创建 `methods/`；把论文中的 method 推升为可复用 method 实体是 ingest 的职责
 - `/prefill` 只是可选背景预填充，不属于 `/init`
 - `/init` 不得直接创建 `people/` 页面，也不得自动创建 foundations
 
@@ -153,10 +159,10 @@ Provisional note: seeded from raw/notes or raw/web during /init; pending validat
 
 - fan-out 前先 stash 无关脏文件，再把 `stash_ref`、`base_branch`、`base_commit` 写入 checkpoint metadata
 - fan-out 前必须先提交刚创建的 scaffold 与 init manifests，确保 `BASE_COMMIT` 真的包含后续子代理要继承的页面、manifest 与 handoff metadata
-- 创建 worktree 前先验证 `.gitattributes` 对 `wiki/log.md`、`wiki/graph/edges.jsonl`、`wiki/index.md` 使用了 `merge=union`
+- 创建 worktree 前先验证 `.gitattributes` 对 `wiki/log.md`、`wiki/graph/edges.jsonl`、`wiki/graph/citations.jsonl`、`wiki/index.md` 使用了 `merge=union`
 - `/init` 的 worktree 模式必须运行在一个命名分支上，不能处于 detached HEAD
 - 每个 worktree 都必须从 `BASE_COMMIT` 拉出，而不是复用已经签出的 `BASE_BRANCH`
-- 子代理 prompt 只能使用**相对路径**
+- 子代理 prompt 只能使用**相对路径**，且子代理的 shell 工作目录必须是 worktree 路径（`$WT_PATH`），不能是主仓库根目录
 - 只对一个 handoff 进来的 source path 执行 `/ingest`，不得绕过 `/ingest`
 - 在 INIT MODE 下，必须原样消费 handoff 给它的 canonical path
 - 跳过 `fetch_s2.py citations`
@@ -173,15 +179,25 @@ Provisional note: seeded from raw/notes or raw/web during /init; pending validat
 全部子代理完成后：
 
 - 在 `BASE_BRANCH` 上按顺序 merge worktree branches
-- concept / claim 冲突默认保守合并，不要扩散 near-duplicate 页面
+- concept / method 冲突默认保守合并，不要扩散 near-duplicate 页面
 - 执行：
 
 ```bash
 "$PYTHON_BIN" tools/research_wiki.py dedup-edges wiki/
+"$PYTHON_BIN" tools/research_wiki.py dedup-citations wiki/
 "$PYTHON_BIN" tools/research_wiki.py rebuild-index wiki/
 "$PYTHON_BIN" tools/research_wiki.py rebuild-context-brief wiki/
 "$PYTHON_BIN" tools/research_wiki.py rebuild-open-questions wiki/
 "$PYTHON_BIN" tools/lint.py --wiki-dir wiki/ --fix
+```
+
+随后重新生成可视化产物（best-effort；visualize 失败不可阻塞 `/init`）。`generate-obsidian-config` 会从 `config/visualize.json` 重写 `wiki/.obsidian/graph.json`，让按实体类型的 colorGroups 与运行时配置保持同步 —— Obsidian 的图谱视图在 `colorGroups` 为空时显示为无色节点，所以这一步保证图谱在每次重建后仍然可读。交互式网页 Graph 视图是 SPA 的 `#/graph` 路由（由 `tools/serve.py` 服务）；本阶段不生成单独的 HTML 文件。
+
+```bash
+"$PYTHON_BIN" tools/visualize.py generate-obsidian-config wiki/ \
+  || echo "WARN: visualize generate-obsidian-config failed; run /visualize manually" >&2
+"$PYTHON_BIN" tools/visualize.py generate-canvas wiki/ \
+  || echo "WARN: visualize generate-canvas failed; run /visualize manually" >&2
 ```
 
 报告中必须分开列出：
@@ -198,6 +214,7 @@ Provisional note: seeded from raw/notes or raw/web during /init; pending validat
 
 ## Constraints
 
+- 不得仅根据仓库状态推断 `--no-introduction`。只有当用户明确要求禁用外部发现时，才可使用它。
 - `raw/papers/`、`raw/notes/`、`raw/web/` 是用户自有输入
 - `raw/tmp/` 与 `raw/discovered/` 是生成型 handoff 区；直接本地 `/ingest` 也可以在 `raw/tmp/` 下准备可复用的 local sidecar
 - `/init` 只能把外部论文写到 `raw/discovered/`；`/init` 与直接本地 `/ingest` 可以把生成的 prepared local source 写到 `raw/tmp/`
@@ -205,7 +222,7 @@ Provisional note: seeded from raw/notes or raw/web during /init; pending validat
 - 只有 `/prefill` 可以自动创建 foundations
 - `/init` 不得直接创建 `people/` 页面
 - notes/web 派生页面必须包含上面的 exact provisional notice
-- 对 claim 置信度与 concept 合并，论文证据永远高于 notes/web
+- 对 concept 合并与 method 抽取，论文证据永远高于 notes/web
 - 所有论文 ingest 必须通过并行 `/ingest` 子代理执行
 - Step 5 必须读取 `.checkpoints/init-sources.json`，不得临时扫描目录
 - 精确的 planner 常量属于 `tools/init_discovery.py`，不属于重复写在 skill 文档中的常量
@@ -222,6 +239,7 @@ Provisional note: seeded from raw/notes or raw/web during /init; pending validat
 - **单篇 ingest 失败**：写 checkpoint，跳过该篇，继续其他论文，并在最终报告中列出
 - **当前 checkout 处于 detached HEAD**：在 worktree fan-out 前停止，并要求用户先切换到或创建一个命名分支
 - **stash pop 失败**：保留 checkpoint metadata，并给出手动恢复提示
+- **可视化重生成失败**：警告并继续，绝不让 `/init` 失败。用户可单独跑 `/visualize --canvas` 排查，或直接通过 `python tools/serve.py` 浏览 SPA Graph 视图
 
 ## Dependencies
 
@@ -231,10 +249,13 @@ Provisional note: seeded from raw/notes or raw/web during /init; pending validat
 - `"$PYTHON_BIN" tools/research_wiki.py checkpoint-set-meta wiki/ init-session <key> <value>`
 - `"$PYTHON_BIN" tools/research_wiki.py checkpoint-save/load/clear wiki/ init-session ...`
 - `"$PYTHON_BIN" tools/research_wiki.py dedup-edges wiki/`
+- `"$PYTHON_BIN" tools/research_wiki.py dedup-citations wiki/`
 - `"$PYTHON_BIN" tools/research_wiki.py rebuild-index wiki/`
 - `"$PYTHON_BIN" tools/research_wiki.py rebuild-context-brief wiki/`
 - `"$PYTHON_BIN" tools/research_wiki.py rebuild-open-questions wiki/`
 - `"$PYTHON_BIN" tools/research_wiki.py log wiki/ "<message>"`
+- `"$PYTHON_BIN" tools/visualize.py generate-obsidian-config wiki/`
+- `"$PYTHON_BIN" tools/visualize.py generate-canvas wiki/`
 - `"$PYTHON_BIN" tools/prepare_paper_source.py --raw-root raw --source <local-path> [--title "<recovered-title>"]`
 - `"$PYTHON_BIN" tools/init_discovery.py prepare --raw-root raw --pdf-titles-json .checkpoints/init-pdf-titles.json --output-manifest .checkpoints/init-prepare.json`
 - `"$PYTHON_BIN" tools/init_discovery.py plan [--topic "<topic>"] --mode auto --raw-root raw --wiki-root wiki --prepared-manifest .checkpoints/init-prepare.json --allow-introduction <true|false> --output-plan .checkpoints/init-plan.json`
@@ -244,6 +265,7 @@ Provisional note: seeded from raw/notes or raw/web during /init; pending validat
 ### Skills
 
 - `/ingest` — 每个子代理只 ingest 一篇论文，且运行在 INIT MODE
+- `/visualize` — Step 6 fan-in 直接调用 `tools/visualize.py` 重新生成 Obsidian 颜色组与 Canvas（best-effort）；用户也可以稍后手动调用 `/visualize` 做 `--focus` 视图，或在改了 `config/visualize.json` 后重新渲染
 
 ### `init_discovery.py` 内部使用的外部 API
 
