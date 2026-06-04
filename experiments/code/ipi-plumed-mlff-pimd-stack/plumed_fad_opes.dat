@@ -1,0 +1,36 @@
+# PLUMED input: FAD proton transfer OPES_METAD
+#
+# Atom numbering (1-indexed, PLUMED convention):
+#   H1=1  C1=2  O1=3  O2=4  H2=5  H3=6  C2=7  O3=8  O4=9  H4=10
+#
+# CVdimer = (d(H1,O2) - d(H1,O3)) + (d(H3,O4) - d(H3,O1))
+#
+# All lengths in nm (PLUMED default).
+# sigma 0.005 nm = 0.05 Ang (half the failed custom OPES sigma=0.10 Ang → better frontier contrast)
+# BARRIER 81.6 kJ/mol = 5 × 3.90 kcal/mol × 4.184
+
+d_H1_O2: DISTANCE ATOMS=1,4
+d_H1_O3: DISTANCE ATOMS=1,8
+d_H3_O4: DISTANCE ATOMS=6,9
+d_H3_O1: DISTANCE ATOMS=6,3
+
+cv: COMBINE ARG=d_H1_O2,d_H1_O3,d_H3_O4,d_H3_O1 COEFFICIENTS=1,-1,1,-1 PERIODIC=NO
+
+# OPES_METAD — production PLUMED implementation
+# Key differences from failed custom OPES (sigma=0.10 Ang, no compression):
+#   - SIGMA=0.005 nm (0.05 Ang): sharper KDE → better density contrast at frontier
+#   - PACE=500: less frequent updates → more robust kernel placement
+#   - COMPRESSION_THRESHOLD=1.0: PLUMED's adaptive kernel compression (bounds N_kernels)
+#   - BARRIER=81.6 kJ/mol: same as custom OPES for fair comparison
+opes: OPES_METAD ...
+  ARG=cv
+  PACE=500
+  BARRIER=81.6
+  SIGMA=0.005
+  COMPRESSION_THRESHOLD=1.0
+  TEMP=200
+  FILE=/dev/shm/KERNELS
+  RESTART=NO
+...
+
+PRINT ARG=cv,opes.bias STRIDE=10 FILE=/dev/shm/COLVAR FMT=%12.6f

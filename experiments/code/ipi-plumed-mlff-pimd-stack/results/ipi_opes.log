@@ -1,0 +1,204 @@
++++ Loading the PLUMED kernel runtime +++
++++ PLUMED_KERNEL="/usr/local/lib/libplumedKernel.so" +++
+PLUMED: PLUMED is starting
+PLUMED: Version: 2.9.2 (git: 0a31160) compiled on May 31 2026 at 12:49:29
+PLUMED: Please cite these papers when using PLUMED [1][2]
+PLUMED: For further information see the PLUMED web page at http://www.plumed.org
+PLUMED: Root: /usr/local/lib/plumed
+PLUMED: For installed feature, see /usr/local/lib/plumed/src/config/config.txt
+PLUMED: Molecular dynamics engine: i-pi
+PLUMED: Precision of reals: 8
+PLUMED: Running over 1 node
+PLUMED: Number of threads: 1
+PLUMED: Cache line size: 512
+PLUMED: Number of atoms: 10
+PLUMED: File suffix: 
+PLUMED: FILE: plumed_fad_opes.dat
+PLUMED: Action DISTANCE
+PLUMED:   with label d_H1_O2
+PLUMED:   between atoms 1 4
+PLUMED:   using periodic boundary conditions
+PLUMED: Action DISTANCE
+PLUMED:   with label d_H1_O3
+PLUMED:   between atoms 1 8
+PLUMED:   using periodic boundary conditions
+PLUMED: Action DISTANCE
+PLUMED:   with label d_H3_O4
+PLUMED:   between atoms 6 9
+PLUMED:   using periodic boundary conditions
+PLUMED: Action DISTANCE
+PLUMED:   with label d_H3_O1
+PLUMED:   between atoms 6 3
+PLUMED:   using periodic boundary conditions
+PLUMED: Action COMBINE
+PLUMED:   with label cv
+PLUMED:   with arguments d_H1_O2 d_H1_O3 d_H3_O4 d_H3_O1
+PLUMED:   with coefficients: 1.000000 -1.000000 1.000000 -1.000000
+PLUMED:   with parameters: 0.000000 0.000000 0.000000 0.000000
+PLUMED:   and powers: 1.000000 1.000000 1.000000 1.000000
+PLUMED: Action OPES_METAD
+PLUMED:   with label opes
+PLUMED:   with arguments cv
+PLUMED:   added component to this action:  opes.bias 
+PLUMED:   added component to this action:  opes.rct 
+PLUMED:   added component to this action:  opes.zed 
+PLUMED:   added component to this action:  opes.neff 
+PLUMED:   added component to this action:  opes.nker 
+PLUMED:   temperature = 200
+PLUMED:   beta = 0.601362
+PLUMED:   depositing new kernels with PACE = 500
+PLUMED:   expected BARRIER is 81.6
+PLUMED:   using target distribution with BIASFACTOR gamma = 49.0711
+PLUMED:   kernels have initial SIGMA =  0.005
+PLUMED:   kernels are truncated with KERNELS_CUTOFF = 10.0092
+PLUMED:   the value at cutoff is = 1.75935e-22
+PLUMED:   regularization EPSILON = 1.75935e-22
+PLUMED:   kernels will be compressed when closer than COMPRESSION_THRESHOLD = 1
+PLUMED:   Bibliography: [3]
+PLUMED: Action PRINT
+PLUMED:   with label @6
+PLUMED:   with stride 10
+PLUMED:   with arguments cv opes.bias
+PLUMED:   on file /dev/shm/COLVAR
+PLUMED:   with format  %12.6f
+PLUMED: END FILE: plumed_fad_opes.dat
+
+ ____       ____       ____       ____
+/    \     /    \     /    \     /    \
+|  #################################  |
+\__#_/     \____/     \____/     \_#__/
+   #    _        _______  _____    #
+   #   (_)      |_   __ \|_   _|   #      -*-   v 3.2.0  -*-
+   #   __  ______ | |__) | | |     #
+   Y  [  ||______||  ___/  | |     #      A Universal Force Engine
+  0 0  | |       _| |_    _| |_    #
+   #  [___]     |_____|  |_____|   #
+ __#_       ____       ____       _#__
+/  # \     /    \     /    \     / #  \
+|  #################################  |
+\____/     \____/     \____/     \____/
+
+    
+# Unable to retrieve Git information.
+#
+# Simulation information:
+#           Machine Name: 829bf949e568
+#      Working Directory: /workspace
+#          Date and Time: 2026-05-31 19:54:13
+
+ @system: Initializing system object 
+ @simulation: Initializing simulation object 
+@ RANDOM SEED: The seed used in this calculation was 1780257253552
+ @init_file: Initializing from file init_fad.xyz. Dimension: length, units: angstrom, cell_units: automatic
+ @set_vector: Initialize is rescaling from     1 beads to    32 beads
+ @init_file: Initializing from file init_fad.xyz. Dimension: length, units: automatic, cell_units: automatic
+ @init_file: Initializing from file init_fad.xyz. Dimension: length, units: automatic, cell_units: automatic
+ @init_file: Initializing from file init_fad.xyz. Dimension: length, units: automatic, cell_units: automatic
+ @initializer: Resampling velocities at temperature 200.0 kelvin
+Import of PyFFTW unsuccessful, using NumPy library instead. 
+ !W! Install PyFFTW to avoid slow normal-modes integration
+ --- begin input file content ---
+
+  <simulation verbosity='medium'>
+    <total_steps>600000</total_steps>
+    <output prefix='ipi_opes'>
+      <properties stride='10' filename='md'>[ step, time{picosecond}, potential{electronvolt}, temperature{kelvin} ]</properties>
+      <trajectory stride='100' filename='pos' format='xyz' cell_units='angstrom' bead='0'>positions{angstrom}</trajectory>
+    </output>
+    <system>
+      <initialize nbeads='32'>
+        <file mode='xyz' units='angstrom'>init_fad.xyz</file>
+        <velocities mode='thermal' units='kelvin'>200</velocities>
+      </initialize>
+      <forces>
+        <force name='physnet-ff' forcefield='physnet-ff'>
+        </force>
+        <force name='plumed-bias' forcefield='plumed-bias'>
+        </force>
+      </forces>
+      <motion mode='dynamics'>
+        <dynamics mode='nvt'>
+          <timestep units='femtosecond'>0.5</timestep>
+          <thermostat mode='pile_l'>
+            <tau units='femtosecond'>500</tau>
+          </thermostat>
+        </dynamics>
+      </motion>
+      <ensemble>
+        <temperature units='kelvin'>200</temperature>
+      </ensemble>
+      <cell units='angstrom'>[30.0, 0.0, 0.0, 0.0, 30.0, 0.0, 0.0, 0.0, 30.0]</cell>
+    </system>
+    <smotion mode='metad'>
+      <metad>
+        <metaff>[ plumed-bias ]</metaff>
+      </metad>
+    </smotion>
+    <ffsocket mode='unix' name='physnet-ff' pbc='false'>
+      <address>physnet</address>
+      <slots>32</slots>
+      <timeout>3600.0</timeout>
+    </ffsocket>
+    <ffplumed name='plumed-bias' pbc='false'>
+      <file mode='xyz' units='angstrom'>init_fad.xyz</file>
+      <plumed_dat>plumed_fad_opes.dat</plumed_dat>
+    </ffplumed>
+  </simulation>
+ ---  end input file content  ---
+ @system.bind: Binding the forces 
+Import of PyFFTW unsuccessful, using NumPy library instead. 
+ !W! Install PyFFTW to avoid slow normal-modes integration
+ @interfacesocket.open: Created unix socket with address physnet
+ @ForceField (physnet-ff): Starting the polling thread main loop.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.
+ @interfacesocket.pool_update:   Client asked for connection from . Now hand-shaking.
+ @interfacesocket.pool_update:   Handshaking was successful. Added to the client list.

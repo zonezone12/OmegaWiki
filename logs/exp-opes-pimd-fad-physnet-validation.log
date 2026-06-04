@@ -1,0 +1,99 @@
+﻿=== OPES SEED 42 started 05/30/2026 12:56:17 ===
+=== OPES SEED 42 started Sat, May 30, 2026 12:56:37 PM ===
+[PhysNetFF] GPU(s) found: ['/physical_device:GPU:0']
+C:\Users\zonezone\miniforge3\envs\zong-tf210\lib\site-packages\tensorflow\python\framework\tensor_util.py:455: RuntimeWarning: overflow encountered in cast
+  nparray = np.array(values, dtype=np_dt)
+C:\Users\zonezone\miniforge3\envs\zong-tf210\lib\site-packages\tensorflow\python\framework\indexed_slices.py:444: UserWarning: Converting sparse IndexedSlices(IndexedSlices(indices=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties/Reshape_1:0", shape=(10,), dtype=int32), values=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties/Reshape:0", shape=(10,), dtype=float32), dense_shape=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties/Cast:0", shape=(1,), dtype=int32))) to a dense Tensor of unknown shape. This may consume a large amount of memory.
+  warnings.warn(
+C:\Users\zonezone\miniforge3\envs\zong-tf210\lib\site-packages\tensorflow\python\framework\indexed_slices.py:444: UserWarning: Converting sparse IndexedSlices(IndexedSlices(indices=Tensor("energy_and_forces/concat_3:0", shape=(180,), dtype=int32), values=Tensor("energy_and_forces/concat_2:0", shape=(180,), dtype=float32), dense_shape=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties_1/Cast_2:0", shape=(1,), dtype=int32))) to a dense Tensor of unknown shape. This may consume a large amount of memory.
+  warnings.warn(
+[PhysNetFF] loaded: C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Final_Fit\best\best_model  (device=/GPU:0)
+[PIMD] device=CPU
+[init/FRESH] seed=42  CV0=-1.4833 Ang  steps=600000  sim=300.0ps  T=200.0K
+[init] BARRIER=81.6 kJ/mol  pace=100  sigma=0.1  gamma=50.1
+=== OPES SEED 42 (fixed batch path) started Sat, May 30, 2026  8:05:49 PM ===
+[PhysNetFF] GPU(s) found: ['/physical_device:GPU:0']
+C:\Users\zonezone\miniforge3\envs\zong-tf210\lib\site-packages\tensorflow\python\framework\tensor_util.py:455: RuntimeWarning: overflow encountered in cast
+  nparray = np.array(values, dtype=np_dt)
+C:\Users\zonezone\miniforge3\envs\zong-tf210\lib\site-packages\tensorflow\python\framework\indexed_slices.py:444: UserWarning: Converting sparse IndexedSlices(IndexedSlices(indices=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties/Reshape_1:0", shape=(10,), dtype=int32), values=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties/Reshape:0", shape=(10,), dtype=float32), dense_shape=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties/Cast:0", shape=(1,), dtype=int32))) to a dense Tensor of unknown shape. This may consume a large amount of memory.
+  warnings.warn(
+C:\Users\zonezone\miniforge3\envs\zong-tf210\lib\site-packages\tensorflow\python\framework\indexed_slices.py:444: UserWarning: Converting sparse IndexedSlices(IndexedSlices(indices=Tensor("energy_and_forces/concat_3:0", shape=(180,), dtype=int32), values=Tensor("energy_and_forces/concat_2:0", shape=(180,), dtype=float32), dense_shape=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties_1/Cast_2:0", shape=(1,), dtype=int32))) to a dense Tensor of unknown shape. This may consume a large amount of memory.
+  warnings.warn(
+[PhysNetFF] loaded: C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Final_Fit\best\best_model  (device=/GPU:0)
+[PIMD] device=CPU
+[init/FRESH] seed=42  CV0=-1.4833 Ang  steps=600000  sim=300.0ps  T=200.0K
+[init] BARRIER=81.6 kJ/mol  pace=100  sigma=0.1  gamma=50.1
+C:\Users\zonezone\miniforge3\envs\zong-tf210\lib\site-packages\tensorflow\python\framework\indexed_slices.py:444: UserWarning: Converting sparse IndexedSlices(IndexedSlices(indices=Tensor("energy_and_forces/concat_3:0", shape=(5760,), dtype=int32), values=Tensor("energy_and_forces/concat_2:0", shape=(5760,), dtype=float32), dense_shape=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties_1/Cast_2:0", shape=(1,), dtype=int32))) to a dense Tensor of unknown shape. This may consume a large amount of memory.
+  warnings.warn(
+step   10000  t=5.0ps  cv=-1.391  cv_max=-1.279  barrier=33.90 kcal/mol  1.03M/day
+step   20000  t=10.0ps  cv=-1.384  cv_max=-1.279  barrier=34.19 kcal/mol  0.97M/day
+step   30000  t=15.0ps  cv=-1.387  cv_max=-1.279  barrier=34.36 kcal/mol  0.87M/day
+step   40000  t=20.0ps  cv=-1.361  cv_max=-1.279  barrier=34.44 kcal/mol  0.85M/day
+step   50000  t=25.0ps  cv=-1.409  cv_max=-1.279  barrier=34.53 kcal/mol  0.82M/day
+step   60000  t=30.0ps  cv=-1.401  cv_max=-1.279  barrier=34.60 kcal/mol  0.81M/day
+step   70000  t=35.0ps  cv=-1.390  cv_max=-1.279  barrier=34.66 kcal/mol  0.80M/day
+step   80000  t=40.0ps  cv=-1.413  cv_max=-1.279  barrier=34.71 kcal/mol  0.80M/day
+step   90000  t=45.0ps  cv=-1.393  cv_max=-1.279  barrier=34.76 kcal/mol  0.79M/day
+step  100000  t=50.0ps  cv=-1.365  cv_max=-1.279  barrier=34.80 kcal/mol  0.79M/day
+[checkpoint] t=50ps  barrier=34.8029 kcal/mol  cv_max=-1.2787  ts_crossed=NO
+step  110000  t=55.0ps  cv=-1.349  cv_max=-1.279  barrier=34.84 kcal/mol  0.79M/day
+step  120000  t=60.0ps  cv=-1.370  cv_max=-1.279  barrier=34.88 kcal/mol  0.79M/day
+step  130000  t=65.0ps  cv=-1.381  cv_max=-1.279  barrier=34.91 kcal/mol  0.79M/day
+step  140000  t=70.0ps  cv=-1.366  cv_max=-1.279  barrier=34.93 kcal/mol  0.79M/day
+step  150000  t=75.0ps  cv=-1.372  cv_max=-1.279  barrier=34.96 kcal/mol  0.78M/day
+step  160000  t=80.0ps  cv=-1.408  cv_max=-1.279  barrier=34.97 kcal/mol  0.78M/day
+step  170000  t=85.0ps  cv=-1.414  cv_max=-1.279  barrier=34.99 kcal/mol  0.78M/day
+step  180000  t=90.0ps  cv=-1.374  cv_max=-1.279  barrier=35.02 kcal/mol  0.78M/day
+step  190000  t=95.0ps  cv=-1.333  cv_max=-1.279  barrier=35.04 kcal/mol  0.79M/day
+step  200000  t=100.0ps  cv=-1.387  cv_max=-1.279  barrier=35.06 kcal/mol  0.79M/day
+[checkpoint] t=100ps  barrier=35.0564 kcal/mol  cv_max=-1.2787  ts_crossed=NO
+step  210000  t=105.0ps  cv=-1.365  cv_max=-1.279  barrier=35.05 kcal/mol  0.80M/day
+step  220000  t=110.0ps  cv=-1.325  cv_max=-1.279  barrier=35.06 kcal/mol  0.80M/day
+step  230000  t=115.0ps  cv=-1.362  cv_max=-1.279  barrier=35.08 kcal/mol  0.80M/day
+step  240000  t=120.0ps  cv=-1.393  cv_max=-1.279  barrier=35.10 kcal/mol  0.81M/day
+step  250000  t=125.0ps  cv=-1.380  cv_max=-1.279  barrier=35.11 kcal/mol  0.81M/day
+step  260000  t=130.0ps  cv=-1.420  cv_max=-1.279  barrier=35.13 kcal/mol  0.81M/day
+step  270000  t=135.0ps  cv=-1.445  cv_max=-1.279  barrier=35.14 kcal/mol  0.82M/day
+step  280000  t=140.0ps  cv=-1.369  cv_max=-1.279  barrier=35.15 kcal/mol  0.82M/day
+step  290000  t=145.0ps  cv=-1.448  cv_max=-1.279  barrier=35.16 kcal/mol  0.82M/day
+step  300000  t=150.0ps  cv=-1.415  cv_max=-1.279  barrier=35.18 kcal/mol  0.82M/day
+[checkpoint] t=150ps  barrier=35.1758 kcal/mol  cv_max=-1.2787  ts_crossed=NO
+step  310000  t=155.0ps  cv=-1.452  cv_max=-1.279  barrier=35.19 kcal/mol  0.82M/day
+step  320000  t=160.0ps  cv=-1.381  cv_max=-1.279  barrier=35.20 kcal/mol  0.83M/day
+step  330000  t=165.0ps  cv=-1.345  cv_max=-1.279  barrier=35.21 kcal/mol  0.83M/day
+step  340000  t=170.0ps  cv=-1.405  cv_max=-1.279  barrier=35.22 kcal/mol  0.83M/day
+step  350000  t=175.0ps  cv=-1.351  cv_max=-1.279  barrier=35.20 kcal/mol  0.83M/day
+step  360000  t=180.0ps  cv=-1.343  cv_max=-1.279  barrier=35.21 kcal/mol  0.83M/day
+step  370000  t=185.0ps  cv=-1.409  cv_max=-1.279  barrier=35.20 kcal/mol  0.83M/day
+step  380000  t=190.0ps  cv=-1.393  cv_max=-1.279  barrier=35.19 kcal/mol  0.83M/day
+step  390000  t=195.0ps  cv=-1.361  cv_max=-1.279  barrier=35.20 kcal/mol  0.84M/day
+step  400000  t=200.0ps  cv=-1.461  cv_max=-1.279  barrier=35.20 kcal/mol  0.84M/day
+[checkpoint] t=200ps  barrier=35.2044 kcal/mol  cv_max=-1.2787  ts_crossed=NO
+step  410000  t=205.0ps  cv=-1.389  cv_max=-1.279  barrier=35.21 kcal/mol  0.84M/day
+step  420000  t=210.0ps  cv=-1.320  cv_max=-1.279  barrier=35.21 kcal/mol  0.84M/day
+step  430000  t=215.0ps  cv=-1.378  cv_max=-1.279  barrier=35.21 kcal/mol  0.84M/day
+step  440000  t=220.0ps  cv=-1.379  cv_max=-1.279  barrier=35.22 kcal/mol  0.84M/day
+step  450000  t=225.0ps  cv=-1.416  cv_max=-1.279  barrier=35.19 kcal/mol  0.84M/day
+step  460000  t=230.0ps  cv=-1.405  cv_max=-1.279  barrier=35.16 kcal/mol  0.84M/day
+step  470000  t=235.0ps  cv=-1.415  cv_max=-1.279  barrier=35.17 kcal/mol  0.84M/day
+step  480000  t=240.0ps  cv=-1.444  cv_max=-1.279  barrier=35.17 kcal/mol  0.84M/day
+step  490000  t=245.0ps  cv=-1.365  cv_max=-1.273  barrier=34.97 kcal/mol  0.84M/day
+step  500000  t=250.0ps  cv=-1.401  cv_max=-1.273  barrier=34.91 kcal/mol  0.84M/day
+[checkpoint] t=250ps  barrier=34.9104 kcal/mol  cv_max=-1.2732  ts_crossed=NO
+step  510000  t=255.0ps  cv=-1.357  cv_max=-1.273  barrier=34.90 kcal/mol  0.84M/day
+step  520000  t=260.0ps  cv=-1.396  cv_max=-1.273  barrier=34.91 kcal/mol  0.84M/day
+step  530000  t=265.0ps  cv=-1.351  cv_max=-1.273  barrier=34.91 kcal/mol  0.84M/day
+step  540000  t=270.0ps  cv=-1.460  cv_max=-1.273  barrier=34.92 kcal/mol  0.84M/day
+step  550000  t=275.0ps  cv=-1.370  cv_max=-1.273  barrier=34.92 kcal/mol  0.84M/day
+step  560000  t=280.0ps  cv=-1.409  cv_max=-1.273  barrier=34.92 kcal/mol  0.84M/day
+step  570000  t=285.0ps  cv=-1.460  cv_max=-1.273  barrier=34.93 kcal/mol  0.84M/day
+step  580000  t=290.0ps  cv=-1.411  cv_max=-1.273  barrier=34.93 kcal/mol  0.84M/day
+step  590000  t=295.0ps  cv=-1.361  cv_max=-1.273  barrier=34.94 kcal/mol  0.84M/day
+
+=== RESULTS (PhysNet OPES, seed=42) ===
+Barrier          : 34.9454 kcal/mol
+First TS crossing: NONE (cv_max=-1.2732)
+Converged        : False  (convergence_time=None ps)
+Speed (this run) : 0.84 M steps/day  (WT-MetaD ref: 0.97)
+Total sim time   : 300.0 ps
+Saved: C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-physnet-validation\experiments/code/opes-pimd-fad-physnet-validation/results_physnet\seed_42.json

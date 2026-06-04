@@ -1,23 +1,195 @@
-=== Experiment wt-metad-pimd-fad-physnet-baseline launched 05/14/2026 14:48:55 ===
-=== SEED 42 started 2026/05/14 週四 14:48:56.05 === 
-C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Physnet_v2\layers\NeuronLayer.py:12: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
-  super(NeuronLayer, self).__init__(input_dim=n_in)
-WARNING:tensorflow:From C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Physnet_v2\layers\DenseLayer.py:32: The name tf.add_to_collection is deprecated. Please use tf.compat.v1.add_to_collection instead.
-
-C:\Users\zonezone\miniforge3\envs\zong-test\Lib\site-packages\tensorflow\python\util\numpy_compat.py:47: RuntimeWarning: overflow encountered in cast
-  return np.array(values, copy=copy, order=order).astype(dtype)
-[PhysNetFF] loaded: C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Final_Fit\best\best_model
-[init] seed=42  CV0=-1.4833 Ang  n_steps=600000  T=200.0K
+[resume] detected step_offset=46030  (23.02 ps already done)
+[PhysNetFF] WARNING: no GPU detected — running on CPU
+[PhysNetFF] loaded: C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Final_Fit\best\best_model  (device=/CPU:0)
+[resume] loaded 241 hills from C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\wt-metad-pimd-fad-physnet-baseline\results_physnet\hills_seed7.dat
+[init/RESUME] seed=7  CV0=-1.4556 Ang  steps_remaining=553970  sim_remaining=277.0ps  T=200.0K
 [init] h=3.0 kJ/mol  biasfactor=50  sigma=0.05  PACE=200
-step   10000  t=5.0ps  cv=-1.601  cv_max=-1.191  barrier=30.83 kcal/mol  0.67M/day
-step   20000  t=10.0ps  cv=-1.153  cv_max=-1.153  barrier=29.16 kcal/mol  0.65M/day
-step   30000  t=15.0ps  cv=-1.455  cv_max=-1.121  barrier=27.68 kcal/mol  0.60M/day
-step   40000  t=20.0ps  cv=-1.332  cv_max=-1.081  barrier=26.19 kcal/mol  0.56M/day
-step   50000  t=25.0ps  cv=-1.347  cv_max=-1.081  barrier=26.19 kcal/mol  0.56M/day
-step   60000  t=30.0ps  cv=-1.313  cv_max=-1.002  barrier=22.93 kcal/mol  0.56M/day
-=== SEED 42 done 2026/05/14 週四 17:37:37.61 === 
-=== SEED 123 started 2026/05/14 週四 17:37:37.61 === 
-=== SEED 123 done 2026/05/14 週四 17:37:37.91 === 
-=== SEED 7 started 2026/05/14 週四 17:37:37.91 === 
-=== SEED 7 done 2026/05/14 週四 17:37:38.14 === 
-=== ALL DONE 2026/05/14 週四 17:37:38.14 === 
+step   56030  t=28.0ps  cv=-1.598  cv_max=-1.455  barrier=61.83 kcal/mol  0.55M/day
+step   66030  t=33.0ps  cv=-1.366  cv_max=-1.051  barrier=24.35 kcal/mol  0.55M/day
+step   76030  t=38.0ps  cv=-1.626  cv_max=-1.051  barrier=24.35 kcal/mol  0.56M/day
+step   86030  t=43.0ps  cv=-1.154  cv_max=-0.998  barrier=20.99 kcal/mol  0.56M/day
+step   96030  t=48.0ps  cv=-1.312  cv_max=-0.998  barrier=20.99 kcal/mol  0.56M/day
+step  106030  t=53.0ps  cv=-1.434  cv_max=-0.998  barrier=20.99 kcal/mol  0.56M/day
+step  116030  t=58.0ps  cv=-1.192  cv_max=-0.998  barrier=20.99 kcal/mol  0.56M/day
+step  126030  t=63.0ps  cv=-1.033  cv_max=-0.976  barrier=20.90 kcal/mol  0.56M/day
+step  136030  t=68.0ps  cv=-1.696  cv_max=-0.976  barrier=20.90 kcal/mol  0.56M/day
+step  146030  t=73.0ps  cv=-1.308  cv_max=-0.976  barrier=20.90 kcal/mol  0.56M/day
+[checkpoint] t=73ps  barrier=20.9042 kcal/mol  cv_max=-0.9760  ts_crossed=NO
+step  156030  t=78.0ps  cv=-1.152  cv_max=-0.976  barrier=20.90 kcal/mol  0.56M/day
+step  166030  t=83.0ps  cv=-1.607  cv_max=-0.976  barrier=20.90 kcal/mol  0.56M/day
+step  176030  t=88.0ps  cv=-1.587  cv_max=-0.976  barrier=21.32 kcal/mol  0.56M/day
+step  186030  t=93.0ps  cv=-1.806  cv_max=-0.976  barrier=21.32 kcal/mol  0.56M/day
+step  196030  t=98.0ps  cv=-1.364  cv_max=-0.976  barrier=21.32 kcal/mol  0.56M/day
+step  206030  t=103.0ps  cv=-1.466  cv_max=-0.976  barrier=21.32 kcal/mol  0.56M/day
+step  216030  t=108.0ps  cv=-1.413  cv_max=-0.976  barrier=21.32 kcal/mol  0.56M/day
+step  226030  t=113.0ps  cv=-1.637  cv_max=-0.976  barrier=21.32 kcal/mol  0.56M/day
+step  236030  t=118.0ps  cv=-1.164  cv_max=-0.976  barrier=21.32 kcal/mol  0.56M/day
+step  246030  t=123.0ps  cv=-1.246  cv_max=-0.897  barrier=18.67 kcal/mol  0.57M/day
+[checkpoint] t=123ps  barrier=18.6743 kcal/mol  cv_max=-0.8967  ts_crossed=NO
+step  256030  t=128.0ps  cv=-1.690  cv_max=-0.897  barrier=18.67 kcal/mol  0.57M/day
+step  266030  t=133.0ps  cv=-1.660  cv_max=-0.897  barrier=18.70 kcal/mol  0.58M/day
+step  276030  t=138.0ps  cv=-1.153  cv_max=-0.897  barrier=18.70 kcal/mol  0.58M/day
+step  286030  t=143.0ps  cv=-1.300  cv_max=-0.897  barrier=18.70 kcal/mol  0.59M/day
+step  296030  t=148.0ps  cv=-1.398  cv_max=-0.897  barrier=18.70 kcal/mol  0.59M/day
+step  306030  t=153.0ps  cv=-1.362  cv_max=-0.897  barrier=18.70 kcal/mol  0.60M/day
+step  316030  t=158.0ps  cv=-1.643  cv_max=-0.897  barrier=18.70 kcal/mol  0.60M/day
+step  326030  t=163.0ps  cv=-1.450  cv_max=-0.897  barrier=18.70 kcal/mol  0.60M/day
+step  336030  t=168.0ps  cv=-1.700  cv_max=-0.897  barrier=18.70 kcal/mol  0.61M/day
+step  346030  t=173.0ps  cv=-1.309  cv_max=-0.897  barrier=18.70 kcal/mol  0.61M/day
+[checkpoint] t=173ps  barrier=18.7021 kcal/mol  cv_max=-0.8967  ts_crossed=NO
+step  356030  t=178.0ps  cv=-1.149  cv_max=-0.897  barrier=18.70 kcal/mol  0.61M/day
+step  366030  t=183.0ps  cv=-1.355  cv_max=-0.897  barrier=18.70 kcal/mol  0.62M/day
+step  376030  t=188.0ps  cv=-1.257  cv_max=-0.897  barrier=18.70 kcal/mol  0.62M/day
+step  386030  t=193.0ps  cv=-1.533  cv_max=-0.897  barrier=18.70 kcal/mol  0.62M/day
+step  396030  t=198.0ps  cv=-1.498  cv_max=-0.897  barrier=18.70 kcal/mol  0.62M/day
+step  406030  t=203.0ps  cv=-1.677  cv_max=-0.897  barrier=18.70 kcal/mol  0.63M/day
+step  416030  t=208.0ps  cv=-1.996  cv_max=-0.897  barrier=18.74 kcal/mol  0.63M/day
+step  426030  t=213.0ps  cv=-1.324  cv_max=-0.897  barrier=18.74 kcal/mol  0.63M/day
+step  436030  t=218.0ps  cv=-1.456  cv_max=-0.897  barrier=18.74 kcal/mol  0.63M/day
+step  446030  t=223.0ps  cv=-1.222  cv_max=-0.897  barrier=18.74 kcal/mol  0.64M/day
+[checkpoint] t=223ps  barrier=18.7383 kcal/mol  cv_max=-0.8967  ts_crossed=NO
+step  456030  t=228.0ps  cv=-1.061  cv_max=-0.897  barrier=18.74 kcal/mol  0.64M/day
+step  466030  t=233.0ps  cv=-0.862  cv_max=-0.846  barrier=14.49 kcal/mol  0.64M/day
+step  476030  t=238.0ps  cv=-1.001  cv_max=-0.819  barrier=14.46 kcal/mol  0.64M/day
+step  486030  t=243.0ps  cv=-0.970  cv_max=-0.819  barrier=14.46 kcal/mol  0.64M/day
+step  496030  t=248.0ps  cv=-1.048  cv_max=-0.819  barrier=14.46 kcal/mol  0.64M/day
+step  506030  t=253.0ps  cv=-1.258  cv_max=-0.819  barrier=14.46 kcal/mol  0.65M/day
+step  516030  t=258.0ps  cv=-1.214  cv_max=-0.819  barrier=14.46 kcal/mol  0.65M/day
+step  526030  t=263.0ps  cv=-1.034  cv_max=-0.819  barrier=14.46 kcal/mol  0.65M/day
+step  536030  t=268.0ps  cv=-1.119  cv_max=-0.819  barrier=14.46 kcal/mol  0.65M/day
+step  546030  t=273.0ps  cv=-0.802  cv_max=-0.740  barrier=11.64 kcal/mol  0.65M/day
+[checkpoint] t=273ps  barrier=11.6383 kcal/mol  cv_max=-0.7402  ts_crossed=NO
+step  556030  t=278.0ps  cv=-0.986  cv_max=-0.727  barrier=11.64 kcal/mol  0.65M/day
+step  566030  t=283.0ps  cv=-0.970  cv_max=-0.683  barrier=11.08 kcal/mol  0.64M/day
+step  576030  t=288.0ps  cv=-0.895  cv_max=-0.683  barrier=11.08 kcal/mol  0.64M/day
+step  586030  t=293.0ps  cv=-0.981  cv_max=-0.683  barrier=11.08 kcal/mol  0.64M/day
+step  596030  t=298.0ps  cv=-0.710  cv_max=-0.683  barrier=11.08 kcal/mol  0.64M/day
+
+=== RESULTS (PhysNet WT-MetaD, seed=7) ===
+Barrier          : 10.4089 kcal/mol
+First TS crossing: NONE (cv_max=-0.6571)
+Converged        : False  (convergence_time=None ps)
+Speed (this run) : 0.64 M steps/day
+Total sim time   : 300.0 ps / 300.0 ps planned
+Saved: C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\wt-metad-pimd-fad-physnet-baseline\results_physnet\seed_7.json
+=== ESCALATED SEED 1 (gamma=100 h=5) started 2026/05/29 週五 20:36:12.85 === 
+^CMicrosoft Windows [版本 10.0.26200.8457]
+(c) Microsoft Corporation. 著作權所有，並保留一切權利。
+
+(zong-test) C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki>=== ESCALATED SEED 1 (gamma=100 h=5) started 2026/05/29 週五 20:45:24.13 === 
+[PhysNetFF] GPU(s) found: ['/physical_device:GPU:0']
+Traceback (most recent call last):
+  File "C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\wt-metad-pimd-fad-physnet-baseline\train.py", line 382, in <module>
+    main()
+  File "C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\wt-metad-pimd-fad-physnet-baseline\train.py", line 263, in main
+    ff = load_ff("physnet", cfg)
+  File "C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\mlff-pimd-fad-barrier-comparison\force_fields.py", line 204, in load_ff
+    return PhysNetFF(base)
+  File "C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\mlff-pimd-fad-barrier-comparison\force_fields.py", line 43, in __init__
+    self._calc  = PhysNet(_dummy, ckpt, cfg)
+  File "C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\physnet.py", line 146, in __init__
+    self.model = PhysNet_v2(
+  File "C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Physnet_v2\NeuralNetwork.py", line 211, in __init__
+    InteractionBlock(
+  File "C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Physnet_v2\layers\InteractionBlock.py", line 27, in __init__
+    self._residual_layer.append(ResidualLayer(
+  File "C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Physnet_v2\layers\ResidualLayer.py", line 21, in __init__
+    self._dense = DenseLayer(
+  File "C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Physnet_v2\layers\DenseLayer.py", line 22, in __init__
+    W_init = semi_orthogonal_glorot_weights(n_in, n_out, seed=seed) 
+  File "C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Physnet_v2\layers\util.py", line 48, in semi_orthogonal_glorot_weights
+    W = semi_orthogonal_matrix(n_in, n_out)
+  File "C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Physnet_v2\layers\util.py", line 37, in semi_orthogonal_matrix
+    square_matrix = square_orthogonal_matrix(dim=M, seed=seed)
+  File "C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Physnet_v2\layers\util.py", line 21, in square_orthogonal_matrix
+    mat = np.eye(dim)
+  File "C:\Users\zonezone\miniforge3\envs\zong-tf210\lib\site-packages\numpy\lib\twodim_base.py", line 211, in eye
+    m = zeros((N, M), dtype=dtype, order=order)
+KeyboardInterrupt
+^C=== ESCALATED SEED 1 (gamma=100 h=5) started 2026/05/29 週五 20:46:00.48 === 
+[PhysNetFF] GPU(s) found: ['/physical_device:GPU:0']
+C:\Users\zonezone\miniforge3\envs\zong-tf210\lib\site-packages\tensorflow\python\framework\tensor_util.py:455: RuntimeWarning: overflow encountered in cast
+  nparray = np.array(values, dtype=np_dt)
+C:\Users\zonezone\miniforge3\envs\zong-tf210\lib\site-packages\tensorflow\python\framework\indexed_slices.py:444: UserWarning: Converting sparse IndexedSlices(IndexedSlices(indices=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties/Reshape_1:0", shape=(10,), dtype=int32), values=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties/Reshape:0", shape=(10,), dtype=float32), dense_shape=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties/Cast:0", shape=(1,), dtype=int32))) to a dense Tensor of unknown shape. This may consume a large amount of memory.
+  warnings.warn(
+C:\Users\zonezone\miniforge3\envs\zong-tf210\lib\site-packages\tensorflow\python\framework\indexed_slices.py:444: UserWarning: Converting sparse IndexedSlices(IndexedSlices(indices=Tensor("energy_and_forces/concat_3:0", shape=(180,), dtype=int32), values=Tensor("energy_and_forces/concat_2:0", shape=(180,), dtype=float32), dense_shape=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties_1/Cast_2:0", shape=(1,), dtype=int32))) to a dense Tensor of unknown shape. This may consume a large amount of memory.
+  warnings.warn(
+[PhysNetFF] loaded: C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\opes-pimd-fad-proton-transfer-convergence\physnet_fad\Final_Fit\best\best_model  (device=/GPU:0)
+[init/FRESH] seed=1  CV0=-1.4904 Ang  steps_remaining=600000  sim_remaining=300.0ps  T=200.0K
+[init] h=5.0 kJ/mol  biasfactor=100  sigma=0.05  PACE=200
+C:\Users\zonezone\miniforge3\envs\zong-tf210\lib\site-packages\tensorflow\python\framework\indexed_slices.py:444: UserWarning: Converting sparse IndexedSlices(IndexedSlices(indices=Tensor("energy_and_forces/concat_3:0", shape=(5760,), dtype=int32), values=Tensor("energy_and_forces/concat_2:0", shape=(5760,), dtype=float32), dense_shape=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties_1/Cast_2:0", shape=(1,), dtype=int32))) to a dense Tensor of unknown shape. This may consume a large amount of memory.
+  warnings.warn(
+step   10000  t=5.0ps  cv=-1.602  cv_max=-1.161  barrier=29.59 kcal/mol  0.93M/day
+step   20000  t=10.0ps  cv=-1.502  cv_max=-1.074  barrier=26.35 kcal/mol  0.91M/day
+step   30000  t=15.0ps  cv=-1.813  cv_max=-1.074  barrier=26.35 kcal/mol  0.91M/day
+step   40000  t=20.0ps  cv=-1.680  cv_max=-1.074  barrier=26.35 kcal/mol  0.91M/day
+step   50000  t=25.0ps  cv=-1.301  cv_max=-1.074  barrier=26.35 kcal/mol  0.91M/day
+step   60000  t=30.0ps  cv=-1.128  cv_max=-0.936  barrier=22.31 kcal/mol  0.91M/day
+step   70000  t=35.0ps  cv=-1.090  cv_max=-0.936  barrier=22.31 kcal/mol  0.90M/day
+step   80000  t=40.0ps  cv=-1.417  cv_max=-0.936  barrier=22.31 kcal/mol  0.89M/day
+step   90000  t=45.0ps  cv=-1.174  cv_max=-0.897  barrier=22.13 kcal/mol  0.90M/day
+step  100000  t=50.0ps  cv=-1.268  cv_max=-0.897  barrier=22.13 kcal/mol  0.90M/day
+[checkpoint] t=50ps  barrier=22.1343 kcal/mol  cv_max=-0.8973  ts_crossed=NO
+step  110000  t=55.0ps  cv=-1.158  cv_max=-0.897  barrier=22.13 kcal/mol  0.90M/day
+step  120000  t=60.0ps  cv=-0.943  cv_max=-0.815  barrier=16.02 kcal/mol  0.90M/day
+step  130000  t=65.0ps  cv=-1.001  cv_max=-0.747  barrier=15.47 kcal/mol  0.86M/day
+step  140000  t=70.0ps  cv=-0.626  cv_max=-0.626  barrier=12.10 kcal/mol  0.87M/day
+step  150000  t=75.0ps  cv=-0.655  cv_max=-0.622  barrier=11.94 kcal/mol  0.87M/day
+step  160000  t=80.0ps  cv=-1.127  cv_max=-0.599  barrier=11.94 kcal/mol  0.87M/day
+step  170000  t=85.0ps  cv=-0.566  cv_max=-0.527  barrier=9.19 kcal/mol  0.87M/day
+step  180000  t=90.0ps  cv=-0.551  cv_max=-0.465  barrier=8.48 kcal/mol  0.88M/day
+step  190000  t=95.0ps  cv=-0.819  cv_max=-0.436  barrier=8.48 kcal/mol  0.89M/day
+step  200000  t=100.0ps  cv=-0.666  cv_max=-0.436  barrier=8.48 kcal/mol  0.89M/day
+[checkpoint] t=100ps  barrier=8.4778 kcal/mol  cv_max=-0.4364  ts_crossed=NO
+step  210000  t=105.0ps  cv=-0.942  cv_max=-0.380  barrier=8.02 kcal/mol  0.90M/day
+step  220000  t=110.0ps  cv=-0.696  cv_max=-0.380  barrier=8.02 kcal/mol  0.90M/day
+step  230000  t=115.0ps  cv=-0.346  cv_max=-0.308  barrier=5.98 kcal/mol  0.91M/day
+step  240000  t=120.0ps  cv=-0.376  cv_max=-0.257  barrier=5.33 kcal/mol  0.92M/day
+step  250000  t=125.0ps  cv=-0.237  cv_max=-0.237  barrier=5.33 kcal/mol  0.92M/day
+step  260000  t=130.0ps  cv=-0.657  cv_max=-0.237  barrier=5.33 kcal/mol  0.92M/day
+step  270000  t=135.0ps  cv=-0.734  cv_max=-0.237  barrier=5.33 kcal/mol  0.93M/day
+step  280000  t=140.0ps  cv=-0.809  cv_max=-0.237  barrier=5.33 kcal/mol  0.93M/day
+step  290000  t=145.0ps  cv=-0.267  cv_max=-0.135  barrier=3.45 kcal/mol  0.94M/day
+step  300000  t=150.0ps  cv=-0.120  cv_max=-0.077  barrier=3.45 kcal/mol  0.94M/day
+[checkpoint] t=150ps  barrier=3.4542 kcal/mol  cv_max=-0.0770  ts_crossed=NO
+step  310000  t=155.0ps  cv=-0.438  cv_max=-0.071  barrier=3.45 kcal/mol  0.94M/day
+step  320000  t=160.0ps  cv=-0.191  cv_max=-0.004  barrier=3.45 kcal/mol  0.95M/day
+*** TS CROSSING at step 326250  t=163.1ps  cv=+0.0003 ***
+step  330000  t=165.0ps  cv=-0.157  cv_max=+0.062  barrier=3.45 kcal/mol  0.95M/day
+step  340000  t=170.0ps  cv=-0.296  cv_max=+0.089  barrier=3.45 kcal/mol  0.95M/day
+step  350000  t=175.0ps  cv=-0.199  cv_max=+0.089  barrier=3.45 kcal/mol  0.95M/day
+step  360000  t=180.0ps  cv=-0.407  cv_max=+0.089  barrier=3.45 kcal/mol  0.96M/day
+step  370000  t=185.0ps  cv=+0.036  cv_max=+0.153  barrier=3.45 kcal/mol  0.96M/day
+step  380000  t=190.0ps  cv=+0.296  cv_max=+0.298  barrier=3.45 kcal/mol  0.96M/day
+step  390000  t=195.0ps  cv=+0.016  cv_max=+0.298  barrier=3.45 kcal/mol  0.96M/day
+step  400000  t=200.0ps  cv=+0.435  cv_max=+0.464  barrier=3.45 kcal/mol  0.96M/day
+[checkpoint] t=200ps  barrier=3.4542 kcal/mol  cv_max=+0.4635  ts_crossed=YES
+step  410000  t=205.0ps  cv=+0.198  cv_max=+0.464  barrier=3.45 kcal/mol  0.97M/day
+step  420000  t=210.0ps  cv=+0.346  cv_max=+0.600  barrier=3.45 kcal/mol  0.97M/day
+step  430000  t=215.0ps  cv=+0.510  cv_max=+0.600  barrier=3.45 kcal/mol  0.97M/day
+step  440000  t=220.0ps  cv=+0.345  cv_max=+0.690  barrier=3.45 kcal/mol  0.97M/day
+step  450000  t=225.0ps  cv=+0.460  cv_max=+0.690  barrier=3.45 kcal/mol  0.97M/day
+step  460000  t=230.0ps  cv=+0.236  cv_max=+0.690  barrier=3.45 kcal/mol  0.97M/day
+step  470000  t=235.0ps  cv=+0.274  cv_max=+0.690  barrier=3.45 kcal/mol  0.97M/day
+step  480000  t=240.0ps  cv=+0.418  cv_max=+0.690  barrier=3.45 kcal/mol  0.98M/day
+step  490000  t=245.0ps  cv=+0.513  cv_max=+0.787  barrier=3.45 kcal/mol  0.98M/day
+step  500000  t=250.0ps  cv=+0.557  cv_max=+0.787  barrier=3.45 kcal/mol  0.98M/day
+[checkpoint] t=250ps  barrier=3.4542 kcal/mol  cv_max=+0.7867  ts_crossed=YES
+step  510000  t=255.0ps  cv=+0.910  cv_max=+0.931  barrier=3.90 kcal/mol  0.98M/day
+step  520000  t=260.0ps  cv=+0.651  cv_max=+0.974  barrier=3.90 kcal/mol  0.98M/day
+step  530000  t=265.0ps  cv=+0.603  cv_max=+0.974  barrier=3.90 kcal/mol  0.98M/day
+step  540000  t=270.0ps  cv=+0.941  cv_max=+1.041  barrier=3.90 kcal/mol  0.98M/day
+step  550000  t=275.0ps  cv=+0.927  cv_max=+1.041  barrier=3.90 kcal/mol  0.98M/day
+step  560000  t=280.0ps  cv=+0.785  cv_max=+1.132  barrier=3.90 kcal/mol  0.98M/day
+step  570000  t=285.0ps  cv=+1.148  cv_max=+1.219  barrier=3.90 kcal/mol  0.98M/day
+step  580000  t=290.0ps  cv=+1.354  cv_max=+1.354  barrier=3.90 kcal/mol  0.98M/day
+step  590000  t=295.0ps  cv=+0.971  cv_max=+1.356  barrier=3.90 kcal/mol  0.97M/day
+
+=== RESULTS (PhysNet WT-MetaD, seed=1) ===
+Barrier          : 3.9031 kcal/mol
+First TS crossing: 163.1 ps
+Converged        : True  (convergence_time=150.0 ps)
+Speed (this run) : 0.97 M steps/day
+Total sim time   : 300.0 ps / 300.0 ps planned
+Saved: C:\Users\zonezone\Desktop\YCU_research\MetaDynamics\OmegaWiki\experiments\code\wt-metad-pimd-fad-physnet-baseline\results_physnet\seed_1.json
+=== ESCALATED SEED 1 done 2026/05/30 週六 11:36:24.78 === 

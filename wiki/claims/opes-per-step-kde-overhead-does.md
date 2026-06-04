@@ -2,7 +2,7 @@
 title: "OPES kernel density estimation overhead does not eliminate convergence speed gains in PIMD"
 slug: "opes-per-step-kde-overhead-does"
 status: proposed
-confidence: 0.5
+confidence: 0.3
 tags: [pimd, opes, computational-efficiency, kernel-density-estimation, enhanced-sampling]
 domain: "ML Systems"
 source_papers: []
@@ -11,6 +11,10 @@ evidence:
     type: supports
     strength: weak
     detail: "Run 9 (PACE=100, FallbackFF): OPES speed = 7.40 M steps/day vs WT-MetaD v3 = 9.26 M steps/day — ~20% per-step overhead on FallbackFF. On GFN (7.2 M steps/day, slower FF), the absolute overhead is similar → overhead fraction comparable. The net-benefit condition cannot be evaluated: OPES failed to converge (zero TS crossings), so there is no convergence speedup to offset the overhead cost. Inconclusive on whether KDE overhead is ultimately negligible."
+  - source: opes-pimd-fad-physnet-validation
+    type: contradicts
+    strength: moderate
+    detail: "OPES (PACE=100, sigma=0.10 Å) on PhysNet: 0.84 M/day vs WT-MetaD 0.97 M/day — 13% overhead. Exceeds the <10% threshold for claim to hold. With PhysNet batch inference (0.97 M/day), 13% is non-negligible overhead. KDE cost scales with kernel count: at 300 ps with PACE=100, N_kernels=3000 — this is where O(N) KDE cost becomes measurable."
 conditions: "PIMD with P=32 beads, GFN force field; OPES KDE updates at stride 100-500 steps. Overhead measured as fraction of total simulation time spent on OPES KDE update vs. GFN force evaluation."
 date_proposed: 2026-05-08
 date_updated: 2026-05-14

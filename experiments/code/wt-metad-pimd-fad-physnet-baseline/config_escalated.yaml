@@ -1,0 +1,38 @@
+# WT-MetaD PIMD PhysNet FAD: escalated settings
+# h=5 kJ/mol, biasfactor=100, PACE=200, 300 ps x 1 seed
+# Escalation after 0/3 TS crossings at gamma=50, h=3 kJ/mol
+
+system:
+  name: formic_acid_dimer
+  n_atoms: 10
+
+pimd:
+  n_beads: 32
+  temperature: 200.0
+  timestep: 0.5          # fs
+  n_steps: 600000        # 300 ps at 0.5 fs/step
+  thermostat: PILE-L
+  friction: 1.0
+  seed: 1                # fresh seed; overridden by --seed flag
+
+wt_metad:
+  cv: CVdimer
+  height: 5.0            # kJ/mol (escalated from 3.0)
+  sigma: 0.05            # Ang
+  biasfactor: 100        # gamma=100; handles barriers up to ~60 kcal/mol
+  stride: 200            # PACE=200 steps
+  cv_min: -2.0
+  cv_max: 2.0
+  cv_bins: 400
+
+output:
+  colvar_stride: 10
+  hills_file: results_physnet/hills_seed1.dat   # overridden per seed in train.py
+
+model:
+  method: physnet
+  physnet_base: ../opes-pimd-fad-proton-transfer-convergence
+
+sanity:
+  n_steps: 200
+  check_cv: true

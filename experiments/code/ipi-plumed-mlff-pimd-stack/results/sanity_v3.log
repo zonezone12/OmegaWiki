@@ -1,0 +1,32 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 11.8.0
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+[launch] SANITY run: 400 steps (0.2 ps), smotion ON (centroid CV), PLUMED output → /tmp
+[patch] evaluate(): bead counter + plumed_step-per-MD-step + update()-per-MD-step (N=32)
+[launch] Starting i-PI (background) ...
+[launch] i-PI PID=33
+[launch] Waiting 5s for i-PI to open socket ...
+[launch] Starting PhysNet driver (n_beads=32) ...
+[launch] Driver PID=85
+[launch] Running. Monitor with: tail -f results/ipi.log results/driver.log
+[launch] COLVAR: results/run.COLVAR (written by PLUMED)
+         HILLS:  HILLS (written by PLUMED, in cwd)
+[launch] Stop with: kill 33 85
+[launch] i-PI finished.
+[launch] Driver finished.
+[launch] Copied HILLS and COLVAR from /tmp to /workspace.
+[launch] Last step completed: 400
+[launch] SUCCESS — all steps completed.
+[launch] Results in results/

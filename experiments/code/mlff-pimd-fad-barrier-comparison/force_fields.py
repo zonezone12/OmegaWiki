@@ -27,6 +27,14 @@ class PhysNetFF:
         if physnet_base not in sys.path:
             sys.path.insert(0, physnet_base)
         import tensorflow as tf
+        # Enable GPU memory growth so TF doesn't grab all VRAM at init
+        gpus = tf.config.list_physical_devices("GPU")
+        if gpus:
+            for gpu in gpus:
+                tf.config.experimental.set_memory_growth(gpu, True)
+            print(f"[PhysNetFF] GPU(s) found: {[g.name for g in gpus]}")
+        else:
+            print("[PhysNetFF] WARNING: no GPU detected — running on CPU")
         from ase import Atoms as AseAtoms
         from physnet_fad.physnet import PhysNet
         ckpt = os.path.join(physnet_base, "physnet_fad", "Final_Fit", "best", "best_model")
@@ -36,7 +44,8 @@ class PhysNetFF:
         self._atoms = _dummy
         self._atoms.calc = self._calc
         self._tf = tf
-        print(f"[PhysNetFF] loaded: {ckpt}")
+        self._device = "/GPU:0" if gpus else "/CPU:0"
+        print(f"[PhysNetFF] loaded: {ckpt}  (device={self._device})")
 
         # Pre-build batch-inference tensors (32 beads × 10 atoms)
         self._setup_batch(32, 10)
@@ -67,10 +76,11 @@ class PhysNetFF:
             self._setup_batch(P, N)
         self._R_batch.assign(beads.reshape(P * N, 3).astype(np.float32))
         tf = self._tf
-        _, forces, _ = self._calc.model.energy_and_forces_and_charges(
-            self._Z_batch, self._R_batch,
-            self._idx_i_b, self._idx_j_b,
-            Q_tot=self._Q_tot_b, batch_seg=self._bseg, offsets=None)
+        with tf.device(self._device):
+            _, forces, _ = self._calc.model.energy_and_forces_and_charges(
+                self._Z_batch, self._R_batch,
+                self._idx_i_b, self._idx_j_b,
+                Q_tot=self._Q_tot_b, batch_seg=self._bseg, offsets=None)
         return tf.convert_to_tensor(forces).numpy().reshape(P, N, 3) * KCAL_PER_EV
 
 

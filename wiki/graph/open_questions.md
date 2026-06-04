@@ -25,7 +25,3 @@ _Auto-generated open questions. Do not edit._
 - [concept/opes-enhanced-sampling] Combination of expanded and well-tempered targets
 - [concept/opes-enhanced-sampling] Extension to path collective variables and other non-standard CV types
 - [concept/opes-enhanced-sampling] Weighted expanded targets for selective thermodynamic state sampling
-- [claim/centroid-cv-biasing-accurate-opes-enhanced] Centroid CV biasing is an accurate strategy for OPES-enhanced PIMD free energy calculations (status: proposed)
-- [claim/ml-pimd-aims-framework-achieves-quantum] ML-PIMD with GFN force field achieves quantum-accurate nuclear dynamics at ~1200x speedup over first-principles PIMD (status: weakly_supported)
-- [claim/opes-hyperparameter-sensitivity-lower-than-wt] OPES hyperparameter sensitivity is lower than WT-MetaD in PIMD enhanced sampling (status: proposed)
-- [claim/opes-per-step-kde-overhead-does] OPES kernel density estimation overhead does not eliminate convergence speed gains in PIMD (status: proposed)

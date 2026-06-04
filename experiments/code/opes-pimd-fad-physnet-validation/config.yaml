@@ -1,0 +1,36 @@
+# OPES-PIMD PhysNet FAD validation: OPES vs WT-MetaD comparison
+# BARRIER=81.6 kJ/mol (5x 3.90 kcal/mol, conservative 1-seed escalation path)
+# PACE=100, sigma=0.10 Ang fixed, 300 ps x 3 seeds (42, 123, 7)
+
+system:
+  name: formic_acid_dimer
+  n_atoms: 10
+
+pimd:
+  n_beads: 32
+  temperature: 200.0
+  timestep: 0.5          # fs
+  n_steps: 600000        # 300 ps at 0.5 fs/step
+  thermostat: PILE-L
+  friction: 1.0
+  seed: 42               # overridden by --seed flag
+
+opes:
+  cv: CVdimer
+  pace: 100              # PACE=100: 5x more frequent than WT-MetaD PACE=200
+  sigma: 0.10            # Ang, fixed bandwidth (no Silverman adaptive rule)
+  barrier: 81.6          # kJ/mol = 5 x 3.90 kcal/mol x 4.184 (conservative)
+  cv_min: -2.0
+  cv_max: 2.0
+  cv_bins: 400
+
+output:
+  colvar_stride: 10      # write colvar every 10 steps
+
+model:
+  method: physnet
+  physnet_base: ../opes-pimd-fad-proton-transfer-convergence
+
+sanity:
+  n_steps: 200
+  check_cv: true

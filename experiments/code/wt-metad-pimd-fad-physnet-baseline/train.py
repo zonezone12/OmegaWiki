@@ -103,7 +103,7 @@ class PIMD:
 
 
 class WTMetaD:
-    def __init__(self, cfg):
+    def __init__(self, cfg, resume=False):
         wt          = cfg["wt_metad"]
         self.h      = wt["height"] * KCAL_PER_KJ
         self.s      = wt["sigma"]
@@ -117,8 +117,25 @@ class WTMetaD:
         self.hs, self.hc = [], []
         self._sample_cvs    = []
         self._sample_biases = []
-        self.fh = open(cfg["output"]["hills_file"], "w", encoding="utf-8")
-        self.fh.write("# step cv h sig\n")
+        mode = "a" if resume else "w"
+        self.fh = open(cfg["output"]["hills_file"], mode, encoding="utf-8")
+        if not resume:
+            self.fh.write("# step cv h sig\n")
+
+    def load_hills(self, hills_file):
+        """Restore accumulated hills from a previous run for warm-start resume."""
+        loaded = 0
+        with open(hills_file, encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("#") or not line.strip():
+                    continue
+                parts = line.split()
+                if len(parts) < 4:
+                    continue
+                self.hc.append(float(parts[1]))
+                self.hs.append(float(parts[2]))
+                loaded += 1
+        print(f"[resume] loaded {loaded} hills from {hills_file}")
 
     def bias_e(self, cv):
         if not self.hc:
@@ -126,13 +143,13 @@ class WTMetaD:
         c = np.array(self.hc); h = np.array(self.hs)
         return float(np.sum(h * np.exp(-0.5 * ((cv - c) / self.s) ** 2)))
 
-    def update(self, step, cv):
+    def update(self, step, cv, step_offset=0):
         if step % self.stride:
             return
         be = self.bias_e(cv)
         w  = self.h * np.exp(-be / (KB_KCAL * self.T * (self.gam - 1)))
         self.hc.append(cv); self.hs.append(w)
-        self.fh.write(f"{step} {cv:.6f} {w:.6f} {self.s:.4f}\n")
+        self.fh.write(f"{step + step_offset} {cv:.6f} {w:.6f} {self.s:.4f}\n")
         self.fh.flush()
 
     def forces(self, bq):
@@ -192,12 +209,31 @@ def extract_barrier(grid, fes):
     return float(fes[ts] - fes[l])
 
 
+def _read_step_offset(colvar_path):
+    """Return the last step number recorded in an existing colvar file, or 0."""
+    last_step = 0
+    try:
+        with open(colvar_path, encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("#") or not line.strip():
+                    continue
+                try:
+                    last_step = int(line.split()[0])
+                except (ValueError, IndexError):
+                    pass
+    except FileNotFoundError:
+        pass
+    return last_step
+
+
 def main():
     ap = argparse.ArgumentParser(description="WT-MetaD PIMD PhysNet baseline: aggressive settings")
     ap.add_argument("--config",   default="config.yaml")
     ap.add_argument("--sanity",   action="store_true")
     ap.add_argument("--seed",     type=int, default=None)
     ap.add_argument("--out-dir",  default="results_physnet")
+    ap.add_argument("--resume",   action="store_true",
+                    help="Warm-start: load existing hills, append to output files, run remaining steps")
     args = ap.parse_args()
 
     with open(args.config, encoding="utf-8") as f:
@@ -208,7 +244,15 @@ def main():
 
     out_dir = os.path.join(os.path.dirname(os.path.abspath(args.config)), args.out_dir)
     os.makedirs(out_dir, exist_ok=True)
-    cfg["output"]["hills_file"] = os.path.join(out_dir, f"hills_seed{seed}.dat")
+    hills_path  = os.path.join(out_dir, f"hills_seed{seed}.dat")
+    colvar_path = os.path.join(out_dir, f"colvar_seed{seed}.dat")
+    cfg["output"]["hills_file"] = hills_path
+
+    # Determine step offset and remaining steps for resume mode
+    step_offset = 0
+    if args.resume:
+        step_offset = _read_step_offset(colvar_path)
+        print(f"[resume] detected step_offset={step_offset}  ({step_offset * 0.5e-3:.2f} ps already done)")
 
     # Import PhysNetFF from the mlff experiment directory
     mlff_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -218,22 +262,34 @@ def main():
     from force_fields import load_ff
     ff = load_ff("physnet", cfg)
 
-    n     = cfg["sanity"]["n_steps"] if args.sanity else cfg["pimd"]["n_steps"]
+    total_n = cfg["sanity"]["n_steps"] if args.sanity else cfg["pimd"]["n_steps"]
+    n       = total_n - step_offset  # remaining steps
+    if n <= 0:
+        print(f"[resume] already completed {step_offset} / {total_n} steps — nothing to do.")
+        return
+
     atoms = make_fad()
     pimd  = PIMD(atoms, cfg, ff)
-    metad = WTMetaD(cfg)
+    metad = WTMetaD(cfg, resume=args.resume)
+
+    if args.resume and os.path.exists(hills_path):
+        metad.load_hills(hills_path)
 
     cv0 = centroid_cv(pimd.q)
-    print(f"[init] seed={seed}  CV0={cv0:.4f} Ang  n_steps={n}  T={cfg['pimd']['temperature']}K")
+    mode_tag = "RESUME" if args.resume else "FRESH"
+    print(f"[init/{mode_tag}] seed={seed}  CV0={cv0:.4f} Ang  steps_remaining={n}  "
+          f"sim_remaining={n*0.5e-3:.1f}ps  T={cfg['pimd']['temperature']}K")
     print(f"[init] h={cfg['wt_metad']['height']} kJ/mol  biasfactor={cfg['wt_metad']['biasfactor']}  "
           f"sigma={cfg['wt_metad']['sigma']}  PACE={cfg['wt_metad']['stride']}")
 
-    col = open(os.path.join(out_dir, f"colvar_seed{seed}.dat"), "w", encoding="utf-8")
-    col.write("# step t_ps cv bias_e\n")
+    col_mode = "a" if args.resume else "w"
+    col = open(colvar_path, col_mode, encoding="utf-8")
+    if not args.resume:
+        col.write("# step t_ps cv bias_e\n")
     t0 = time.time()
 
     checkpoint_interval = 100000  # 50 ps at 0.5 fs/step
-    barrier_history     = []      # [(t_ps, barrier)] at each 50 ps
+    barrier_history     = []
     first_ts_step       = None
     cv_max              = cv0
 
@@ -241,29 +297,30 @@ def main():
         bf, cv, be = metad.forces(pimd.q)
         pimd.bf = bf
         pimd.step()
-        metad.update(step, cv)
+        metad.update(step, cv, step_offset=step_offset)
 
+        global_step = step + step_offset
         if step % cfg["output"]["colvar_stride"] == 0:
-            col.write(f"{step} {step * 0.5e-3:.4f} {cv:.6f} {be:.6f}\n")
+            col.write(f"{global_step} {global_step * 0.5e-3:.4f} {cv:.6f} {be:.6f}\n")
             metad.record_sample(cv, be)
 
         if cv > cv_max:
             cv_max = cv
         if first_ts_step is None and cv > 0.0:
-            first_ts_step = step
-            print(f"*** TS CROSSING at step {step}  t={step*0.5e-3:.1f}ps  cv={cv:+.4f} ***")
+            first_ts_step = global_step
+            print(f"*** TS CROSSING at step {global_step}  t={global_step*0.5e-3:.1f}ps  cv={cv:+.4f} ***")
 
         if step % 10000 == 0 and step > 0:
             spd = step / (time.time() - t0) * 86400 / 1e6
             g, fv = metad.fes_reweight()
             b = extract_barrier(g, fv)
-            print(f"step {step:7d}  t={step*0.5e-3:.1f}ps  cv={cv:+.3f}  cv_max={cv_max:+.3f}  "
+            print(f"step {global_step:7d}  t={global_step*0.5e-3:.1f}ps  cv={cv:+.3f}  cv_max={cv_max:+.3f}  "
                   f"barrier={b:.2f} kcal/mol  {spd:.2f}M/day")
 
         if step % checkpoint_interval == 0 and step > 0:
             g, fv = metad.fes_reweight()
             b = extract_barrier(g, fv)
-            t_ps = step * 0.5e-3
+            t_ps = global_step * 0.5e-3
             barrier_history.append((t_ps, b))
             print(f"[checkpoint] t={t_ps:.0f}ps  barrier={b:.4f} kcal/mol  cv_max={cv_max:+.4f}  "
                   f"ts_crossed={'YES' if first_ts_step is not None else 'NO'}")
@@ -272,8 +329,9 @@ def main():
     metad.close()
 
     g, fv = metad.fes_reweight()
-    b   = extract_barrier(g, fv)
-    spd = n / (time.time() - t0) * 86400 / 1e6
+    b     = extract_barrier(g, fv)
+    spd   = n / (time.time() - t0) * 86400 / 1e6
+    total_steps_done = step_offset + n
 
     first_ts_ps = first_ts_step * 0.5e-3 if first_ts_step is not None else None
 
@@ -292,7 +350,8 @@ def main():
     else:
         print(f"First TS crossing: NONE (cv_max={cv_max:+.4f})")
     print(f"Converged        : {converged}  (convergence_time={convergence_time_ps} ps)")
-    print(f"Speed            : {spd:.2f} M steps/day")
+    print(f"Speed (this run) : {spd:.2f} M steps/day")
+    print(f"Total sim time   : {total_steps_done * 0.5e-3:.1f} ps / {total_n * 0.5e-3:.1f} ps planned")
 
     res = {
         "ff":                   "physnet",
@@ -304,8 +363,8 @@ def main():
         "convergence_time_ps":  convergence_time_ps,
         "converged":            converged,
         "speed_M_steps_day":    spd,
-        "n_steps":              n,
-        "sim_time_ps":          n * 0.5e-3,
+        "n_steps":              total_steps_done,
+        "sim_time_ps":          total_steps_done * 0.5e-3,
         "barrier_history":      [[t, bv] for t, bv in barrier_history],
         "fes_cv":               g.tolist(),
         "fes_kcal_mol":         fv.tolist(),

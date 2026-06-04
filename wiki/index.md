@@ -69,6 +69,10 @@ ideas:
     status: failed
     domain: ML Systems
     priority: 2
+  - slug: ipi-plumed-mlff-pimd-stack
+    status: proposed
+    domain: ML Systems
+    priority: 4
 
 experiments:
   - slug: wt-metad-pimd-fad-baseline-reproduction
@@ -84,11 +88,15 @@ experiments:
     target_claim: opes-pimd-converges-quantum-fes-faster
     domain: ML Systems
   - slug: wt-metad-pimd-fad-physnet-baseline
-    status: running
+    status: completed
     target_claim: opes-pimd-converges-quantum-fes-faster
     domain: ML Systems
   - slug: opes-pimd-fad-physnet-validation
-    status: planned
+    status: completed
+    target_claim: opes-pimd-converges-quantum-fes-faster
+    domain: ML Systems
+  - slug: wt-metad-pimd-fad-physnet-production-600k
+    status: completed
     target_claim: opes-pimd-converges-quantum-fes-faster
     domain: ML Systems
   - slug: opes-pimd-water-ice-phase-transition

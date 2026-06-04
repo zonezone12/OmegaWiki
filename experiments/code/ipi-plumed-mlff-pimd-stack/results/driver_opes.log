@@ -1,0 +1,78 @@
+[driver] loading PhysNet …
+2026-05-31 19:54:18.318997: E tensorflow/stream_executor/cuda/cuda_blas.cc:2981] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+/usr/local/lib/python3.10/dist-packages/tensorflow/python/framework/indexed_slices.py:444: UserWarning: Converting sparse IndexedSlices(IndexedSlices(indices=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties/Reshape_1:0", shape=(10,), dtype=int32), values=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties/Reshape:0", shape=(10,), dtype=float32), dense_shape=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties/Cast:0", shape=(1,), dtype=int32))) to a dense Tensor of unknown shape. This may consume a large amount of memory.
+  warnings.warn(
+/usr/local/lib/python3.10/dist-packages/tensorflow/python/framework/indexed_slices.py:444: UserWarning: Converting sparse IndexedSlices(IndexedSlices(indices=Tensor("energy_and_forces/concat_3:0", shape=(180,), dtype=int32), values=Tensor("energy_and_forces/concat_2:0", shape=(180,), dtype=float32), dense_shape=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties_1/Cast_2:0", shape=(1,), dtype=int32))) to a dense Tensor of unknown shape. This may consume a large amount of memory.
+  warnings.warn(
+[PhysNetFF] GPU(s) found: ['/physical_device:GPU:0']
+[PhysNetFF] loaded: /workspace/physnet_fad/Final_Fit/best/best_model  (device=/GPU:0)
+[driver] PhysNet ready  (batched GPU, barrier sync)
+[driver] warming up TF graph (first batch compile) …
+/usr/local/lib/python3.10/dist-packages/tensorflow/python/framework/indexed_slices.py:444: UserWarning: Converting sparse IndexedSlices(IndexedSlices(indices=Tensor("energy_and_forces/concat_3:0", shape=(5760,), dtype=int32), values=Tensor("energy_and_forces/concat_2:0", shape=(5760,), dtype=float32), dense_shape=Tensor("gradient_tape/energy_and_forces/energy_from_atomic_properties_1/Cast_2:0", shape=(1,), dtype=int32))) to a dense Tensor of unknown shape. This may consume a large amount of memory.
+  warnings.warn(
+[driver] TF graph warmed up — ready for i-PI
+[bead  0] connected
+[bead  1] connected
+[bead  2] connected
+[bead  3] connected
+[bead  4] connected
+[bead  5] connected
+[bead  6] connected
+[bead  7] connected
+[bead  8] connected
+[bead  9] connected
+[bead 10] connected
+[bead 11] connected
+[bead 12] connected
+[bead 13] connected
+[bead 14] connected
+[bead 15] connected
+[bead 16] connected
+[bead 17] connected
+[bead 18] connected
+[bead 19] connected
+[bead 20] connected
+[bead 21] connected
+[bead 22] connected
+[bead 23] connected
+[bead 24] connected
+[bead 25] connected
+[bead 26] connected
+[bead 27] connected
+[bead 28] connected
+[bead 29] connected
+[bead 30] connected
+[bead 31] connected
+[driver] 32 bead threads started
+[bead  0] INIT → READY
+[bead  1] INIT → READY
+[bead  2] INIT → READY
+[bead  3] INIT → READY
+[bead  4] INIT → READY
+[bead  5] INIT → READY
+[bead  6] INIT → READY
+[bead  7] INIT → READY
+[bead  8] INIT → READY
+[bead  9] INIT → READY
+[bead 10] INIT → READY
+[bead 11] INIT → READY
+[bead 12] INIT → READY
+[bead 13] INIT → READY
+[bead 14] INIT → READY
+[bead 15] INIT → READY
+[bead 16] INIT → READY
+[bead 17] INIT → READY
+[bead 18] INIT → READY
+[bead 19] INIT → READY
+[bead 20] INIT → READY
+[bead 21] INIT → READY
+[bead 22] INIT → READY
+[bead 23] INIT → READY
+[bead 24] INIT → READY
+[bead 25] INIT → READY
+[bead 26] INIT → READY
+[bead 27] INIT → READY
+[bead 28] INIT → READY
+[bead 29] INIT → READY
+[bead 30] INIT → READY
+[bead 31] INIT → READY

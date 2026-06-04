@@ -2,14 +2,6 @@
 
 _Auto-generated compressed context. Do not edit._
 
-## Claims (7 total)
-- [challenged] OPES converges quantum-corrected free energy surfaces faster and with fewer hyperparameters than WT-MetaD in PIMD simulations (conf: 0.2)
-- [weakly_supported] ML-PIMD with GFN force field achieves quantum-accurate nuclear dynamics at ~1200x speedup over first-principles PIMD (conf: 0.65)
-- [proposed] OPES kernel density estimation overhead does not eliminate convergence speed gains in PIMD (conf: 0.5)
-- [supported] The target distribution perspective unifies CV-based and tempering enhanced sampling methods (conf: 0.8)
-- [proposed] Centroid CV biasing is an accurate strategy for OPES-enhanced PIMD free energy calculations (conf: 0.4)
-- [supported] CV-based bias potentials can sample expanded ensembles without requiring multiple parallel replicas (conf: 0.85)
-- [proposed] OPES hyperparameter sensitivity is lower than WT-MetaD in PIMD enhanced sampling (conf: 0.5)
 ## Open Gaps
 _Auto-generated open questions. Do not edit._
 - [paper/performing-path-integral-molecular-dynamics-using] Can GFN + energy distillation maintain accuracy for free energy perturbation?
@@ -28,11 +20,9 @@ _Auto-generated open questions. Do not edit._
 - GFN Energy Distillation via PIMD Bead Ensemble Training — Insufficient feasibility: the proposed distillation protocol (using PIMD bead ensembles to supervise energy prediction in GFN) lacks theoretical justification for why bead-averaged free energy estimates would improve single-configuration energy prediction. The training signal is thermodynamically averaged, not instantaneous, making it unsuitable for local energy supervision. Standard knowledge distillation from an energy-based teacher to GFN is more straightforward and does not require PIMD.
 - ML-PIMD for Enzyme Kinetic Isotope Effects at DFT Accuracy — Insufficient feasibility for near-term: enzyme systems require QM/MM treatment (quantum mechanical region + molecular mechanics environment) due to the electrostatic protein environment. Training GFN on enzyme reactive sites requires large, diverse datasets covering the conformational space of both enzyme and substrate. The published work on enzyme KIEs with ML (e.g., QM/MM + path sampling, JCTC 2022) 
 ## Papers (2 total)
-- [5] A Unified Approach to Enhanced Sampling (Computational Chemistry / ML Systems)
-- [3] Performing Path Integral Molecular Dynamics Using Artificial Intelligence Enhanced Molecular Simulation Framework (ML Systems)
-## Recent Relationships (31 total)
-  concepts/expansion-collective-variables --supports--> concepts/expanded-ensemble-target-distribution
-  papers/performing-path-integral-molecular-dynamics-using --supports--> concepts/graph-field-network
+- [5] A Unified Approach to Enhanced Sampling
+- [3] Performing Path Integral Molecular Dynamics Using Artificial Intelligence Enhanced Molecular Simulation Framework
+## Recent Relationships (33 total)
   papers/performing-path-integral-molecular-dynamics-using --supports--> claims/ml-pimd-aims-framework-achieves-quantum
   papers/performing-path-integral-molecular-dynamics-using --supports--> concepts/opes-enhanced-sampling
   ideas/opes-pimd-quantum-free-energy-enhanced --addresses_gap--> claims/ml-pimd-aims-framework-achieves-quantum
@@ -40,4 +30,5 @@ _Auto-generated open questions. Do not edit._
   ideas/opes-pimd-quantum-free-energy-enhanced --inspired_by--> papers/performing-path-integral-molecular-dynamics-using
   ideas/opes-pimd-quantum-free-energy-enhanced --inspired_by--> papers/unified-approach-enhanced-sampling
   ideas/gfn-instanton-ring-polymer-tunneling-rate --addresses_gap--> claims/ml-pimd-aims-framework-achieves-quantum
-
+  ideas/gfn-instanton-ring-polymer-tunneling-rate --inspired_by--> concepts/graph-field-network
+  ideas/active-learning-gfn-force-uncertainty-pimd --addresses_gap--> claims/ml-pimd-aims-framework-achieves-

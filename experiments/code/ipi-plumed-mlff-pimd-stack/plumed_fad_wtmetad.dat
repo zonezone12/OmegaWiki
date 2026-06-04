@@ -1,0 +1,36 @@
+# PLUMED input: FAD proton transfer WT-MetaD (escalated: gamma=100, h=5 kJ/mol)
+# Fix v2: CV walls added to prevent escape; smotion centroid mode (no evaluate patch).
+#
+# Atom numbering (1-indexed, PLUMED convention):
+#   H1=1  C1=2  O1=3  O2=4  H2=5  H3=6  C2=7  O3=8  O4=9  H4=10
+#
+# CVdimer = (d(H1,O2) - d(H1,O3)) + (d(H3,O4) - d(H3,O1))
+#
+# All lengths in nm (PLUMED default); i-PI passes Bohr → PLUMED converts via setMDLengthUnits.
+# sigma 0.005 nm = 0.05 Ang (matches Python WT-MetaD config).
+# Basins: CV ~ ±0.15 nm; TS: CV = 0; walls at ±0.25 nm (kappa=10000 kJ/mol/nm^2).
+
+d_H1_O2: DISTANCE ATOMS=1,4
+d_H1_O3: DISTANCE ATOMS=1,8
+d_H3_O4: DISTANCE ATOMS=6,9
+d_H3_O1: DISTANCE ATOMS=6,3
+
+cv: COMBINE ARG=d_H1_O2,d_H1_O3,d_H3_O4,d_H3_O1 COEFFICIENTS=1,-1,1,-1 PERIODIC=NO
+
+# CV walls: keep system in physical double-well (±0.25 nm)
+uwall: UPPER_WALLS ARG=cv AT=0.25 KAPPA=10000.0 EXP=2
+lwall: LOWER_WALLS ARG=cv AT=-0.25 KAPPA=10000.0 EXP=2
+
+# WT-MetaD: escalated settings (seed 1 succeeded at these params, barrier = 3.90 kcal/mol)
+metad: METAD ...
+  ARG=cv
+  PACE=200
+  HEIGHT=5.0
+  SIGMA=0.005
+  BIASFACTOR=100
+  TEMP=200
+  FILE=/tmp/HILLS
+  RESTART=NO
+...
+
+PRINT ARG=cv,metad.bias,uwall.bias,lwall.bias STRIDE=10 FILE=/tmp/COLVAR FMT=%12.6f

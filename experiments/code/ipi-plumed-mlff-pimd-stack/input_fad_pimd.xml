@@ -1,0 +1,74 @@
+<simulation verbosity='medium'>
+  <!-- 300 ps at 0.5 fs/step = 600000 steps -->
+  <total_steps>600000</total_steps>
+
+  <!-- prefix without subdir: i-PI backup renames break on paths with '/' in them -->
+  <output prefix='ipi_out'>
+    <!-- Step, time(ps), potential, temperature logged every 10 steps -->
+    <properties stride='10' filename='md'>
+      [ step, time{picosecond}, potential{electronvolt}, temperature{kelvin} ]
+    </properties>
+    <!-- Bead-0 positions every 100 steps (centroid_positions not in i-PI 3.2) -->
+    <trajectory stride='100' filename='pos' format='xyz' cell_units='angstrom' bead='0'>
+      positions{angstrom}
+    </trajectory>
+  </output>
+
+  <system>
+    <!-- Initialize 32-bead ring polymer from single XYZ structure + thermal velocities -->
+    <initialize nbeads='32'>
+      <file mode='xyz' units='angstrom'>init_fad.xyz</file>
+      <velocities mode='thermal' units='kelvin'>200</velocities>
+    </initialize>
+
+    <forces>
+      <!-- PhysNet ML force field via UNIX socket driver -->
+      <force name='physnet-ff' forcefield='physnet-ff'></force>
+      <!-- WT-MetaD bias via PLUMED (acts on centroid) -->
+      <force name='plumed-bias' forcefield='plumed-bias'></force>
+    </forces>
+
+    <motion mode='dynamics'>
+      <dynamics mode='nvt'>
+        <!-- 0.5 fs timestep (matching Python baseline) -->
+        <timestep units='femtosecond'>0.5</timestep>
+        <!-- PILE-L thermostat: centroid coupling tau=500 fs; non-centroid modes exact -->
+        <thermostat mode='pile_l'>
+          <tau units='femtosecond'>500</tau>
+        </thermostat>
+      </dynamics>
+    </motion>
+
+    <ensemble>
+      <temperature units='kelvin'>200</temperature>
+    </ensemble>
+
+    <!-- Non-periodic gas-phase FAD: large orthorhombic cell (forces use pbc=false) -->
+    <cell units='angstrom'>[30.0, 0.0, 0.0, 0.0, 30.0, 0.0, 0.0, 0.0, 30.0]</cell>
+  </system>
+
+  <!-- smotion metad: calls FFPlumed.mtd_update() after each MD step so PLUMED
+       actually deposits hills and writes COLVAR/HILLS output files. Without
+       this block, FFPlumed only calls performCalcNoUpdate (forces only). -->
+  <smotion mode='metad'>
+    <metad>
+      <metaff>[ plumed-bias ]</metaff>
+    </metad>
+  </smotion>
+
+  <!-- UNIX socket: i-PI listens at /tmp/ipi_physnet; driver connects from physnet_ipi_driver.py -->
+  <!-- slots=32: one connection per bead; driver batches all 32 in one GPU forward pass       -->
+  <ffsocket mode='unix' name='physnet-ff' pbc='false'>
+    <address>physnet</address>
+    <slots>32</slots>
+    <timeout>5.0</timeout>
+  </ffsocket>
+
+  <!-- PLUMED bias: WT-MetaD on CVdimer centroid.
+       file = init structure (needed to set natoms); plumed_dat = PLUMED action file. -->
+  <ffplumed name='plumed-bias' pbc='false'>
+    <file mode='xyz' units='angstrom'>init_fad.xyz</file>
+    <plumed_dat>plumed_fad_wtmetad.dat</plumed_dat>
+  </ffplumed>
+
+</simulation>

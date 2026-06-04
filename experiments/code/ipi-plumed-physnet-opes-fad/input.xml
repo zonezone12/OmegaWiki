@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!-- i-PI input: 32-bead PIMD + PLUMED OPES_METAD on PhysNet FAD -->
+<!-- Temperature: 200 K, timestep: 0.5 fs, PILE-L thermostat -->
+<!-- Force provider: PhysNet TCP server on host.docker.internal:31415 -->
+
+<simulation verbosity="medium">
+
+  <!-- Total steps: 600000 = 300 ps at 0.5 fs/step -->
+  <total_steps>600000</total_steps>
+
+  <!-- Output files -->
+  <output prefix="output">
+    <properties stride="100" filename="md.out"> [ step, time{picosecond}, conserved{kilojoule/mol}, temperature{kelvin}, potential{kilojoule/mol} ] </properties>
+    <trajectory stride="1000" filename="beads.xyz" format="xyz" cell_units="angstrom"> positions{angstrom} </trajectory>
+    <checkpoint stride="10000"/>
+  </output>
+
+  <!-- Force field: PhysNet TCP server -->
+  <ffsocket name="physnet" mode="inet" pbc="false">
+    <!-- host.docker.internal resolves to the Windows host from inside Docker -->
+    <address>host.docker.internal</address>
+    <port>31415</port>
+    <timeout>600</timeout>
+  </ffsocket>
+
+  <!-- System: FAD, 10 atoms -->
+  <system>
+
+    <!-- Force calculation: use PhysNet socket FF + PLUMED bias -->
+    <forces>
+      <force forcefield="physnet" nbeads="32"/>
+      <force forcefield="plumed-opes"/>
+    </forces>
+
+    <!-- PLUMED bias (centroid positions fed to PLUMED) -->
+    <ffplumed name="plumed-opes">
+      <file>plumed.dat</file>
+      <plumeddat>plumed.dat</plumeddat>
+    </ffplumed>
+
+    <!-- Initial structure: FAD in Angstrom, converted to Bohr -->
+    <!-- C2h equilibrium geometry (same as make_fad() in train.py) -->
+    <initialize nbeads="32">
+      <file mode="xyz" units="angstrom">fad_init.xyz</file>
+      <velocities mode="thermal" units="kelvin">200</velocities>
+    </initialize>
+
+    <!-- Integrator: Velocity Verlet + PILE-L thermostat -->
+    <motion mode="dynamics">
+      <dynamics mode="nvt">
+        <timestep units="femtosecond">0.5</timestep>
+        <thermostat mode="pile_l">
+          <!-- friction = 1.0 ps^-1, same as Python PIMD setup -->
+          <tau units="picosecond">1.0</tau>
+        </thermostat>
+      </dynamics>
+    </motion>
+
+    <!-- Ensemble: NVT -->
+    <ensemble>
+      <temperature units="kelvin">200</temperature>
+    </ensemble>
+
+  </system>
+
+</simulation>

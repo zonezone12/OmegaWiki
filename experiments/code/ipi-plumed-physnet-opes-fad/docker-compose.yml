@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  ipi:
+    build: .
+    image: ipi-plumed:latest
+    container_name: ipi_opes_fad
+    volumes:
+      # Mount simulation files into container
+      - ./:/simulation
+    working_dir: /simulation
+    # host.docker.internal resolves to Windows host — PhysNet server must be running there
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: >
+      bash -c "
+        python3 make_init.py &&
+        i-pi input.xml 2>&1 | tee ipi.log
+      "
+    restart: "no"

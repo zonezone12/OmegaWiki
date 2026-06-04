@@ -2,7 +2,7 @@
 title: "OPES converges quantum-corrected free energy surfaces faster and with fewer hyperparameters than WT-MetaD in PIMD simulations"
 slug: "opes-pimd-converges-quantum-fes-faster"
 status: challenged
-confidence: 0.2
+confidence: 0.1
 tags: [pimd, opes, enhanced-sampling, convergence, metadynamics, nuclear-quantum-effects, free-energy]
 domain: "ML Systems"
 source_papers: []
@@ -19,9 +19,18 @@ evidence:
     type: tested_by
     strength: moderate
     detail: "Prerequisite MLFF survey: PhysNet (MP2/aVTZ) 27.4 kcal/mol, MACE-OFF23 30.1 kcal/mol, ANI-2x (wB97X/6-31G*) 37.7 kcal/mol — all show zero TS crossings in 50–150 ps WT-MetaD PIMD (9 runs, 3 FFs × 3 seeds). The Fan et al. 1.52 kcal/mol target is specific to GFN2-xTB PES; no ab-initio MLFF can reproduce it. A valid OPES vs WT-MetaD FAD comparison requires GFN2-xTB-level FF, which is not yet in the toolkit. Result: INCONCLUSIVE for the claim (WT-MetaD only used, no OPES comparison possible without suitable FF)."
+  - source: wt-metad-pimd-fad-physnet-baseline
+    type: tested_by
+    strength: moderate
+    detail: "WT-MetaD PhysNet baseline (32-bead PIMD, 200K): barrier = 3.90 kcal/mol, first TS crossing = 163.1 ps (γ=100, h=5 kJ/mol, seed 1; 0/3 seeds crossed at γ=50 h=3). Establishes mandatory WT-MetaD reference for OPES head-to-head comparison in opes-pimd-fad-physnet-validation. PhysNet barrier 2.6× higher than GFN2-xTB (1.52 kcal/mol); comparison applies to MP2-level chemistry. Escalated conditions required — OPES experiment must use comparable settings."
+  - source: opes-pimd-fad-physnet-validation
+    type: invalidates
+    strength: strong
+    detail: "OPES (PACE=100, sigma=0.10 Å, BARRIER=81.6 kJ/mol, seed 42, 32-bead PhysNet PIMD, 200K): zero TS crossings in 300 ps; cv_max=-1.273 Å (TS at 0.0 Å). WT-MetaD crossed at 163.1 ps and converged to 3.90 kcal/mol. Root cause: KDE bias at frontier only ~0.28 kcal/mol ≈ kT — insufficient density contrast between reactant well (−1.45 Å) and frontier (−1.27 Å) with sigma=0.10 Å. Speed 0.84 M/day vs 0.97 M/day (13% slower). Single seed; tuned sigma (0.05 Å) or larger BARRIER may recover performance."
+date_updated: 2026-05-31
 conditions: "PIMD enhanced sampling in AIMS framework; GFN-based MLFF; systems with conformational CVs (not ring-polymer shape CVs). Comparison is OPES_METAD vs. WT-MetaD with centroid or bead-averaged CV biasing."
 date_proposed: 2026-05-08
-date_updated: 2026-05-14
+date_updated: 2026-05-30
 ---
 
 ## Statement

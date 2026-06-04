@@ -1,0 +1,2 @@
+# FES Reconstruction from 96000 Gaussians
+# CV (Å)  FES (kJ/mol)
